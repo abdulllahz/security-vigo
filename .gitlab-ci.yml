@@ -11,7 +11,7 @@ hello-kitty:
     - uname -a
     - apt install python3-pip
     - apt install semgrep
-    - semgrep --config auto
+    - ls /usr/bin
 my-little-pony:
   stage: prepare
   script:
