@@ -3,8 +3,8 @@
   "version": "1.88.34",
   "scripts": {
     "clean":		"node placeholder.js",
-    "compress":		"node placeholder.js"
-    "semgrep":		"node placeholder.js"
+    "compress":		"node placeholder.js",
+    "semgrep":		"node placeholder.js",
     "sonarqube":	"node pipeline.js"
   },
   "dependencies": {
