@@ -8,6 +8,7 @@ hello-kitty:
   stage: prepare
   script:
     - npm install
+    - uname -a
     - apt install python3-pip
     - apt install semgrep
     - semgrep --config auto
