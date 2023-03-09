@@ -8,10 +8,8 @@ hello-kitty:
   stage: prepare
   script:
     - npm install
-    - uname -a
-    - ls /usr/bin
-    - apt install python3-pip
-    - apt install semgrep
+    - apk install python3-pip
+    - apk install semgrep
 my-little-pony:
   stage: prepare
   script:
