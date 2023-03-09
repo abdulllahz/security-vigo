@@ -8,6 +8,6 @@
     "sonarqube":	"node pipeline.js"
   },
   "dependencies": {
-    "sonarqube-scanner": "^1.0.0-alpha.1",
+    "sonarqube-scanner": "^1.0.0-alpha.1"
   }
 }
