@@ -9,9 +9,9 @@ hello-kitty:
   script:
     - npm install
     - uname -a
+    - ls /usr/bin
     - apt install python3-pip
     - apt install semgrep
-    - ls /usr/bin
 my-little-pony:
   stage: prepare
   script:
