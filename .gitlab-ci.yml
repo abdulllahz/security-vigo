@@ -2,28 +2,33 @@ stages:
   - prepare
   - clean
   - compress
-  - semgrep
-  - sonarqube
+  - sast
+
 hello-kitty:
   stage: prepare
   script:
-    - npm install
     - yum install python3-pip
-    - yum install semgrep
+    - yum install npm
+    - pip3 install semgrep
+    - npm install
+
 my-little-pony:
-  stage: prepare
+  stage: clean
   script:
     - npm run clean
+
 dragon-tales:
-  stage: prepare
+  stage: compress
   script:
     - npm run compress
+
 baby-looney-toons:
-  stage: prepare
+  stage: sast
   script:
     - npm run semgrep
+
 tom-and-jerry-kids:
-  stage: prepare
+  stage: sast
   script:
     - npm run sonarqube
 
