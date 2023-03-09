@@ -8,7 +8,8 @@ hello-kitty:
   stage: prepare
   script:
     - npm install
-    - cat /etc/*release
+    - yum install python3-pip
+    - yum install semgrep
 my-little-pony:
   stage: prepare
   script:
