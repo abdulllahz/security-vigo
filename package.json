@@ -1,0 +1,13 @@
+{
+  "name": "@bykea/talos",
+  "version": "1.88.34",
+  "scripts": {
+    "clean":		"node placeholder.js",
+    "compress":		"node placeholder.js"
+    "semgrep":		"node placeholder.js"
+    "sonarqube":	"node pipeline.js"
+  },
+  "dependencies": {
+    "sonarqube-scanner": "^1.0.0-alpha.1",
+  }
+}

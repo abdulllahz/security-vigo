@@ -1,7 +1,34 @@
 stages:
-  - build
+	- prepare
+	- clean
+	- compress
+	- semgrep
+	- sonarqube
 
-build:
-  stage: build
-  script:
-    - ls
+hello-kitty:
+	stage: prepare
+	script:
+		- npm install
+		- apt install python3-pip
+		- apt install semgrep
+		- semgrep --config auto 
+
+my-little-pony:
+	stage: prepare
+	script:
+		- npm run clean
+
+dragon-tales:
+	stage: prepare
+	script:
+		- npm run compress
+
+baby-looney-toons:
+	stage: prepare
+	script:
+		- npm run semgrep
+
+tom-and-jerry-kids:
+	stage: prepare
+	script:
+		- npm run sonarqube
