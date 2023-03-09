@@ -8,8 +8,7 @@ hello-kitty:
   stage: prepare
   script:
     - npm install
-    - apk install python3-pip
-    - apk install semgrep
+    - cat /etc/*release
 my-little-pony:
   stage: prepare
   script:
