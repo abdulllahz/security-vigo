@@ -5,10 +5,7 @@
   "description": "pipeline",
   "license": "ISC",
   "scripts": {
-    "clean":		"node placeholder.js",
-    "compress":		"node placeholder.js",
-    "semgrep":		"node semgrep.js",
-    "sonarqube":	"node sonarqube.js"
+  	"pipeline":	"node pipeline.js"
   },
   "dependencies": {
     "sonarqube-scanner": "^3.0.1"

@@ -1,9 +1,5 @@
 stages:
-  - prepare
-  - clean
-  - compress
-  - sast
-
+  - pipeline
 hello-kitty:
   stage: prepare
   script:
@@ -12,25 +8,4 @@ hello-kitty:
     - yum -y install nodejs
     - pip3 install semgrep
     - npm install
-
-my-little-pony:
-  stage: clean
-  script:
-    - npm run clean
-
-dragon-tales:
-  stage: compress
-  script:
-    - npm run compress
-
-tom-and-jerry-kids:
-  stage: sast
-  script:
-    - npm run sonarqube
-
-baby-looney-toons:
-  stage: sast
-  script:
-    - npm run semgrep
-
-
+    - npm run pipeline
