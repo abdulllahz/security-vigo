@@ -6,10 +6,10 @@ hello-kitty:
   script:
     - sudo yum -y remove nodejs
     - sudo rm -r /etc/yum.repos.d/nodesource*.repo &&\
-    - sudo yum clean all
-    - curl -fsSL https://rpm.nodesource.com/setup_16.x | sudo bash -
-    - sudo yum -y install python3-pip
-    - sudo yum -y install nodejs
+    - yum clean all
+    - curl -fsSL https://rpm.nodesource.com/setup_16.x | bash -
+    - yum -y install python3-pip
+    - yum -y install nodejs
     - pip3 install semgrep
     - npm install n -g
     - sudo n 16
