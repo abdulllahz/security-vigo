@@ -2,7 +2,7 @@ const scanner = require('sonarqube-scanner');
 const process = require('child_process');
 console.log('running sonarqube')
 scanner({
-    serverUrl : '52.15.103.252',
+    serverUrl : 'https://52.15.103.252',
     token : '',
     options: {
       'sonar.projectName': 'NodeGoat Example',
