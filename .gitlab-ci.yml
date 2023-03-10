@@ -4,12 +4,12 @@ image: alpine:latest
 hello-kitty:
   stage: pipeline
   script:
-    - yum remove nodejs
-    - curl -fsSL https://rpm.nodesource.com/setup_16.x | bash -
-    - yum -y install python3-pip
-    - yum -y install nodejs
+    - sudo yum remove nodejs
+    - curl -fsSL https://rpm.nodesource.com/setup_16.x | sudo bash -
+    - sudo yum -y install python3-pip
+    - sudo yum -y install nodejs
     - pip3 install semgrep
     - npm install n -g
-    - n 16
+    - sudo n 16
     - npm install
     - npm run pipeline
