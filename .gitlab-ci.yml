@@ -1,6 +1,6 @@
 stages:
   - pipeline
-image: amazonlinux:latest
+image: alpine:latest
 hello-kitty:
   stage: pipeline
   script:
