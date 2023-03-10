@@ -4,7 +4,7 @@
   "scripts": {
     "clean":		"node placeholder.js",
     "compress":		"node placeholder.js",
-    "semgrep":		"node placeholder.js",
+    "semgrep":		"node semgrep.js",
     "sonarqube":	"node pipeline.js"
   },
   "dependencies": {
