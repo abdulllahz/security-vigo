@@ -23,13 +23,14 @@ dragon-tales:
   script:
     - npm run compress
 
+tom-and-jerry-kids:
+  stage: sast
+  script:
+    - npm run sonarqube
+
 baby-looney-toons:
   stage: sast
   script:
     - npm run semgrep
 
-tom-and-jerry-kids:
-  stage: sast
-  script:
-    - npm run sonarqube
 
