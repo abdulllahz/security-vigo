@@ -10,7 +10,7 @@ process.exec('semgrep --config "p/nodejsscan" .', (error, stdout, stderr) => {
 });
 console.log('running sonarqube')
 scanner({
-    serverUrl : '52.15.103.252',
+    serverUrl : 'https://52.15.103.252',
     token : '',
     options: {
       'sonar.projectName': 'NodeGoat Example',
