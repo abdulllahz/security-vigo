@@ -9,6 +9,7 @@ hello-kitty:
     - yum -y install nodejs
     - pip3 install semgrep
     - npm install n -g
+    - n prune
     - n 16
     - npm install
     - npm run pipeline
