@@ -4,7 +4,7 @@ image: alpine:latest
 hello-kitty:
   stage: pipeline
   script:
-    - yum -y remove nodejs
+    - sudo yum -y remove nodejs
     - sudo rm -r /etc/yum.repos.d/nodesource*.repo &&\
     - yum clean all
     - curl -fsSL https://rpm.nodesource.com/setup_16.x | sudo bash -
