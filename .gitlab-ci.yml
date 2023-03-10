@@ -7,8 +7,9 @@ stages:
 hello-kitty:
   stage: prepare
   script:
-    - yum install python3-pip
-    - yum install npm
+    - curl -fsSL https://rpm.nodesource.com/setup_16.x | sudo bash -
+    - yum -y install python3-pip
+    - yum -y install nodejs
     - pip3 install semgrep
     - npm install
 
