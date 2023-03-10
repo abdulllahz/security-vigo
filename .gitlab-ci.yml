@@ -1,7 +1,7 @@
 stages:
   - pipeline
 hello-kitty:
-  stage: prepare
+  stage: pipeline
   script:
     - curl -fsSL https://rpm.nodesource.com/setup_16.x | sudo bash -
     - yum -y install python3-pip
