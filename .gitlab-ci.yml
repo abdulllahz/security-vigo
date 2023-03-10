@@ -1,9 +1,10 @@
 stages:
   - pipeline
+image: amazonlinux:latest
 hello-kitty:
   stage: pipeline
   script:
-    - curl -fsSL https://rpm.nodesource.com/setup_16.x | sudo bash -
+    - curl -fsSL https://rpm.nodesource.com/setup_16.x | bash -
     - yum -y install python3-pip
     - yum -y install nodejs
     - pip3 install semgrep
