@@ -5,7 +5,7 @@
     "clean":		"node placeholder.js",
     "compress":		"node placeholder.js",
     "semgrep":		"node placeholder.js",
-    "sonarqube":	"node placeholder.js"
+    "sonarqube":	"node sonarqube.js"
   },
   "dependencies": {
     "sonarqube-scanner": "^1.0.0-alpha.1"
