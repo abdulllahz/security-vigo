@@ -1,6 +1,9 @@
 {
-  "name": "@bykea/talos",
-  "version": "1.88.34",
+  "name": "pipeline",
+  "version": "1.0.0",
+  "author": "",
+  "description": "pipeline",
+  "license": "ISC",
   "scripts": {
     "clean":		"node placeholder.js",
     "compress":		"node placeholder.js",
@@ -8,6 +11,6 @@
     "sonarqube":	"node sonarqube.js"
   },
   "dependencies": {
-    "sonarqube-scanner": "^1.0.0-alpha.1"
+    "sonarqube-scanner": "^3.0.1"
   }
 }
