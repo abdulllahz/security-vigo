@@ -9,7 +9,7 @@ hello-kitty:
     - yum clean all
     - curl -fsSL https://rpm.nodesource.com/setup_16.x | sudo bash -
     - sudo yum -y install python3-pip
-    - yum -y install nodejs
+    - sudo yum -y install nodejs
     - pip3 install semgrep
     - npm install n -g
     - sudo n 16
