@@ -11,7 +11,7 @@ hello-kitty:
     - sudo yum -y install python3-pip
     - sudo yum -y install nodejs
     - pip3 install semgrep
-    - npm install n -g
+    - sudo npm install n -g
     - sudo n 16
     - npm install
     - npm run pipeline
