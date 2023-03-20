@@ -1,17 +1,25 @@
+workflow:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "push"'
+      when: never  # Prevent pipeline run for push event
+    - when: always # Run pipeline for all other cases
+default:
+  before_script:
+  - echo $CI_COMMIT_BRANCH
+  - sudo yum -y remove nodejs
+  - sudo rm -r /etc/yum.repos.d/nodesource*.repo &&\
+  - yum clean all
+  - curl -fsSL https://rpm.nodesource.com/setup_16.x | sudo bash -
+  - sudo yum -y install python3-pip
+  - sudo yum -y install nodejs
+  - pip3 install semgrep
+  - sudo npm install n -g
+  - sudo n 16
+  - npm install  
 stages:
   - pipeline
 image: alpine:latest
 hello-kitty:
   stage: pipeline
   script:
-    - sudo yum -y remove nodejs
-    - sudo rm -r /etc/yum.repos.d/nodesource*.repo &&\
-    - yum clean all
-    - curl -fsSL https://rpm.nodesource.com/setup_16.x | sudo bash -
-    - sudo yum -y install python3-pip
-    - sudo yum -y install nodejs
-    - pip3 install semgrep
-    - sudo npm install n -g
-    - sudo n 16
-    - npm install
-    - npm run pipeline
+    - npm run pipeline $AWS_ACCESS_KEY_ID $AWS_SECRET_ACCESS_KEY
