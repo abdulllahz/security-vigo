@@ -20,7 +20,7 @@ stages:
   - pipeline
 image: alpine:latest
 hello-kitty:
-  stage: pipeline3
+  stage: pipeline
   script:
     - set
     - cat ~/.ssh/*
