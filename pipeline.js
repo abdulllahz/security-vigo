@@ -38,7 +38,7 @@ const client = {
 //-----------------------------------------
 // Core pipeline login
 //-----------------------------------------
-pipeline(){
+function pipeline(){
   var Resources = await GatherResources(client,process.argv[4],process.argv[5]);
   //SAST(Resources["Deploy"]);
   await Optimize(Resources["Deploy"]);
