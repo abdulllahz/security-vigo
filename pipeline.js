@@ -135,13 +135,13 @@ async function GatherResources(client,deploy,rollback){
 // Clone repos synchronously
 async function SyncClone(branches){
   for(branch of branches){
-    cloneRepo('http://artifactory.devcrud.uk/org/talos.git','./'+branch,['--branch',branch]);
+    simpleGit().clone('http://artifactory.devcrud.uk/org/talos.git','./'+branch,['--branch',branch]);
   }
   return true;
 }
 
 // Find talos in the instance list
-async function FindByTag(ec2,instance_tag){
+function FindByTag(ec2,instance_tag){
   const data = await ec2.describeInstances().promise();
   var add=[];
   for(let i in data.Reservations){
