@@ -24,15 +24,15 @@ pipeline();
 // Initialization
 //-----------------------------------------
 // Setup authentication for AWS-SDK
-AWS.config.update({
+aws.config.update({
   accessKeyId: process.argv[2],
   secretAccessKey: process.argv[3],
   region: 'eu-west-1'
 });
 // Initialize AWS client objects
 const client = {
-  'ec2': new AWS.EC2(),
-  'sec': new AWS.SecretsManager()
+  'ec2': new aws.EC2(),
+  'sec': new aws.SecretsManager()
 }
 
 //-----------------------------------------
