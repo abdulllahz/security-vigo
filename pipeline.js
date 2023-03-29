@@ -27,16 +27,15 @@ AWS.config.update({
   region: 'eu-west-1'
 });
 // Initialize AWS client objects
-const aws = {
+const client = {
   'ec2': new AWS.EC2(),
-  'ssm': new AWS.SSM(),
   'sec': new AWS.SecretsManager()
 }
 
 //-----------------------------------------
 // Core pipeline login
 //-----------------------------------------
-var Resources = await GatherResources(aws,process.argv[4],process.argv[5]);
+var Resources = await GatherResources(client,process.argv[4],process.argv[5]);
 //SAST(Resources["Deploy"]);
 await Optimize(Resources["Deploy"]);
 switch(process.argv[6]){
@@ -96,7 +95,7 @@ function SAST(source_code){
 }
 
 // Gather resources
-async function GatherResources(aws,deploy,rollback){
+async function GatherResources(client,deploy,rollback){
   
   // Information
   Res={"SSH":"EMPTY","Deploy":deploy,"Rollback":rollback,"Instances":[]}
@@ -104,7 +103,7 @@ async function GatherResources(aws,deploy,rollback){
   // Fetch secrets for Talos
   console.log('[INFO] running stage: Get_Secrets')
   try{ 
-    const response = aws['sec'].getSecretValue({SecretId: 'TalosProdSshKey'}).promise();
+    const response = client['sec'].getSecretValue({SecretId: 'TalosProdSshKey'}).promise();
     Res["SSH"] = response.SecretString;
   } catch (err) {
     console.log("[ERROR] FAILED at stage: Get_Secrets with:"+err);
@@ -113,7 +112,7 @@ async function GatherResources(aws,deploy,rollback){
   // Get all instances
   console.log('[INFO] running stage: Get_Instances')
   try {
-    Res["Instances"] = FindByTag("prod-p-talos-inst");
+    Res["Instances"] = FindByTag(client['ec2'],"prod-p-talos-inst");
     console.log('[INFO] talos instances: '+Res["Instances"]);
   } catch (err) {
     console.log("[ERROR] FAILED at stage: Get_Instances with:"+err);
@@ -139,7 +138,7 @@ async function SyncClone(branches){
 }
 
 // Find talos in the instance list
-async function FindByTag(instance_tag){
+async function FindByTag(ec2,instance_tag){
   const data = await ec2.describeInstances().promise();
   var add=[];
   for(let i in data.Reservations){
