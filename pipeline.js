@@ -11,7 +11,7 @@
 // Required modules
 //-----------------------------------------
 const prcss          = require('child_process');
-const ssh            = require('node-ssh');
+//const ssh            = require('node-ssh');
 const scanner        = require('sonarqube-scanner');
 const aws            = require('aws-sdk');
 const simpleGit      = require('simple-git');
