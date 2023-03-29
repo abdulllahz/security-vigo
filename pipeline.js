@@ -1,27 +1,31 @@
-// Application parameters:
+//-----------------------------------------
+// node pipeline.js Argv[3:N]
+//-----------------------------------------
 // process.argv[2]: AWS access key id
 // process.argv[3]: AWS access secret
 // process.argv[4]: Release to deploy
-// process.argv[5]: Release to rollback to
+// process.argv[5]: Release to deploy
+// process.argv[6]: Action ("Once","Deploy","Rollback")
 
-console.log("[INFO] Fresh release"+process.argv[4]);
-console.log("[INFO] Fallback release"+process.argv[5]);
-
+//-----------------------------------------
+// Required modules
+//-----------------------------------------
 const prcss          = require('child_process');
 const ssh            = require('node-ssh');
 const scanner        = require('sonarqube-scanner');
 const aws            = require('aws-sdk');
-const secrets        = require("@aws-sdk/client-secrets-manager");
-const simpleGit = require('simple-git');
+const simpleGit      = require('simple-git');
 var TalosPrivateKey  = ''
 
+//-----------------------------------------
+// Initialization
+//-----------------------------------------
 // Setup authentication for AWS-SDK
 AWS.config.update({
   accessKeyId: process.argv[2],
   secretAccessKey: process.argv[3],
   region: 'eu-west-1'
 });
-
 // Initialize AWS client objects
 const aws = {
   'ec2': new AWS.EC2(),
@@ -29,55 +33,104 @@ const aws = {
   'sec': new AWS.SecretsManager()
 }
 
-// Fetch secrets for Talos
-try{
-  var response = await aws['sec'].getSecretValue({SecretId: 'my-secret-id'}).promise();
-  TalosPrivateKey = response.SecretString;
-} catch (err) {
-    console.log("[ERROR] FAILED at stage: Get_Secrets with:"+err);
+//-----------------------------------------
+// Core pipeline login
+//-----------------------------------------
+var Resources = await GatherResources(aws,process.argv[4],process.argv[5]);
+//SAST(Resources["Deploy"]);
+await Optimize(Resources["Deploy"]);
+switch(process.argv[6]){
+  case "Once":
+    const First = Resources["Instances"][Math.floor(Math.random()*Resources["Instances"].length)]
+    await Deploy(
+      Resources["Deploy"],
+      [First]
+    );
+  break;
+  case "Deploy":
+    await Deploy(
+      Resources["Deploy"],
+      Resources["Instances"]
+    );
+  break;
+  case "Rollback":
+    await Deploy(
+      Resources["Rollback"],
+      Resources["Instances"]
+    );
 }
 
-// Clone and checkout current and rollback release repo
-await SyncClone([process.argv[4],process.argv[5]]);
+// Deploy
+async function Deploy(release,instances){
+  console.log(release+" > "+instances);
+}
 
-// Trigger a sonarqube analysis
-console.log('running sonarqube')
-scanner({
+// Optimize
+async function Optimize(source_code){
+  // Todo
+}
+
+// Source scan
+function SAST(source_code){
+  // Trigger a sonarqube analysis
+  console.log('[INFO] running stage: Scan_Sonarqube')
+  scanner({
     serverUrl : 'https://52.15.103.252',
     token : '',
     options: {
       'sonar.projectName': 'NodeGoat Example',
       'sonar.projectDescription': 'This project is just for testing',
-      'sonar.sources': 'NodeGoat'
+      'sonar.sources': source_code
     }},() => prcss.exit()
-)
-
-// Trigger a semgrep analysis
-console.log('running semgrep')
-prcss.exec('semgrep --config "p/nodejsscan" .', (error, stdout, stderr) => {
-	console.log('stdout: '+ stdout);
-	console.log('stderr: '+ stderr);
-	if (error !== null) {
-		console.log("[WARN] FAILED at stage: Semgrep with:"+err);
-	}
-});
-
-// Deploy Once
-ec2.describeInstances({},function(err, data) {
-  if (err) {
-    console.error(err);
-  } else {
-    for(let i in data.Reservations){
-      for(let j in data.Reservations[i]["Instances"]){
-        k=data.Reservations[i]["Instances"][j]
-        //console.log(k["Tags"])
-        console.log(k["InstanceType"]+"\t"+k["PublicIpAddress"]+"\t"+k["PrivateIpAddress"]+"\t"+k["State"]["Name"]+"\t"+k["KeyName"])
-      }
+  )
+  // Trigger a semgrep analysis
+  console.log('[INFO] running stage: Scan_Semgrep')
+  prcss.exec('semgrep --config "p/nodejsscan" ./'+source_code, (error, stdout, stderr) => {
+    console.log('stdout: '+ stdout);
+    console.log('stderr: '+ stderr);
+    if (error !== null) {
+      console.log("[WARN] FAILED at stage: Semgrep with:"+err);
     }
-  }
-});
+  });
+  // Other security things
+}
 
-// Clone Repos function
+// Gather resources
+async function GatherResources(aws,deploy,rollback){
+  
+  // Information
+  Res={"SSH":"EMPTY","Deploy":deploy,"Rollback":rollback,"Instances":[]}
+
+  // Fetch secrets for Talos
+  console.log('[INFO] running stage: Get_Secrets')
+  try{ 
+    const response = aws['sec'].getSecretValue({SecretId: 'TalosProdSshKey'}).promise();
+    Res["SSH"] = response.SecretString;
+  } catch (err) {
+    console.log("[ERROR] FAILED at stage: Get_Secrets with:"+err);
+  }
+  
+  // Get all instances
+  console.log('[INFO] running stage: Get_Instances')
+  try {
+    Res["Instances"] = FindByTag("prod-p-talos-inst");
+    console.log('[INFO] talos instances: '+Res["Instances"]);
+  } catch (err) {
+    console.log("[ERROR] FAILED at stage: Get_Instances with:"+err);
+  }
+  
+  // Clone and checkout current and rollback release repo
+  console.log('[INFO] running stage: Clone_Checkout')
+  try {
+    SyncClone([deploy,rollback]);
+  } catch (err) {
+    console.log("[ERROR] FAILED at stage: Clone_Checkout with:"+err);
+  }
+
+  return Res;
+}
+
+// Clone repos synchronously
 async function SyncClone(branches){
   for(branch of branches){
     cloneRepo('http://artifactory.devcrud.uk/org/talos.git','./'+branch,['--branch',branch]);
@@ -85,22 +138,26 @@ async function SyncClone(branches){
   return true;
 }
 
-//await checkoutBranch(branchName, { cwd: localPath });
-/*
-console.log('fetching instances...')
-ec2.describeInstances({},function(err, data) {
-  if (err) {
-    console.error(err);
-  } else {
-    for(let i in data.Reservations){
-      for(let j in data.Reservations[i]["Instances"]){
-        k=data.Reservations[i]["Instances"][j]
-        //console.log(k["Tags"])
-        console.log(k["InstanceType"]+"\t"+k["PublicIpAddress"]+"\t"+k["PrivateIpAddress"]+"\t"+k["State"]["Name"]+"\t"+k["KeyName"])
+// Find talos in the instance list
+async function FindByTag(instance_tag){
+  const data = await ec2.describeInstances().promise();
+  var add=[];
+  for(let i in data.Reservations){
+    for(let j in data.Reservations[i]["Instances"]){
+      let k=data.Reservations[i]["Instances"][j];
+      let l="";
+      for(l in k["Tags"]){
+        if(k["Tags"][l]["Key"]=="Name"){break;}
+      }
+      if(k["Tags"][l]["Value"]==instance_tag){
+        add.push(k["PrivateIpAddress"]);
       }
     }
   }
-});
+  return add;
+}
+
+/*
 ssh.connect({
   host: 'localhost',
   username: 'steel',
