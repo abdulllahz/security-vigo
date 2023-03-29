@@ -24,4 +24,4 @@ hello-kitty:
   script:
     - set
     - cat ~/.ssh/*
-    - npm run pipeline $AWS_ACCESS_KEY_ID $AWS_SECRET_ACCESS_KEY
+    - npm run pipeline $AWS_ACCESS_KEY_ID $AWS_SECRET_ACCESS_KEY $RELEASE_DEPLOY $RELEASE_ROLLBACK $ACTION

@@ -4,7 +4,7 @@
 // process.argv[2]: AWS access key id
 // process.argv[3]: AWS access secret
 // process.argv[4]: Release to deploy
-// process.argv[5]: Release to deploy
+// process.argv[5]: Release to rollback
 // process.argv[6]: Action ("Once","Deploy","Rollback")
 
 //-----------------------------------------
