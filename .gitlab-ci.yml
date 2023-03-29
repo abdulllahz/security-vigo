@@ -22,6 +22,4 @@ image: alpine:latest
 hello-kitty:
   stage: pipeline
   script:
-    - set
-    - cat ~/.ssh/*
-    - npm run pipeline $AWS_ACCESS_KEY_ID $AWS_SECRET_ACCESS_KEY $RELEASE_DEPLOY $RELEASE_ROLLBACK $ACTION
+    - npm run pipeline AKIA3LUOQ2LDNFF363H3 AvQHKeeUsd4aqc2t6cuDbyQjgLI0+99CY70bokdA Release-1.88.46 Release-1.88.46 Once
