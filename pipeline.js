@@ -17,9 +17,6 @@ const aws            = require('aws-sdk');
 const simpleGit      = require('simple-git');
 var TalosPrivateKey  = ''
 
-
-pipeline();
-
 //-----------------------------------------
 // Initialization
 //-----------------------------------------
@@ -35,6 +32,7 @@ const client = {
   'sec': new aws.SecretsManager()
 }
 
+pipeline();
 //-----------------------------------------
 // Core pipeline login
 //-----------------------------------------
