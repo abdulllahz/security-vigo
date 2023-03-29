@@ -17,6 +17,9 @@ const aws            = require('aws-sdk');
 const simpleGit      = require('simple-git');
 var TalosPrivateKey  = ''
 
+
+pipeline();
+
 //-----------------------------------------
 // Initialization
 //-----------------------------------------
@@ -35,28 +38,30 @@ const client = {
 //-----------------------------------------
 // Core pipeline login
 //-----------------------------------------
-var Resources = await GatherResources(client,process.argv[4],process.argv[5]);
-//SAST(Resources["Deploy"]);
-await Optimize(Resources["Deploy"]);
-switch(process.argv[6]){
-  case "Once":
-    const First = Resources["Instances"][Math.floor(Math.random()*Resources["Instances"].length)]
-    await Deploy(
-      Resources["Deploy"],
-      [First]
-    );
-  break;
-  case "Deploy":
-    await Deploy(
-      Resources["Deploy"],
-      Resources["Instances"]
-    );
-  break;
-  case "Rollback":
-    await Deploy(
-      Resources["Rollback"],
-      Resources["Instances"]
-    );
+pipeline(){
+  var Resources = await GatherResources(client,process.argv[4],process.argv[5]);
+  //SAST(Resources["Deploy"]);
+  await Optimize(Resources["Deploy"]);
+  switch(process.argv[6]){
+    case "Once":
+      const First = Resources["Instances"][Math.floor(Math.random()*Resources["Instances"].length)]
+      await Deploy(
+        Resources["Deploy"],
+        [First]
+      );
+    break;
+    case "Deploy":
+      await Deploy(
+        Resources["Deploy"],
+        Resources["Instances"]
+      );
+    break;
+    case "Rollback":
+      await Deploy(
+        Resources["Rollback"],
+        Resources["Instances"]
+      );
+  }
 }
 
 // Deploy
