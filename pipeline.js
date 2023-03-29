@@ -141,7 +141,7 @@ async function SyncClone(branches){
 }
 
 // Find talos in the instance list
-function FindByTag(ec2,instance_tag){
+async function FindByTag(ec2,instance_tag){
   const data = await ec2.describeInstances().promise();
   var add=[];
   for(let i in data.Reservations){
