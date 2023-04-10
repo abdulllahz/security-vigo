@@ -1,21 +1,22 @@
 //-----------------------------------------
-// node pipeline.js Argv[3:N]
+// node pipeline.js argv[2:N]
 //-----------------------------------------
 // process.argv[2]: AWS access key id
 // process.argv[3]: AWS access secret
-// process.argv[4]: Release to deploy
-// process.argv[5]: Release to rollback
+// process.argv[4]: Project name
+// process.argv[5]: Release name
 // process.argv[6]: Action ("Once","Deploy","Rollback")
+// process.argv[7]: Migrations ("Yes","No")
 
 //-----------------------------------------
 // Required modules
 //-----------------------------------------
-const prcss          = require('child_process');
-const ssh            = require('node-ssh');
 const scanner        = require('sonarqube-scanner');
-const aws            = require('aws-sdk');
+const prcss          = require('child_process');
 const simpleGit      = require('simple-git');
-var TalosPrivateKey  = ''
+const ssh            = require('node-ssh');
+const aws            = require('aws-sdk');
+
 
 //-----------------------------------------
 // Initialization
@@ -31,45 +32,89 @@ const client = {
   'ec2': new aws.EC2(),
   'sec': new aws.SecretsManager()
 }
+// Shut up AWS
+require('aws-sdk/lib/maintenance_mode_message').suppress = true;
 
+
+// Run pipeline
 pipeline();
+
+aws.config.update({
+  accessKeyId: '---------------------',
+  secretAccessKey: '----------------------------------',
+});
+
 //-----------------------------------------
-// Core pipeline login
+// Core pipeline logic
 //-----------------------------------------
 async function pipeline(){
-  var Resources = await GatherResources(client,process.argv[4],process.argv[5]);
-  //SAST(Resources["Deploy"]);
-  await Optimize(Resources["Deploy"]);
+  let Resources = await GatherResources(client,process.argv[4],process.argv[5]);
+  //SAST(Resources['Deploy']);
+  await Optimize(Resources['Deploy']);
   switch(process.argv[6]){
-    case "Once":
-      const First = Resources["Instances"][Math.floor(Math.random()*Resources["Instances"].length)]
-      await Deploy(
-        Resources["Deploy"],
-        [First]
-      );
+    case 'Once':
+      // Randomly pick an instance to test release.
+      const First = Resources['Instances'][Math.floor(Math.random()*Resources['Instances'].length)]
+      await Deploy(Resources['SSH'],Resources['Deploy'],[First],[
+        `cd ~/${Resources['Deploy']}`,
+        `npm install`,
+        process.argv[7]==='Yes'?'npm run migrate -- --production':'echo "No migrations"',
+        'sleep 5',
+        'node config.js',
+        'pm2 stop old_test',
+        `pm2 start "npm run ${process.argv[4]}-prod" --namespace "new_test"`,
+        'pm2 logs new_test'
+      ]);
     break;
-    case "Deploy":
-      await Deploy(
-        Resources["Deploy"],
-        Resources["Instances"]
-      );
+    case 'Deploy':
+      await Deploy(Resources['SSH'],Resources['Deploy'],Resources['Instances'],[
+        `cd ~/${Resources['Deploy']}`,
+        'node config.js',
+        'pm2 stop all',
+        'pm2 delete all',
+        `pm2 start "npm run ${process.argv[4]}-prod" --namespace "old_test"`,
+        `pm2 start "npm run ${process.argv[4]}-prod"`,
+        `pm2 start "npm run ${process.argv[4]}-prod"`,
+        `pm2 start "npm run ${process.argv[4]}-prod"`,
+        `pm2 start "npm run ${process.argv[4]}-prod"`,
+        `pm2 start "npm run ${process.argv[4]}-prod"`,
+        `pm2 start "npm run ${process.argv[4]}-prod"`,
+        `pm2 start "npm run ${process.argv[4]}-prod"`
+        ]);
     break;
-    case "Rollback":
-      await Deploy(
-        Resources["Rollback"],
-        Resources["Instances"]
-      );
+    case 'Rollback':
+      await Deploy(Resources['SSH'],Resources['Deploy'],Resources['Instances'],[
+        `cd ~/${Resources['Deploy']}`,
+        'pm2 stop new_test',
+        'pm2 delete new_test',
+        'pm2 start old_test',
+        'pm2 reload all'
+        ]);
   }
+  await Cleanup(Resources);
 }
 
+asyn function 
+
 // Deploy
-async function Deploy(release,instances){
-  console.log(release+" > "+instances);
+async function Deploy(SSH,release,instances,commands){
+  try{for(let instance of instances){
+    const ssh = new NodeSSH();
+    await ssh.connect({host: instance, username:'ubuntu', privateKey: SSH})
+    console.log(`[INFO] Deploying ${release} > ${instances}`);
+    const result = await ssh.putDirectory(release,`~/${release}`);
+    if(!result){throw '[ERROR] failed to copy directory'}
+    for(let command of commands){
+      let {stdout,stderr} = await ssh.execCommand(command);
+      if(stderr){throw '[ERROR] failed to change directory'}
+    }
+    await ssh.dispose();
+  }}catch(err){console.log('[ERROR] failed to deploy',err);}
 }
 
 // Optimize
 async function Optimize(source_code){
-  // Todo
+  // Todo/
 }
 
 // Source scan
@@ -87,92 +132,62 @@ function SAST(source_code){
   )
   // Trigger a semgrep analysis
   console.log('[INFO] running stage: Scan_Semgrep')
-  prcss.exec('semgrep --config "p/nodejsscan" ./'+source_code, (error, stdout, stderr) => {
+  prcss.exec(`semgrep --config "p/nodejsscan" ./'${source_code}`, (error, stdout, stderr) => {
     console.log('stdout: '+ stdout);
     console.log('stderr: '+ stderr);
     if (error !== null) {
-      console.log("[WARN] FAILED at stage: Semgrep with:"+err);
+      console.log('[WARN] FAILED at stage: Semgrep with:',err);
     }
   });
   // Other security things
 }
 
 // Gather resources
-async function GatherResources(client,deploy,rollback){
-  
-  // Information
-  Res={"SSH":"EMPTY","Deploy":deploy,"Rollback":rollback,"Instances":[]}
-
-  // Fetch secrets for Talos
-  console.log('[INFO] running stage: Get_Secrets')
-  try{ 
-    const response = client['sec'].getSecretValue({SecretId: 'TalosProdSshKey'}).promise();
-    Res["SSH"] = response.SecretString;
-  } catch (err) {
-    console.log("[ERROR] FAILED at stage: Get_Secrets with:"+err);
-  }
-  
-  // Get all instances
-  console.log('[INFO] running stage: Get_Instances')
-  try {
-    Res["Instances"] = FindByTag(client['ec2'],"prod-p-talos-inst");
-    console.log('[INFO] talos instances: '+Res["Instances"]);
-  } catch (err) {
-    console.log("[ERROR] FAILED at stage: Get_Instances with:"+err);
-  }
-  
-  // Clone and checkout current and rollback release repo
-  console.log('[INFO] running stage: Clone_Checkout')
-  try {
-    SyncClone([deploy,rollback]);
-  } catch (err) {
-    console.log("[ERROR] FAILED at stage: Clone_Checkout with:"+err);
-  }
-
-  return Res;
+async function GatherResources(client,project,branch){
+	// All these run in parellal
+	const result = await Promise.all([ (async (client) => { try {
+  			// Get all instances
+  			console.log('[INFO] running stage: Get_Instances');
+    		return await FindByTag(client,`prod-p-${project}-inst`);
+  }catch(err){console.log('[ERROR] failed to fetch instances',err);}})(client['ec2'],project),
+	(async (project,branch) => { try {
+        // Fetch the repository token
+        console.log('[INFO] running stage: Clone_Checkout');
+        let response = await client['sec'].getSecretValue({SecretId: `RepoToken_${project}`}).promise();
+        // Clone and checkout current with branch name as the directory 
+        await simpleGit().clone(
+            `http://sinnan:${response.SecretString}@artifactory.devcrud.uk/org/${project}.git`,
+            `./${branch}`,
+            ['--branch',branch]);
+    		response = '';
+        return Promise.resolve(branch);
+  }catch(err){console.log('[ERROR] failed to fetch repositories',err);}})(project,branch),
+	(async (client,project) => { try {
+  			// Fetch secrets for project
+    		console.log('[INFO] running stage: Get_Secrets');
+    		const response = await client.getSecretValue({SecretId: `ProdSshKey_${project}`}).promise();
+        //Res['SSH'] = response.SecretString;
+    		return Promise.resolve(response.SecretString);
+  }catch(err){console.log('[ERROR] failed to fetch secrets',err);}})(client['sec'],project)])
+  // Object of all the resources gathered so far
+  return {'SSH':result[2],'Deploy':result[1],'Instances':result[0]};
 }
 
-// Clone repos synchronously
-async function SyncClone(branches){
-  for(branch of branches){
-    simpleGit().clone('http://artifactory.devcrud.uk/org/talos.git','./'+branch,['--branch',branch]);
-  }
-  return true;
-}
-
-// Find talos in the instance list
+// Find instance in the instance list
 async function FindByTag(ec2,instance_tag){
-  const data = await ec2.describeInstances().promise();
-  var add=[];
-  for(let i in data.Reservations){
-    for(let j in data.Reservations[i]["Instances"]){
-      let k=data.Reservations[i]["Instances"][j];
-      let l="";
-      for(l in k["Tags"]){
-        if(k["Tags"][l]["Key"]=="Name"){break;}
-      }
-      if(k["Tags"][l]["Value"]==instance_tag){
-        add.push(k["PrivateIpAddress"]);
+    let InstancePrivateIps=[];
+    // Call the describeInstances() method and await the response
+    const data = await ec2.describeInstances().promise();
+    // Log the instance information
+    for(let element of data.Reservations){
+      for(let tag of element['Instances'][0]['Tags']){
+        if(tag['Value']===instance_tag && element['Instances'][0]['State']['Name']==='running'){
+          InstancePrivateIps.push(element['Instances'][0]['PrivateIpAddress']);
+        }
       }
     }
-  }
-  return add;
+    if(InstancePrivateIps.length>0){
+      return InstancePrivateIps;
+    }
+    throw 'No instances found';
 }
-
-/*
-ssh.connect({
-  host: 'localhost',
-  username: 'steel',
-  privateKeyPath: '/home/steel/.ssh/id_rsa'
-});
-ssh.putDirectory('/talos', '/home/talos', {
-  recursive: true,
-  concurrency: 10
-});
-
-//Remove Secrets
-AWS.config.update({
-  accessKeyId: '---------------------',
-  secretAccessKey: '----------------------------------',
-});
-*/
