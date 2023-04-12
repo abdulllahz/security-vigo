@@ -23,4 +23,4 @@ hello-kitty:
   stage: pipeline
   script:
     - npm install
-    - npm run pipeline AKIA3LUOQ2LDNFF363H3 AvQHKeeUsd4aqc2t6cuDbyQjgLI0+99CY70bokdA Release-1.88.46 Release-1.88.46 Once
+    - npm run pipeline AKIA3LUOQ2LDNFF363H3 AvQHKeeUsd4aqc2t6cuDbyQjgLI0+99CY70bokdA talos Release-1.88.46 Once Yes
