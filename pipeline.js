@@ -16,7 +16,10 @@ const prcss          = require('child_process');
 const simpleGit      = require('simple-git');
 const ssh            = require('node-ssh');
 const aws            = require('aws-sdk');
+<<<<<<< HEAD
 
+=======
+>>>>>>> 7d9b433 (Pipeline)
 
 //-----------------------------------------
 // Initialization
@@ -39,9 +42,16 @@ require('aws-sdk/lib/maintenance_mode_message').suppress = true;
 // Run pipeline
 pipeline();
 
+<<<<<<< HEAD
 aws.config.update({
   accessKeyId: '---------------------',
   secretAccessKey: '----------------------------------',
+=======
+// Empty the AWS credentials
+aws.config.update({
+  accessKeyId: 'EMPTYEMPTYEMPTY',
+  secretAccessKey: 'EMPTYEMPTYEMPTY',
+>>>>>>> 7d9b433 (Pipeline)
 });
 
 //-----------------------------------------
@@ -67,6 +77,10 @@ async function pipeline(){
       ]);
     break;
     case 'Deploy':
+<<<<<<< HEAD
+=======
+      // Deploy to all instances.
+>>>>>>> 7d9b433 (Pipeline)
       await Deploy(Resources['SSH'],Resources['Deploy'],Resources['Instances'],[
         `cd ~/${Resources['Deploy']}`,
         'node config.js',
@@ -83,6 +97,10 @@ async function pipeline(){
         ]);
     break;
     case 'Rollback':
+<<<<<<< HEAD
+=======
+      // The release needs to be rolled back
+>>>>>>> 7d9b433 (Pipeline)
       await Deploy(Resources['SSH'],Resources['Deploy'],Resources['Instances'],[
         `cd ~/${Resources['Deploy']}`,
         'pm2 stop new_test',
@@ -92,13 +110,25 @@ async function pipeline(){
         ]);
   }
   await Cleanup(Resources);
+<<<<<<< HEAD
+=======
+}
+
+async function Cleanup(){
+  // Todo/
+>>>>>>> 7d9b433 (Pipeline)
 }
 
 asyn function 
 
 // Deploy
+<<<<<<< HEAD
 async function Deploy(SSH,release,instances,commands){
   try{for(let instance of instances){
+=======
+async function Deploy(SSH,release,instances,commands){ try{
+  for(let instance of instances){
+>>>>>>> 7d9b433 (Pipeline)
     const ssh = new NodeSSH();
     await ssh.connect({host: instance, username:'ubuntu', privateKey: SSH})
     console.log(`[INFO] Deploying ${release} > ${instances}`);
@@ -106,11 +136,19 @@ async function Deploy(SSH,release,instances,commands){
     if(!result){throw '[ERROR] failed to copy directory'}
     for(let command of commands){
       let {stdout,stderr} = await ssh.execCommand(command);
+<<<<<<< HEAD
       if(stderr){throw '[ERROR] failed to change directory'}
     }
     await ssh.dispose();
   }}catch(err){console.log('[ERROR] failed to deploy',err);}
 }
+=======
+      if(stderr){throw 'failed to run'+command}
+    }
+    await ssh.dispose();
+  }
+}catch(err){console.log('[ERROR] failed to deploy',err);}}
+>>>>>>> 7d9b433 (Pipeline)
 
 // Optimize
 async function Optimize(source_code){
@@ -144,6 +182,7 @@ function SAST(source_code){
 
 // Gather resources
 async function GatherResources(client,project,branch){
+<<<<<<< HEAD
 	// All these run in parellal
 	const result = await Promise.all([ (async (client) => { try {
   			// Get all instances
@@ -151,6 +190,15 @@ async function GatherResources(client,project,branch){
     		return await FindByTag(client,`prod-p-${project}-inst`);
   }catch(err){console.log('[ERROR] failed to fetch instances',err);}})(client['ec2'],project),
 	(async (project,branch) => { try {
+=======
+  // All these run in parellal
+  const result = await Promise.all([(async (client,project) => { try{
+        // Get all tagged instances
+        console.log('[INFO] running stage: Get_Instances');
+        return await FindByTag(client,`prod-p-${project}-inst`);
+  }catch(err){console.log('[ERROR] failed to fetch instances',err);}})(client['ec2'],project),
+  (async (project,branch) => { try{
+>>>>>>> 7d9b433 (Pipeline)
         // Fetch the repository token
         console.log('[INFO] running stage: Clone_Checkout');
         let response = await client['sec'].getSecretValue({SecretId: `RepoToken_${project}`}).promise();
@@ -159,6 +207,7 @@ async function GatherResources(client,project,branch){
             `http://sinnan:${response.SecretString}@artifactory.devcrud.uk/org/${project}.git`,
             `./${branch}`,
             ['--branch',branch]);
+<<<<<<< HEAD
     		response = '';
         return Promise.resolve(branch);
   }catch(err){console.log('[ERROR] failed to fetch repositories',err);}})(project,branch),
@@ -168,6 +217,16 @@ async function GatherResources(client,project,branch){
     		const response = await client.getSecretValue({SecretId: `ProdSshKey_${project}`}).promise();
         //Res['SSH'] = response.SecretString;
     		return Promise.resolve(response.SecretString);
+=======
+            response = '';
+        return Promise.resolve(branch);
+  }catch(err){console.log('[ERROR] failed to fetch repositories',err);}})(project,branch),
+  (async (client,project) => { try{
+        // Fetch secrets for project
+        console.log('[INFO] running stage: Get_Secrets');
+        const response = await client.getSecretValue({SecretId: `ProdSshKey_${project}`}).promise();
+        return Promise.resolve(response.SecretString);
+>>>>>>> 7d9b433 (Pipeline)
   }catch(err){console.log('[ERROR] failed to fetch secrets',err);}})(client['sec'],project)])
   // Object of all the resources gathered so far
   return {'SSH':result[2],'Deploy':result[1],'Instances':result[0]};
