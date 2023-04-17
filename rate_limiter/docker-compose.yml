@@ -1,0 +1,24 @@
+version: "3"
+services:
+  rate_limiter:
+    image: nginx:stable
+    container_name: rate_limiter
+    ports:
+      - 80:80
+      - 443:443
+    restart: unless-stopped
+    volumes:
+      - ./conf.conf:/etc/nginx/nginx.conf
+      - ./logs.txt:/etc/nginx/logs/access.log
+  example_service0:
+    build: 
+      context: .
+      network: host
+    ports:
+      - "4000:5000"
+  example_service1:
+    build: 
+      context: .
+      network: host
+    ports:
+      - "4100:5000"
