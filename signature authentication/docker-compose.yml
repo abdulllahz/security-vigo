@@ -1,0 +1,26 @@
+version: '3'
+services:
+  app:
+    build:
+      context: .
+      dockerfile: server.Dockerfile
+    ports:
+      - 3000:3000
+    depends_on:
+      - db
+  db:
+    build:
+      context: .
+      dockerfile: postgres.Dockerfile
+    restart: always
+    environment:
+      POSTGRES_USER: bykea
+      POSTGRES_PASSWORD: bykea_123
+    volumes:
+      - ./data:/var/lib/postgresql/data
+  test_cases:
+    build:
+      context: .
+      dockerfile: client.Dockerfile
+    depends_on:
+      - app
