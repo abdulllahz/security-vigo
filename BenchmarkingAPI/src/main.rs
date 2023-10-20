@@ -14,11 +14,11 @@ struct Payload {
     key: String,
 }
 
-async fn handle_post(req: Request<Body>) -> Result<Response<Body>, StatusCode> {
+async fn handle_post(_input: Request<Body>) -> Result<Response<Body>, StatusCode> {
     let charset: &[u8] = b"ABCDEF0123456789";
     let mut rng = rand::thread_rng();
-    let mut string_length = rng.gen_range(35..40);
-    let mut random_string: String = (0..string_length)
+    let string_length = rng.gen_range(4000..5000);
+    let random_string: String = (0..string_length)
      .map(|_| { charset[rng.gen_range(0..charset.len())] as char })
      .collect();
     return Ok(Response::new(format!(r#"{{"message":"{bytes}"}}"#, bytes=random_string).into()));
@@ -26,6 +26,7 @@ async fn handle_post(req: Request<Body>) -> Result<Response<Body>, StatusCode> {
 
 #[tokio::main]
 async fn main() {
+
     let app = Router::new()
         .route("/c1", post(handle_post))
         .route("/c2", post(handle_post))

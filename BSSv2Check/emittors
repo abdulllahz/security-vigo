@@ -1,0 +1,113 @@
+emittors fresh
+trip-driverCancelTrip
+trip-passengerCancelTrip
+trip-driverFeedback
+trip-passengerFeedback
+
+
+emittors
+helper.socket.responseTrip
+helper.socket.sendZendeskNotification
+helper.socket.sendMultipleDeliveryResponse
+helper.socket.trackingResponse
+helper.socket.restAPITrackingResponse
+bidding.sendMessageToRoom
+
+listeners
+backend-Get-Map-Drivers
+get-drivers-map
+driver_status_changed
+update-driver-status
+track-notification
+share:tracking
+driver:trip-status
+change-settings
+contact-us
+bank-accounts
+rates
+toBackEnd
+update-lat-lng
+get-list
+draw-heatmap
+update-socket
+with:draw:request
+get-heat-map
+getAllPolygonsData
+getAllPolygonsData2
+saveFenceSettings2
+getPolygonData
+getPolygonData2
+getHeatmap
+checkMyRunningTrip
+get-existing-call
+send-message
+get-all-conversation
+get-conversation-info_Old
+get-conversation-info
+delete-conversation
+update-chat-update-status
+checkk-count
+get-my-conversation
+trip-driverCancelTrip
+trip-passengerCancelTrip
+assign-driver
+"trip-driverCancelTrip"
+"trip-passengerCancelTrip"
+"trip-driverFeedback"
+"trip-passengerFeedback"
+"check-passenger-running-trips"
+'accept-call'
+'start-trip'
+"i-am-arrived"
+'get-near-drivers'
+'get-near-drivers-old'
+"free-when-call-end"
+"Send-Acknowledge"
+"dispatch-ack"
+'dispatch-call-driver'
+'dispatch-auto-call-driver'
+'call-driver-2'
+'region-services-list'
+'next-call-2'
+'dispatch-next-call'
+'trip-endaddress'
+"update-delivery-data"
+"finish-trip"
+'assign-driver'
+CONSTANT_EVENT.CALL_INITIATE
+CONSTANT_EVENT.TRIP_FINISHED
+CONSTANT_EVENT.TRIP_FEEDBACK_DRIVER
+CONSTANT_EVENT.DRIVER_BATCH_CANCELLED
+CONSTANT_EVENT.BATCH_TRIP_COMPLETED
+CONSTANT_EVENT.BATCH_TRIP_EXPIRED
+CONSTANT_EVENT.CALL_DRIVER_ACKNOWLEDGE
+CONSTANT_EVENT.CALL_INITIATE_FAILED
+CONSTANT_EVENT.TRIP_MISSED
+CONSTANT_EVENT.TRIP_CANCELLED
+CONSTANT_EVENT.CALL_DRIVER
+CONSTANT_EVENT.DRIVER_SEARCHING
+CONSTANT_EVENT.DRIVER_ACCEPTED
+CONSTANT_EVENT.DRIVER_ARRIVED
+CONSTANT_EVENT.DRIVER_STARTED
+CONSTANT_EVENT.ADMIN_CANCELLED
+
+./www/socket
+./www/socket/trips.js
+DONE ./www/socket/chats.js
+DONE ./www/socket/collectPayments.js
+DONE ./www/socket/trip.process.js
+DONE ./www/socket/tripHelper.js
+DONE ./www/socket/heatmap.js
+DONE ./www/socket/Backend
+DONE ./www/socket/Backend/bidding.js
+DONE ./www/socket/Backend/drivers.js
+DONE ./www/socket/settings.js
+./www/socket/events
+./www/socket/events/trip.js
+DONE ./www/socket/events/index.js
+DONE ./www/socket/events/driver.js
+EXPLORE ./www/socket/events/eventconstants.js
+DONE ./www/socket/NotifyInterval.js
+DONE ./www/socket/wallets.js
+DONE ./www/socket/users.socket.js
+DONE ./www/socket/helper.socket.js
