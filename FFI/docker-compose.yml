@@ -1,0 +1,28 @@
+version: '3'
+services:
+  node-app:
+    build:
+      context: ./
+    container_name: node-app
+    ports:
+      - "3030:3030"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: your_username
+      MONGO_INITDB_ROOT_PASSWORD: your_password
+    networks:
+      - app-network
+#  mongo:
+#    image: mongo
+#    container_name: mongo
+#    ports:
+#      - "27017:27017"
+#    volumes:
+#      - ./data:/data/db
+#    environment:
+#      MONGO_INITDB_ROOT_USERNAME: your_username
+#      MONGO_INITDB_ROOT_PASSWORD: your_password
+#    networks:
+#      - app-network
+
+networks:
+  app-network:

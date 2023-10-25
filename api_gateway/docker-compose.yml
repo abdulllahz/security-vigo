@@ -1,0 +1,56 @@
+version: "3.9"
+
+services:
+  # kong:
+  #   image: kong:3.4
+  #   networks:
+  #     - kong-net
+  #   ports:
+  #     - 8000:8000
+  #     - 8443:8443
+  #     - 8444:8444
+  #     - 8001:8001
+  #   volumes:
+  #     - ./config:/opt/kong
+  #   environment:
+  #     KONG_DATABASE: postgres
+  #     KONG_PG_HOST: kong-database
+  #     KONG_PG_PASSWORD: kong
+  postgres:
+    image: postgres:16.0-alpine3.18
+    networks:
+      - kong-net
+    environment:
+      POSTGRES_USER: kong
+      POSTGRES_PASSWORD: kong
+      POSTGRES_DB: kong
+  kong:
+    image: kong:3.4
+    networks:
+      - kong-net
+    environment:
+      KONG_DATABASE: postgres
+      KONG_PG_HOST: kong-database
+      KONG_PG_USER: kong
+      KONG_PG_PASSWORD: kong
+      KONG_CASSANDRA_CONTACT_POINTS: kong-database
+    command: migrations bootstrap
+  # konga:
+  #   image: konga:0.14.9
+  #   networks:
+  #     - kong-net
+  #   ports:
+  #     - 1337:1337
+  #   depends_on:
+  #     - kong
+  #   environment:
+  #     KONGA_DATABASE: postgres
+  #     KONGA_PG_HOST: kong-database
+  #     KONGA_PG_PASSWORD: kong
+  #     KONGA_PROXY_ACCESS_LOG: /dev/stdout
+  #     KONGA_ADMIN_ACCESS_LOG: /dev/stdout
+  #     KONGA_PROXY_ERROR_LOG: /dev/stderr
+  #     KONGA_ADMIN_ERROR_LOG: /dev/stderr
+  #     KONGA_ADMIN_LISTEN: 0.0.0.0:8001,0.0.0.0:8444 ssl.  
+networks:
+  kong-net:
