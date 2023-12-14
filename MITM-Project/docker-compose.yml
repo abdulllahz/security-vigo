@@ -1,0 +1,9 @@
+version: "2.1"
+services:
+  proxy:
+    build: .
+    ports:
+      - 8080:8080
+      - 8081:8081
+    volumes:
+      - ./certificate:/root/.mitmproxy/
