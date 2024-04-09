@@ -1,11 +1,20 @@
 import docker
 import requests
 import time
+import copy
+import json
 client = docker.from_env()
 project_prefix = 'BykeaAPIGateway'
-sandbox = "/home/anon/Misc/sandbox:/root/sandbox"
+sandbox = '/home/anon/Misc/sandbox:/root/sandbox'
+path='./config/'
 ###################################################################
-services=
+files=['Kronos.json']
+f=open(path+'common.json','r')
+common=json.load(f)
+configs=[]
+for file in files:
+    f=open(path+file,'r')
+    configs.append(json.load(f))
 ###################################################################
 ###################################################################
 # Remove residual
@@ -64,33 +73,48 @@ gw = client.containers.run(
         '8002': '8002'
     }
 )
-gw.exec_run(cmd="kong migrations bootstrap")
-gw.exec_run(cmd="kong start")
-gw.exec_run(cmd="""curl -Ls https://get.konghq.com/quickstart | \\
-                bash -s -- -i kong -t latest""")
-print("Gateway: "+gw.id)
-'''header={
-        "Content-Type": "application/json",
-        "accept": "application/json"
+gw.exec_run(cmd='kong migrations bootstrap')
+gw.exec_run(cmd='kong start')
+gw.exec_run(cmd='''curl -Ls https://get.konghq.com/quickstart | \\
+                bash -s -- -i kong -t latest''')
+print('Gateway: '+gw.id)
+header={
+        'Content-Type': 'application/json',
+        'accept': 'application/json'
 }
-service_payload=common["service"]
-for service in services:
-    data.update(services[service]["service"])
-    response = requests.post("127.0.0.1:8001", json=service_payload, headers=headers)
-    service_id=response.json()["id"]
-    route_payload=common["routes"]
-    route_payload.update({"service": {"id": service_id}})
-    for route in services[service]["routes"]:
-        response = requests.post("127.0.0.1:8001", json=route_payload, headers=header)
-
-
-{
-    "services":{
-        "core":"talos_url",
-        "auth":"raptor_url",
-        "profile":"mis_url",
-        "invoice":"kronos_url",
-        "bidding":"bolee_url",
-        "pickdrop":"belaz_url"
+for config in configs:
+    payload={}
+    payload.update(config['service'])
+    payload.update(common['service'])
+    response = requests.post('http://127.0.0.1:8001/services', json=payload, headers=header)
+    service_id=response.json()['id']
+    for route in config['routes']:
+        payload={}
+        payload.update(common['routes'])
+        payload.update(route)
+        payload.update({'service': {'id': service_id}})
+        payload.pop('original_path')
+        response = requests.post('http://127.0.0.1:8001/routes', json=payload, headers=header)
+        print(response.content)
+        print(payload)
+        route_id=response.json()['id']
+        payload={}
+        payload.update(common['rewriter'])
+        payload['tags']=[route['paths'][0].replace('/','\\')]
+        payload['instance_name']='ReWrite_'+route['name']
+        payload['config']['replace']['uri']=route['original_path']
+        payload.update({'service': {'id': service_id}})
+        payload.update({'route': {'id': route_id}})
+        response = requests.post(f'http://127.0.0.1:8001/routes/{route_id}/plugins', json=payload, headers=header)
+        print(response.content)
+        
+"""{
+    'services':{
+        'core':'talos_url',
+        'auth':'raptor_url',
+        'profile':'mis_url',
+        'invoice':'kronos_url',
+        'bidding':'bolee_url',
+        'pickdrop':'belaz_url'
     }
-}'''
+}"""

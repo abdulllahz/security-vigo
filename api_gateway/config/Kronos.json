@@ -1,0 +1,15 @@
+{
+    "service":{
+        "name": "Kronos",
+        "host": "traffic1-kronos.bykea.dev",
+        "tags": ["Core","Critical","UserFacing","RateLimited"]
+    },
+    "routes":[{
+        "name": "Relogin",
+        "protocols": ["http","https"],
+        "methods": ["POST"],
+        "paths": ["/kronos/users/relogin"],
+        "tags": ["Core","Auth","RateLimited","UserFacing"],
+        "original_path": "/users/relogin"
+    }]
+}
