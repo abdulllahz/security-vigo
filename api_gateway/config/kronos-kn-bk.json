@@ -1,0 +1,36 @@
+{
+    "service": {
+        "name": "Kronos-kn-bk",
+        "host": "kronos-kn-bk.bykea.net",
+        "tags": [
+            "Subdomain",
+            "Public"
+        ]
+    },
+    "routes": [
+        {
+            "name": "Root",
+            "protocols": [
+                "http",
+                "https"
+            ],
+            "methods": [
+                [
+                    "POST",
+                    "GET",
+                    "PUT",
+                    "PATCH",
+                    "OPTIONS",
+                    "DELETE"
+                ]
+            ],
+            "paths": [
+                "/kronos-kn-bk/"
+            ],
+            "tags": [
+                "Root_path"
+            ],
+            "original_path": "/"
+        }
+    ]
+}

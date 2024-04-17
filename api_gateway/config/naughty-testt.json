@@ -1,0 +1,36 @@
+{
+    "service": {
+        "name": "Naughty-testt",
+        "host": "naughty-testt.bykea.net",
+        "tags": [
+            "Subdomain",
+            "Public"
+        ]
+    },
+    "routes": [
+        {
+            "name": "Root",
+            "protocols": [
+                "http",
+                "https"
+            ],
+            "methods": [
+                [
+                    "POST",
+                    "GET",
+                    "PUT",
+                    "PATCH",
+                    "OPTIONS",
+                    "DELETE"
+                ]
+            ],
+            "paths": [
+                "/naughty-testt/"
+            ],
+            "tags": [
+                "Root_path"
+            ],
+            "original_path": "/"
+        }
+    ]
+}

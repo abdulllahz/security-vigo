@@ -1,0 +1,36 @@
+{
+    "service": {
+        "name": "Bss2-be",
+        "host": "bss2-be.bykea.net",
+        "tags": [
+            "Subdomain",
+            "Public"
+        ]
+    },
+    "routes": [
+        {
+            "name": "Root",
+            "protocols": [
+                "http",
+                "https"
+            ],
+            "methods": [
+                [
+                    "POST",
+                    "GET",
+                    "PUT",
+                    "PATCH",
+                    "OPTIONS",
+                    "DELETE"
+                ]
+            ],
+            "paths": [
+                "/bss2-be/"
+            ],
+            "tags": [
+                "Root_path"
+            ],
+            "original_path": "/"
+        }
+    ]
+}
