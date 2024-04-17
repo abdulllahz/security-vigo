@@ -1,0 +1,13 @@
+"service":{
+    "name": "Kong Service Discovery",
+    "host": "traffic1-api.bykea.dev",
+    "tags": ["Core","Critical","UserFacing","NoAuth"]
+},
+"routes":[{
+    "name": "Default",
+    "protocols": ["http","https"],
+    "methods": ["POST"],
+    "paths": ["/service/map"],
+    "tags": ["Core","Auth","RateLimited","UserFacing"],
+    "original_path": "/users/relogin"
+}]

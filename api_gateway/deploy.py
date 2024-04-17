@@ -88,6 +88,7 @@ for config in configs:
     payload.update(common['service'])
     response = requests.post('http://127.0.0.1:8001/services', json=payload, headers=header)
     service_id=response.json()['id']
+    print(service_id)
     for route in config['routes']:
         payload={}
         payload.update(common['routes'])
@@ -95,9 +96,8 @@ for config in configs:
         payload.update({'service': {'id': service_id}})
         payload.pop('original_path')
         response = requests.post('http://127.0.0.1:8001/routes', json=payload, headers=header)
-        print(response.content)
-        print(payload)
         route_id=response.json()['id']
+        print('\t'+route_id)
         payload={}
         payload.update(common['rewriter'])
         payload['tags']=[route['paths'][0].replace('/','\\')]
@@ -105,9 +105,7 @@ for config in configs:
         payload['config']['replace']['uri']=route['original_path']
         payload.update({'service': {'id': service_id}})
         payload.update({'route': {'id': route_id}})
-        response = requests.post(f'http://127.0.0.1:8001/routes/{route_id}/plugins', json=payload, headers=header)
-        print(response.content)
-        
+        response = requests.post(f'http://127.0.0.1:8001/routes/{route_id}/plugins', json=payload, headers=header)    
 """{
     'services':{
         'core':'talos_url',
