@@ -1,0 +1,36 @@
+{
+    "service": {
+        "name": "Api",
+        "host": "api.bykea.net",
+        "tags": [
+            "Subdomain",
+            "Public"
+        ]
+    },
+    "routes": [
+        {
+            "name": "Root",
+            "protocols": [
+                "http",
+                "https"
+            ],
+            "methods": [
+                [
+                    "POST",
+                    "GET",
+                    "PUT",
+                    "PATCH",
+                    "OPTIONS",
+                    "DELETE"
+                ]
+            ],
+            "paths": [
+                "/api/"
+            ],
+            "tags": [
+                "Root_path"
+            ],
+            "original_path": "/"
+        }
+    ]
+}
