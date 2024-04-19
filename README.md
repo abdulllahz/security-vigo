@@ -11,7 +11,7 @@ Brief description of the project.
 Install python3-docker and then just run deploy.py!
 It will take care of setting up containers, running migrations and performing necessary configuration.
 
-#### Route
+#### Routes
 
 This is the path that will match in the request itself.
 You can use various filters to narrow down matches.
@@ -32,7 +32,7 @@ You may configure plugins on global, service or route levels.
 This is the service denomination denotes a set of routes.
 Ideally irrelevant of where it resides a service ought to be a process.
 
-#### Upsteam
+#### Upsteams
 
 The first thing that must be configured. 
 You must provide a virtual hostname, used by a service.
