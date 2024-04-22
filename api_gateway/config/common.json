@@ -1,4 +1,12 @@
 {
+    "upstream":{
+        "slots":10000,
+        "algorithm":"round-robin",
+        "hash_on":"none",
+        "hash_fallback":"none",
+        "healthchecks":{"threshold":0}
+    },
+    "targets":{},
     "service":{
         "retries": 5,
         "protocol": "https",

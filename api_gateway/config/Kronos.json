@@ -1,6 +1,14 @@
 {
+    "name":"kronos",
+    "upstream":{
+    },
+    "targets":[
+        {"target":"127.0.0.1","weight":100,"tags":["1111"]},
+        {"target":"127.0.0.1","weight":100,"tags":["1111"]},
+        {"target":"127.0.0.1","weight":100,"tags":["1111"]},
+        {"target":"127.0.0.1","weight":100,"tags":["1111"]}
+    ],
     "service":{
-        "name": "Kronos",
         "host": "traffic1-kronos.bykea.dev",
         "tags": ["Core","Critical","UserFacing","RateLimited"]
     },
