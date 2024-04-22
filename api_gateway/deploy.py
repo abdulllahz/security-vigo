@@ -3,6 +3,21 @@ import requests
 import time
 import copy
 import json
+print('''\033[91mO\033[94m---\033[31mo
+ \033[91mO\033[34m-\033[31mo
+  \033[91mO
+ \033[31mo\033[34m-\033[91mO
+\033[31mo\033[94m---\033[91mO
+\033[91mO\033[94m---\033[31mo
+ \033[91mO\033[34m-\033[31mo
+  \033[91mO
+ \033[31mo\033[34m-\033[91mO
+\033[31mo\033[94m---\033[91mO
+\033[91mO\033[94m---\033[31mo
+ \033[91mO\033[34m-\033[31mo
+  \033[91mO
+ \033[31mo\033[34m-\033[91mO
+\033[31mo\033[94m---\033[91mO\033[0m''')
 client = docker.from_env()
 project_prefix = 'BykeaAPIGateway'
 sandbox = '/home/anon/Misc/sandbox:/root/sandbox'
@@ -109,7 +124,6 @@ for config in configs:
     payload.update({'host':f'{config["name"]}.kong.internal'})
     response = requests.post(f'http://127.0.0.1:8001/services', json=payload, headers=header)
     service_id=response.json()['id']
-    print(service_id)
 ######################################################################################################################################
 # Populate routes
     for route in config['routes']:
