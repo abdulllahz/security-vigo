@@ -1,23 +1,23 @@
 {
     "name":"kronos",
     "upstream":{
+        "tags": ["Core","Auth","RateLimited","UserFacing"]
     },
     "targets":[
         {"target":"127.0.0.1","weight":100,"tags":["1111"]},
-        {"target":"127.0.0.1","weight":100,"tags":["1111"]},
-        {"target":"127.0.0.1","weight":100,"tags":["1111"]},
-        {"target":"127.0.0.1","weight":100,"tags":["1111"]}
+        {"target":"127.0.0.2","weight":100,"tags":["1111"]},
+        {"target":"127.0.0.3","weight":100,"tags":["1111"]},
+        {"target":"127.0.0.4","weight":100,"tags":["1111"]}
     ],
     "service":{
-        "host": "traffic1-kronos.bykea.dev",
         "tags": ["Core","Critical","UserFacing","RateLimited"]
     },
     "routes":[{
-        "name": "Relogin",
+        "name": "Relogin2",
         "protocols": ["http","https"],
-        "methods": ["POST"],
+        "methods": ["GET","PUT","POST","PATCH","DELETE","OPTIONS","HEAD","TRACE"],
         "paths": ["/kronos/users/relogin"],
         "tags": ["Core","Auth","RateLimited","UserFacing"],
-        "original_path": "/users/relogin"
+        "original_path": "~/*"
     }]
 }

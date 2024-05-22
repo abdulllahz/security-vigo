@@ -3,34 +3,61 @@ import requests
 import time
 import copy
 import json
-print('''\033[91mO\033[94m---\033[31mo
- \033[91mO\033[34m-\033[31mo
-  \033[91mO
- \033[31mo\033[34m-\033[91mO
-\033[31mo\033[94m---\033[91mO
-\033[91mO\033[94m---\033[31mo
- \033[91mO\033[34m-\033[31mo
-  \033[91mO
- \033[31mo\033[34m-\033[91mO
-\033[31mo\033[94m---\033[91mO
-\033[91mO\033[94m---\033[31mo
- \033[91mO\033[34m-\033[31mo
-  \033[91mO
- \033[31mo\033[34m-\033[91mO
-\033[31mo\033[94m---\033[91mO\033[0m''')
+import os
+######################################################################################################################################
+# ASCII art
+print('''\033[91m0\033[94m---\033[31mO
+ \033[91m0\033[34m=\033[31mo
+  \033[91m0
+ \033[31mo\033[34m=\033[91m0
+\033[31mO\033[94m---\033[91m0
+\033[31m0\033[94m---\033[91mO
+ \033[31m0\033[34m=\033[91mo
+  \033[31m0
+ \033[91mo\33[34m=\033[31m0
+\033[91mO\033[94m---\033[31m0
+\033[91m0\033[94m---\033[31mO
+ \033[91m0\033[34m=\033[31mo
+  \033[91m0
+ \033[31mo\033[34m=\033[91m0
+\033[31mO\033[94m---\033[91m0\033[0m''')
+######################################################################################################################################
+#
+#  Service Discovery:
+#      |---------|   |-------------------------|   |------------------------------|   
+#  ===>| Ingress |===| /api/v1/common/services |===| Plugins (Request Terminator) |===||
+#      |---------|   |-------------------------|   |------------------------------|   || 
+#                                                                                     ||
+#                                                                               |------------|
+#  <============================================================================| ServiceMap |
+#                                                                               |------------|
+#  
+#  Service Routing: 
+#      |---------|   |--------|   |---------|   |----------|   |-----------|   |---------------|   |--------|   |------|
+#  ===>| Ingress |===| Routes |===| Plugins |===| Services |===| Upstreams |===| Loadbalancing |===| Egress |===| Node |===||
+#      |---------|   |--------|   |---------|   |----------|   |-----------|   |---------------|   |--------|   |------|   ||
+#                                                                                                                          ||
+#                                                                                                                     |----------|
+#  <==================================================================================================================| Response |
+#                                                                                                                     |----------|
+#
+######################################################################################################################################
+# Load configs
 client = docker.from_env()
 project_prefix = 'BykeaAPIGateway'
 sandbox = '/home/anon/Misc/sandbox:/root/sandbox'
 path='./config/'
-######################################################################################################################################
-# Load configs
-files=['Kronos.json']
-f=open(path+'common.json','r')
-common=json.load(f)
 configs=[]
-for file in files:
+for file in [file for file in os.listdir('./config/') if file.endswith('.json') and file.startswith('enabled_')]:
     f=open(path+file,'r')
     configs.append(json.load(f))
+    f.close()
+f=open(path+'common.json','r')
+common=json.load(f)
+f.close()
+f=open(path+'Kong.json','r')
+service_map=json.load(f)
+f.close()
 ######################################################################################################################################
 # Remove residual
 containers = client.containers.list()
@@ -133,6 +160,9 @@ for config in configs:
         payload.update({'service': {'id': service_id}})
         payload.pop('original_path')
         response = requests.post(f'http://127.0.0.1:8001/routes', json=payload, headers=header)
+        print('=======================================================')
+        print(response.content)
+        print(payload)
         route_id=response.json()['id']
 ######################################################################################################################################
 # Populate mandatory plugin
@@ -144,3 +174,17 @@ for config in configs:
         payload.update({'service': {'id': service_id}})
         payload.update({'route': {'id': route_id}})
         response = requests.post(f'http://127.0.0.1:8001/routes/{route_id}/plugins', json=payload, headers=header)
+######################################################################################################################################
+# Populate ServiceMap
+payload={}
+payload.update(common['routes'])
+payload.update(service_map['routes'][0])
+payload.pop('original_path')
+response = requests.post(f'http://127.0.0.1:8001/routes', json=payload, headers=header)
+route_id=response.json()['id']
+payload={}
+payload.update(service_map['plugins'])
+payload['instance_name']='Responder_'+service_map['routes'][0]['name']
+payload.update({'route': {'id': route_id}})
+payload['config'].update({'body':json.dumps(service_map['ServiceMap'])})
+response = requests.post(f'http://127.0.0.1:8001/routes/{route_id}/plugins', json=payload, headers=header)

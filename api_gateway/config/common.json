@@ -33,7 +33,8 @@
         "path_handling": "v0",
         "preserve_host": false,
         "request_buffering": true,
-        "response_buffering": true
+        "response_buffering": true,
+        "protocols": ["http","https"]
     },
     "rewriter":{
         "name": "request-transformer",

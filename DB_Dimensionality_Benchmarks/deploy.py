@@ -34,5 +34,5 @@ db0 = client.containers.run(
     }
 )
 
-toy=open('filename.txt', 'r').read().replace('#:TYPES',).replace('#:KCOLUMNS',).replace()
+toy=open('filename.txt', 'r').read().replace('#:TYPES',).replace('#:KCOLUMNS',).replace('#:KCOLUMNTYPES')
 gw.exec_run(cmd='kong migrations bootstrap')
