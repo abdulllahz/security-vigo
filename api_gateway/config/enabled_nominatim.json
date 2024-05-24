@@ -1,19 +1,22 @@
 {
-    "name":"Kronos",
+    "name":"Nominatim",
     "upstream":{
         "tags": ["Core","Auth","RateLimited","UserFacing"]
     },
     "targets":[
-        {"target":"enk8145uc07af.x.pipedream.net:443","weight":100,"tags":["test"]}
+        {"target":"127.0.0.1","weight":100,"tags":["1111"]},
+        {"target":"127.0.0.2","weight":100,"tags":["1111"]},
+        {"target":"127.0.0.3","weight":100,"tags":["1111"]},
+        {"target":"127.0.0.4","weight":100,"tags":["1111"]}
     ],
     "service":{
         "tags": ["Core","Critical","UserFacing","RateLimited"]
     },
     "routes":[{
-        "name": "DEFAULT Kronos",
+        "name": "DEFAULT Nominatim",
         "protocols": ["http","https"],
         "methods": ["GET","PUT","POST","PATCH","DELETE","OPTIONS","HEAD","TRACE"],
-        "paths": ["~/kronos/(?<default>.*)"],
+        "paths": ["~/nominatim/(?<default>.*)"],
         "tags": ["Universal Acceptor"],
         "original_path": "/$(uri_captures['default'])"
     }]

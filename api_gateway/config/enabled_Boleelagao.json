@@ -1,5 +1,5 @@
 {
-    "name":"Kronos",
+    "name":"Boleelagao",
     "upstream":{
         "tags": ["Core","Auth","RateLimited","UserFacing"]
     },
@@ -10,10 +10,10 @@
         "tags": ["Core","Critical","UserFacing","RateLimited"]
     },
     "routes":[{
-        "name": "DEFAULT Kronos",
+        "name": "DEFAULT Boleelagao",
         "protocols": ["http","https"],
         "methods": ["GET","PUT","POST","PATCH","DELETE","OPTIONS","HEAD","TRACE"],
-        "paths": ["~/kronos/(?<default>.*)"],
+        "paths": ["~/bolee/(?<default>.*)"],
         "tags": ["Universal Acceptor"],
         "original_path": "/$(uri_captures['default'])"
     }]

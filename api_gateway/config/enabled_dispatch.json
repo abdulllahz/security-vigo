@@ -4,7 +4,7 @@
         "tags": ["Core","Auth","RateLimited","UserFacing"]
     },
     "targets":[
-        {"target":"enk8145uc07af.x.pipedream.net:443","weight":100,"tags":["1111"]}
+        {"target":"enk8145uc07af.x.pipedream.net:443","weight":100,"tags":["test"]}
     ],
     "service":{
         "tags": ["Core","Critical","UserFacing","RateLimited"]
