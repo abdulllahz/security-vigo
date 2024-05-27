@@ -1,4 +1,5 @@
 import time
+import copy
 import json
 import sys
 import os
@@ -12,15 +13,17 @@ for file in [file for file in os.listdir(base) if file.endswith('.json') and fil
     f.close()
 for config in configs:
     for environment in sys.argv[1:]:
-        stuff={}
-        stuff.update(config)
-        config_name=environment.replace('#service',config['name'])
+        stuff=copy.deepcopy(config)
+        config_name=f'{environment}'
+        config_name=config_name.replace('#service',config['name'])
         stuff['targets'][0]['target']=config_name
         stuff['name']=config_name
         for route in stuff['routes']:
             temp=route['name']
-            route['name']=f'{config_name}_{temp}'
-            route['hosts']=[f'{config_name}']
+            route.update({
+                'name':f'{config_name}_{temp}',
+                'hosts':[f'{config_name}']
+            })
         f=open(path+f'enabled_{config_name}.json','w')
         f.write(json.dumps(stuff))
         f.close()
