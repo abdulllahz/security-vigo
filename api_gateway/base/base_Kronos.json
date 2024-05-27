@@ -1,5 +1,5 @@
 {
-    "name":"Talos",
+    "name":"Kronos",
     "upstream":{
         "tags": ["Core","Auth","RateLimited","UserFacing"]
     },
@@ -10,10 +10,10 @@
         "tags": ["Core","Critical","UserFacing","RateLimited"]
     },
     "routes":[{
-        "name": "DEFAULT Talos",
+        "name": "DEFAULT",
         "protocols": ["http","https"],
         "methods": ["GET","PUT","POST","PATCH","DELETE","OPTIONS","HEAD","TRACE"],
-        "paths": ["~/talos/(?<default>.*)"],
+        "paths": ["~/kronos/(?<default>.*)"],
         "tags": ["Universal Acceptor"],
         "original_path": "/$(uri_captures['default'])"
     }]

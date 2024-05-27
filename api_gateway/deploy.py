@@ -48,15 +48,17 @@ project_prefix = 'BykeaAPIGateway'
 sandbox = '/home/anon/Misc/sandbox:/root/sandbox'
 path='./config/'
 configs=[]
-for file in [file for file in os.listdir('./config/') if file.endswith('.json') and file.startswith('enabled_')]:
+service_maps=[]
+for file in [file for file in os.listdir('./config/') if file.endswith('.json') and 'Kong' not in file and file.startswith('enabled_')]:
     f=open(path+file,'r')
     configs.append(json.load(f))
     f.close()
-f=open(path+'common.json','r')
+for file in [file for file in os.listdir('./config/') if file.endswith('.json') and 'Kong' in file and file.startswith('enabled_')]:
+    f=open(path+file,'r')
+    service_maps.append(json.load(f))
+    f.close()
+f=open(path+'internal_common.json','r')
 common=json.load(f)
-f.close()
-f=open(path+'Kong.json','r')
-service_map=json.load(f)
 f.close()
 ######################################################################################################################################
 # Remove residual
@@ -125,66 +127,71 @@ header={
         'Content-Type': 'application/json',
         'accept': 'application/json'
 }
-######################################################################################################################################
-# Populate upstreams
-for config in configs:
-    payload={}
-    payload.update(common['upstream'])
-    payload.update(config['upstream'])
-    payload.update({'name':f'{config["name"]}.kong.internal'})
-    response = requests.post(f'http://127.0.0.1:8001/upstreams', json=payload, headers=header)
-    upstream=response.json()['id']
-######################################################################################################################################
-# Populate targets
-    for target in config['targets']:
+try:
+    ######################################################################################################################################
+    # Populate upstreams
+    for config in configs:
         payload={}
-        payload.update(common['targets'])
-        payload.update(target)
-        payload.update({'upstream':{'id':upstream}})
-        response = requests.post(f'http://127.0.0.1:8001/upstreams/{upstream}/targets', json=payload, headers=header)
-######################################################################################################################################
-# Populate services
-    payload={}
-    payload.update(common['service'])
-    payload.update(config['service'])
-    payload.update({'name':config['name']})
-    payload.update({'host':f'{config["name"]}.kong.internal'})
-    response = requests.post(f'http://127.0.0.1:8001/services', json=payload, headers=header)
-    service_id=response.json()['id']
-######################################################################################################################################
-# Populate routes
-    for route in config['routes']:
+        payload.update(common['upstream'])
+        payload.update(config['upstream'])
+        payload.update({'name':f'{config["name"]}.kong.internal'})
+        response = requests.post(f'http://127.0.0.1:8001/upstreams', json=payload, headers=header)
+        upstream=response.json()['id']
+    ######################################################################################################################################
+    # Populate targets
+        for target in config['targets']:
+            payload={}
+            payload.update(common['targets'])
+            payload.update(target)
+            payload.update({'upstream':{'id':upstream}})
+            response = requests.post(f'http://127.0.0.1:8001/upstreams/{upstream}/targets', json=payload, headers=header)
+    ######################################################################################################################################
+    # Populate services
+        payload={}
+        payload.update(common['service'])
+        payload.update(config['service'])
+        payload.update({'name':config['name']})
+        payload.update({'host':f'{config["name"]}.kong.internal'})
+        response = requests.post(f'http://127.0.0.1:8001/services', json=payload, headers=header)
+        service_id=response.json()['id']
+    ######################################################################################################################################
+    # Populate routes
+        for route in config['routes']:
+            payload={}
+            payload.update(common['routes'])
+            payload.update(route)
+            payload.update({'service': {'id': service_id}})
+            payload.pop('original_path')
+            response = requests.post(f'http://127.0.0.1:8001/routes', json=payload, headers=header)
+            route_id=response.json()['id']
+    ######################################################################################################################################
+    # Populate mandatory plugin
+            payload={}
+            payload.update(common['rewriter'])
+            payload['tags']=[route['paths'][0].replace('/','\\')]
+            payload['instance_name']='ReWrite_'+route['name']
+            payload['config']['replace']['uri']=route['original_path']
+            payload.update({'service': {'id': service_id}})
+            payload.update({'route': {'id': route_id}})
+            response = requests.post(f'http://127.0.0.1:8001/routes/{route_id}/plugins', json=payload, headers=header)
+    ######################################################################################################################################
+    # Populate ServiceMap
+    for service_map in service_maps:
         payload={}
         payload.update(common['routes'])
-        payload.update(route)
-        payload.update({'service': {'id': service_id}})
+        payload.update(service_map['routes'][0])
         payload.pop('original_path')
         response = requests.post(f'http://127.0.0.1:8001/routes', json=payload, headers=header)
-        print('=======================================================')
-        print(response.content)
-        print(payload)
         route_id=response.json()['id']
-######################################################################################################################################
-# Populate mandatory plugin
         payload={}
-        payload.update(common['rewriter'])
-        payload['tags']=[route['paths'][0].replace('/','\\')]
-        payload['instance_name']='ReWrite_'+route['name']
-        payload['config']['replace']['uri']=route['original_path']
-        payload.update({'service': {'id': service_id}})
+        payload.update(service_map['plugins'])
+        payload['instance_name']='Responder_'+service_map['routes'][0]['name']
         payload.update({'route': {'id': route_id}})
+        payload['config'].update({'body':json.dumps(service_map['ServiceMap'])})
         response = requests.post(f'http://127.0.0.1:8001/routes/{route_id}/plugins', json=payload, headers=header)
-######################################################################################################################################
-# Populate ServiceMap
-payload={}
-payload.update(common['routes'])
-payload.update(service_map['routes'][0])
-payload.pop('original_path')
-response = requests.post(f'http://127.0.0.1:8001/routes', json=payload, headers=header)
-route_id=response.json()['id']
-payload={}
-payload.update(service_map['plugins'])
-payload['instance_name']='Responder_'+service_map['routes'][0]['name']
-payload.update({'route': {'id': route_id}})
-payload['config'].update({'body':json.dumps(service_map['ServiceMap'])})
-response = requests.post(f'http://127.0.0.1:8001/routes/{route_id}/plugins', json=payload, headers=header)
+except:
+    print("Exception!")
+    print(config)
+    print(payload)
+    print(response.json())
+    

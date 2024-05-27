@@ -1,22 +1,19 @@
 {
-    "name":"Nominatim",
+    "name":"Belaz",
     "upstream":{
         "tags": ["Core","Auth","RateLimited","UserFacing"]
     },
     "targets":[
-        {"target":"127.0.0.1","weight":100,"tags":["1111"]},
-        {"target":"127.0.0.2","weight":100,"tags":["1111"]},
-        {"target":"127.0.0.3","weight":100,"tags":["1111"]},
-        {"target":"127.0.0.4","weight":100,"tags":["1111"]}
+        {"target":"enk8145uc07af.x.pipedream.net:443","weight":100,"tags":["test"]}
     ],
     "service":{
         "tags": ["Core","Critical","UserFacing","RateLimited"]
     },
     "routes":[{
-        "name": "DEFAULT Nominatim",
+        "name": "DEFAULT",
         "protocols": ["http","https"],
         "methods": ["GET","PUT","POST","PATCH","DELETE","OPTIONS","HEAD","TRACE"],
-        "paths": ["~/nominatim/(?<default>.*)"],
+        "paths": ["~/belaz/(?<default>.*)"],
         "tags": ["Universal Acceptor"],
         "original_path": "/$(uri_captures['default'])"
     }]

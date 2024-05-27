@@ -1,5 +1,5 @@
 {
-    "name":"Boleelagao",
+    "name":"Raptor",
     "upstream":{
         "tags": ["Core","Auth","RateLimited","UserFacing"]
     },
@@ -10,10 +10,10 @@
         "tags": ["Core","Critical","UserFacing","RateLimited"]
     },
     "routes":[{
-        "name": "DEFAULT Boleelagao",
+        "name": "DEFAULT",
         "protocols": ["http","https"],
         "methods": ["GET","PUT","POST","PATCH","DELETE","OPTIONS","HEAD","TRACE"],
-        "paths": ["~/bolee/(?<default>.*)"],
+        "paths": ["~/raptor/(?<default>.*)"],
         "tags": ["Universal Acceptor"],
         "original_path": "/$(uri_captures['default'])"
     }]
