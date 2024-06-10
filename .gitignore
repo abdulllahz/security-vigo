@@ -1,2 +1,3 @@
 node_modules/
 NodeGoat/
+/api_gateway/.env
