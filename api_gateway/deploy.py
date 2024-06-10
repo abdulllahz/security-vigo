@@ -56,12 +56,15 @@ kibana_user='Kibana'
 kibana_pass='KibAna_456'
 project_prefix = 'BykeaKong'
 path='./config/'
+postgres_host=''
 postgres_port='5432'
 postgres_user='kong'
 postgres_pass='KoNg_123'
 redis_port='6379'
+elasticsearch_host=''
 elasticsearch_port='9200'
 logstash_port='5775'
+logstash_host=''
 kibana_port='5601'
 kong_gateway_port='8000'
 kong_gateway_ssl_port='8443'
@@ -70,6 +73,13 @@ kong_admin_ssl_port='8444'
 kong_admin_ui_port='8002'
 
 # Load configs
+toggle_devmode='--db' in sys.argv or '-d' in sys.argv
+toggle_logging='--log' in sys.argv or '-l' in sys.argv
+if toggle_devmode:
+    elasticsearch_host=project_prefix+'ElasticSearch'
+    postgres_host=project_prefix+'DB'
+    logstash_host=project_prefix+'LogStash'
+
 pipeline=f'''
 input {{
   udp {{
@@ -79,7 +89,7 @@ input {{
 }}
 output {{
   elasticsearch {{
-    hosts => ["{project_prefix+"ElasticSearch"}:{elasticsearch_port}"]
+    hosts => ["{elasticsearch_host}:{elasticsearch_port}"]
     ssl => true
     ssl_certificate_verification => false
     cacert => "/usr/share/logstash/certificates/http_ca.crt"
@@ -132,7 +142,6 @@ def predicate_filelist(internal):
         return [file for file in os.listdir('./config/') if file.endswith('.json') and 'Kong' not in file and file.startswith('enabled_')]
 
 client = docker.from_env()
-mode=sys.argv[1]=="--db"
 configs=[parse_json_config(path + file) for file in predicate_filelist(False)]
 service_maps=[parse_json_config(path + file) for file in predicate_filelist(True)]
 f=open(path+'internal_common.json','r')
@@ -158,52 +167,26 @@ network_name=project_prefix+'_network'
 network = client.networks.create(network_name, driver='bridge')
 ######################################################################################################################################
 # Run containers
-db = client.containers.run(
-    name= project_prefix+'DB',
-    image='postgres:9.6.24-alpine',
-    detach=True,
-    network=network_name,
-    ports=postgres_port_mapped,
-    environment={
-        'POSTGRES_DB':'kong',
-        'POSTGRES_USER':postgres_user,
-        'POSTGRES_PASSWORD':postgres_pass
-    }
-)
-rs = client.containers.run(
-    name= project_prefix+'Cache',
-    image='redis:7.0.15-alpine',
-    detach=True,
-    network=network_name,
-    ports=redis_port_mapped
-)
-es = client.containers.run(
-    name= project_prefix+'ElasticSearch',
-    image='elasticsearch:8.13.4',
-    detach=True,
-    network=network_name,
-    ports=elasticsearch_port_mapped,
-    mem_limit= '2g',
-    environment= {
-    	'discovery.type': 'single-node',
-    	'ES_JAVA_OPTS': '-Xms768m -Xmx768m'
-    }
-)
-ls = client.containers.run(
-    name= project_prefix+'LogStash',
-    image='logstash:8.13.4',
-    detach=True,
-    network=network_name,
-    command='tail -f /dev/null',
-    ports=logstash_port_mapped
-)
-kb = client.containers.run(
-    name= project_prefix+'Kibana',
-    image='kibana:8.13.4',
-    detach=True,
-    network=network_name,
-    ports=kibana_port_mapped
-)
+if toggle_devmode:
+    db = client.containers.run(
+        name= project_prefix+'DB',
+        image='postgres:9.6.24-alpine',
+        detach=True,
+        network=network_name,
+        ports=postgres_port_mapped,
+        environment={
+            'POSTGRES_DB':'kong',
+            'POSTGRES_USER':postgres_user,
+            'POSTGRES_PASSWORD':postgres_pass
+        }
+    )
+    rs = client.containers.run(
+        name= project_prefix+'Cache',
+        image='redis:7.0.15-alpine',
+        detach=True,
+        network=network_name,
+        ports=redis_port_mapped
+    )
 gw = client.containers.run(
     name= project_prefix+'Gateway',
     image='kong:3.6.1',
@@ -212,7 +195,7 @@ gw = client.containers.run(
     network=network_name,
     environment={
         'KONG_DATABASE': 'postgres',
-        'KONG_PG_HOST': project_prefix+'DB',
+        'KONG_PG_HOST': postgres_host,
         'KONG_PG_PASSWORD': postgres_pass,
         'KONG_CASSANDRA_CONTACT_POINTS': 'kong-database',
         'KONG_PROXY_ACCESS_LOG': '/dev/stdout',
@@ -223,27 +206,11 @@ gw = client.containers.run(
     },
     ports=kong_port_mapped
 )
-time.sleep(60)
+
 gw.exec_run(cmd='kong migrations bootstrap')
 gw.exec_run(cmd='kong start')
 gw.exec_run(cmd='''curl -Ls https://get.konghq.com/quickstart | \\
                 bash -s -- -i kong -t latest''')
-#empty the stream first!
-es.logs().decode('utf-8')
-result=es.exec_run(cmd=f'bin/elasticsearch-users useradd {kibana_user} -p {kibana_pass} -r kibana_system')
-result=es.exec_run(cmd=f'bin/elasticsearch-users useradd {dash_user} -p {dash_pass} -r superuser')
-result=es.exec_run(cmd=f'bin/elasticsearch-users useradd {logstash_user} -p {logstash_pass} -r superuser')
-result=es.exec_run(cmd=f'bin/elasticsearch-create-enrollment-token -s kibana')
-token=result.output.decode('utf-8')
-log=kb.logs().decode('utf-8')
-index=log.find('code=')+5
-ls.exec_run(cmd='mkdir /usr/share/logstash/certificates')
-certificate=es.exec_run(cmd='cat /usr/share/elasticsearch/config/certs/http_ca.crt').output.decode('utf-8')
-push_string_to_container(ls,'http_ca.crt', certificate, '/usr/share/logstash/certificates')
-push_string_to_container(ls,'logstash.conf', pipeline, '/usr/share/logstash/pipeline')
-ls.exec_run(cmd='logstash -f pipeline/logstash.conf', detach=True)
-print('Enrollment token: '+token)
-print('Kibana Code: '+log[index:index+6])
 try:
     ######################################################################################################################################
     # Populate upstreams
@@ -308,18 +275,63 @@ try:
         response = requests.post(f'http://127.0.0.1:{kong_admin_port}/routes/{route_id}/plugins', json=payload, headers=header)
     ######################################################################################################################################
     # Populate Logger
-    response = requests.post(f'http://127.0.0.1:{kong_admin_port}/routes', json={
-        "enabled":True,
-        "name":"udp-log",
-        "instance_name":"Logger",
-        "protocols":["grpc","grpcs","http","https"],
-        "config":{
-            "custom_fields_by_lua":{},
-            "host":"BykeaKongLogStash",
-            "port":logstash_port,
-            "timeout":10000
-        }
-    }, headers=header)
+    if toggle_logging:
+        if toggle_devmode:
+            es = client.containers.run(
+                name= project_prefix+'ElasticSearch',
+                image='elasticsearch:8.13.4',
+                detach=True,
+                network=network_name,
+                ports=elasticsearch_port_mapped,
+                mem_limit= '2g',
+                environment= {
+    	            'discovery.type': 'single-node',
+    	            'ES_JAVA_OPTS': '-Xms768m -Xmx768m'
+                }
+            )
+            ls = client.containers.run(
+                name= project_prefix+'LogStash',
+                image='logstash:8.13.4',
+                detach=True,
+                network=network_name,
+                command='tail -f /dev/null',
+                ports=logstash_port_mapped
+            )
+            kb = client.containers.run(
+                name= project_prefix+'Kibana',
+                image='kibana:8.13.4',
+                detach=True,
+                network=network_name,
+                ports=kibana_port_mapped
+            )
+            time.sleep(60)
+            es.logs().decode('utf-8') #empty the stream first!
+            result=es.exec_run(cmd=f'bin/elasticsearch-users useradd {kibana_user} -p {kibana_pass} -r kibana_system')
+            result=es.exec_run(cmd=f'bin/elasticsearch-users useradd {dash_user} -p {dash_pass} -r superuser')
+            result=es.exec_run(cmd=f'bin/elasticsearch-users useradd {logstash_user} -p {logstash_pass} -r superuser')
+            result=es.exec_run(cmd=f'bin/elasticsearch-create-enrollment-token -s kibana')
+            token=result.output.decode('utf-8')
+            log=kb.logs().decode('utf-8')
+            index=log.find('code=')+5
+            ls.exec_run(cmd='mkdir /usr/share/logstash/certificates')
+            certificate=es.exec_run(cmd='cat /usr/share/elasticsearch/config/certs/http_ca.crt').output.decode('utf-8')
+            push_string_to_container(ls,'http_ca.crt', certificate, '/usr/share/logstash/certificates')
+            push_string_to_container(ls,'logstash.conf', pipeline, '/usr/share/logstash/pipeline')
+            ls.exec_run(cmd='logstash -f pipeline/logstash.conf', detach=True)
+            print('Enrollment token: '+token)
+            print('Kibana Code: '+log[index:index+6])
+        response = requests.post(f'http://127.0.0.1:{kong_admin_port}/routes', json={
+            'enabled':True,
+            'name':'udp-log',
+            'instance_name':'Logger',
+            'protocols':['grpc','grpcs','http','https'],
+            'config':{
+                'custom_fields_by_lua':{},
+                'host':logstash_host,
+                'port':logstash_port,
+                'timeout':10000
+            }
+        }, headers=header)
 except Exception as e:
     print('Exception!')
     print(e)
