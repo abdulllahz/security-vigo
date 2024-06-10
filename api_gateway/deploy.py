@@ -7,6 +7,11 @@ import json
 import sys
 import os
 import io
+from dotenv import load_dotenv # pip3 install python-dotenv
+
+# Load environment variables from .env_staging file
+load_dotenv('.env_staging')
+
 
 ######################################################################################################################################
 # ASCII art
@@ -48,29 +53,29 @@ print('''\033[91m0\033[94m---\033[31mO
 ######################################################################################################################################
 
 # Config variables
-logstash_user='logstash'
-logstash_pass='LoGstAsh_456'
-dash_user='Operations'
-dash_pass='Lol_Sometimes_4433'
-kibana_user='Kibana'
-kibana_pass='KibAna_456'
-project_prefix = 'BykeaKong'
-path='./config/'
-postgres_host=''
-postgres_port='5432'
-postgres_user='kong'
-postgres_pass='KoNg_123'
-redis_port='6379'
-elasticsearch_host=''
-elasticsearch_port='9200'
-logstash_port='5775'
-logstash_host=''
-kibana_port='5601'
-kong_gateway_port='8000'
-kong_gateway_ssl_port='8443'
-kong_admin_port='8001'
-kong_admin_ssl_port='8444'
-kong_admin_ui_port='8002'
+logstash_user = os.getenv('LOGSTASH_USER')
+logstash_pass = os.getenv('LOGSTASH_PASS')
+dash_user = os.getenv('DASH_USER')
+dash_pass = os.getenv('DASH_PASS')
+kibana_user = os.getenv('KIBANA_USER')
+kibana_pass = os.getenv('KIBANA_PASS')
+project_prefix = os.getenv('PROJECT_PREFIX')
+path = os.getenv('PATH')
+postgres_host = os.getenv('POSTGRES_HOST')
+postgres_port = os.getenv('POSTGRES_PORT')
+postgres_user = os.getenv('POSTGRES_USER')
+postgres_pass = os.getenv('POSTGRES_PASS')
+redis_port = os.getenv('REDIS_PORT')
+elasticsearch_host = os.getenv('ELASTICSEARCH_HOST')
+elasticsearch_port = os.getenv('ELASTICSEARCH_PORT')
+logstash_port = os.getenv('LOGSTASH_PORT')
+logstash_host = os.getenv('LOGSTASH_HOST')
+kibana_port = os.getenv('KIBANA_PORT')
+kong_gateway_port = os.getenv('KONG_GATEWAY_PORT')
+kong_gateway_ssl_port = os.getenv('KONG_GATEWAY_SSL_PORT')
+kong_admin_port = os.getenv('KONG_ADMIN_PORT')
+kong_admin_ssl_port = os.getenv('KONG_ADMIN_SSL_PORT')
+kong_admin_ui_port = os.getenv('KONG_ADMIN_UI_PORT')
 
 # Load configs
 toggle_devmode='--db' in sys.argv or '-d' in sys.argv
