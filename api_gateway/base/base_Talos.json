@@ -1,5 +1,6 @@
 {
     "name":"Talos",
+    "original_path": "/$(uri_captures['default'])",
     "upstream":{
         "tags": ["Core","Auth","RateLimited","UserFacing"]
     },
@@ -14,7 +15,6 @@
         "protocols": ["http","https"],
         "methods": ["GET","PUT","POST","PATCH","DELETE","OPTIONS","HEAD","TRACE"],
         "paths": ["~/talos/(?<default>.*)"],
-        "tags": ["Universal Acceptor"],
-        "original_path": "/$(uri_captures['default'])"
+        "tags": ["Universal Acceptor"]
     }]
 }

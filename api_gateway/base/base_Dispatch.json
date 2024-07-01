@@ -1,5 +1,6 @@
 {
     "name":"Dispatch",
+    "original_path": "/$(uri_captures['default'])",
     "upstream":{
         "tags": ["Core","Auth","RateLimited","UserFacing"]
     },
@@ -13,427 +14,356 @@
         "name": "Scheduled_bookings",
         "tags": [],
         "methods":["GET"],
-        "paths":["~/dispatch/scheduled/bookings"],
-        "original_path": "/scheduled/bookings"
+        "paths":["~/dispatch/scheduled/bookings"]
         },{
         "name": "Queue_removal",
         "tags": ["Non-Standard"],
         "methods":["POST"],
-        "paths":["~/dispatch/remove/queue"],
-        "original_path": "/remove/queue"
+        "paths":["~/dispatch/remove/queue"]
         },{
         "name": "Trips_call",
         "tags": [],
         "methods":["GET"],
-        "paths":["~/dispatch/trips/call"],
-        "original_path": "/trips/call"
+        "paths":["~/dispatch/trips/call"]
         },{
         "name": "Driver_route",
         "tags": [],
         "methods":["GET"],
-        "paths":["~/dispatch/driver/route"],
-        "original_path": "/driver/route"
+        "paths":["~/dispatch/driver/route"]
         },{
         "name": "Trip_search",
         "tags": [],
         "methods":["GET"],
-        "paths":["~/dispatch/trip/detail/(?<searchby>[^/]+)/(?<searchvalue>[^/]+)"],
-        "original_path": "/trip/detail/$(uri_captures['searchby'])/$(uri_captures['searchvalue'])"
+        "paths":["~/dispatch/trip/detail/(?<searchby>[^/]+)/(?<searchvalue>[^/]+)"]
         },{
         "name": "Fare_estimate",
         "tags": [],
         "methods":["GET"],
-        "paths":["~/dispatch/fare/estimation"],
-        "original_path": "/fare/estimation"
+        "paths":["~/dispatch/fare/estimation"]
         },{
         "name": "Driver_search",
         "tags": [],
         "methods":["GET"],
-        "paths":["~/dispatch/search/driver"],
-        "original_path": "/search/driver"
+        "paths":["~/dispatch/search/driver"]
         },{
         "name": "Assign_driver",
         "tags": [],
         "methods":["POST"],
-        "paths":["~/dispatch/assign/driver"],
-        "original_path": "/assign/driver"
+        "paths":["~/dispatch/assign/driver"]
         },{
         "name": "List_categories",
         "tags": [],
         "methods":["GET"],
-        "paths":["~/dispatch/partner/categories"],
-        "original_path": "/partner/categories"
+        "paths":["~/dispatch/partner/categories"]
         },{
         "name": "User_details",
         "tags": [],
         "methods":["GET"],
-        "paths":["~/dispatch/user/location/(?<usertype>[^/]+)/(?<phone>[^/]+)"],
-        "original_path": "/user/location/$(uri_captures['usertype'])/$(uri_captures['phone'])"
+        "paths":["~/dispatch/user/location/(?<usertype>[^/]+)/(?<phone>[^/]+)"]
         },{
         "name": "Change_fare",
         "tags": [],
         "methods":["POST"],
-        "paths":["~/dispatch/trip/updatefares"],
-        "original_path": "/trip/updatefares"
+        "paths":["~/dispatch/trip/updatefares"]
         },{
         "name": "Modify_trip",
         "tags": [],
         "methods":["PUT"],
-        "paths":["~/dispatch/trip/(?<trip_Id>[^/]+)/update"],
-        "original_path": "/trip/$(uri_captures['trip_Id'])/update"
+        "paths":["~/dispatch/trip/(?<trip_Id>[^/]+)/update"]
         },{
         "name": "Delete_bookings",
         "tags": [],
         "methods":["POST"],
-        "paths":["~/dispatch/remove/booking"],
-        "original_path": "/remove/booking"
+        "paths":["~/dispatch/remove/booking"]
         },{
         "name": "Trip_sync",
         "tags": [],
         "methods":["GET"],
-        "paths":["~/dispatch/sync/trips"],
-        "original_path": "/sync/trips"
+        "paths":["~/dispatch/sync/trips"]
         },{
         "name": "Trip_sync2",
         "tags": [],
         "methods":["POST"],
-        "paths":["~/dispatch/sync/trips"],
-        "original_path": "/sync/trips"
+        "paths":["~/dispatch/sync/trips"]
         },{
         "name": "Passenger_details",
         "tags": [],
         "methods":["GET"],
-        "paths":["~/dispatch/passenger/(?<field>[^/]+)/(?<value>[^/]+)"],
-        "original_path": "/passenger/$(uri_captures['field'])/$(uri_captures['value'])"
+        "paths":["~/dispatch/passenger/(?<field>[^/]+)/(?<value>[^/]+)"]
         },{
         "name": "Trip_history",
         "tags": [],
         "methods":["GET"],
-        "paths":["~/dispatch/tripHistory/(?<trip_id>[^/]+)"],
-        "original_path": "/tripHistory/$(uri_captures['trip_id'])"
+        "paths":["~/dispatch/tripHistory/(?<trip_id>[^/]+)"]
         },{
         "name": "Authorize_user",
         "tags": [],
         "methods":["GET"],
-        "paths":["~/dispatch/authorize/user"],
-        "original_path": "/authorize/user"
+        "paths":["~/dispatch/authorize/user"]
         },{
         "name": "Authenticate_user",
         "tags": [],
         "methods":["POST"],
-        "paths":["~/dispatch/authenticate/user"],
-        "original_path": "/authenticate/user"
+        "paths":["~/dispatch/authenticate/user"]
         },{
         "name": "Authorize_client",
         "tags": [],
         "methods":["GET"],
-        "paths":["~/dispatch/authorize/client"],
-        "original_path": "/authorize/client"
+        "paths":["~/dispatch/authorize/client"]
         },{
         "name": "Authenticate_client",
         "tags": [],
         "methods":["POST"],
-        "paths":["~/dispatch/authenticate/client"],
-        "original_path": "/authenticate/client"
+        "paths":["~/dispatch/authenticate/client"]
         },{
         "name": "Heartbeat",
         "tags": [],
         "methods":["GET"],
-        "paths":["~/dispatch/health/heartbeat"],
-        "original_path": "/health/heartbeat"
+        "paths":["~/dispatch/health/heartbeat"]
         },{
         "name": "Create_batch",
         "tags": [],
         "methods":["POST"],
-        "paths":["~/dispatch/batch/create"],
-        "original_path": "/batch/create"
+        "paths":["~/dispatch/batch/create"]
         },{
         "name": "Recreate_batch",
         "tags": [],
         "methods":["POST"],
-        "paths":["~/dispatch/batch/create/reinitiate"],
-        "original_path": "/batch/create/reinitiate"
+        "paths":["~/dispatch/batch/create/reinitiate"]
         },{
         "name": "Create_foot",
         "tags": [],
         "methods":["POST"],
-        "paths":["~/dispatch/batch/food/create"],
-        "original_path": "/batch/food/create"
+        "paths":["~/dispatch/batch/food/create"]
         },{
         "name": "Recreate_foot",
         "tags": [],
         "methods":["POST"],
-        "paths":["~/dispatch/batch/food/create/reinitiate"],
-        "original_path": "/batch/food/create/reinitiate"
+        "paths":["~/dispatch/batch/food/create/reinitiate"]
         },{
         "name": "Cancel_batch",
         "tags": [],
         "methods":["PUT"],
-        "paths":["~/dispatch/batch/(?<batch_id>[^/]+)/cancel"],
-        "original_path": "/batch/$(uri_captures['batch_id'])/cancel"
+        "paths":["~/dispatch/batch/(?<batch_id>[^/]+)/cancel"]
         },{
         "name": "Address_listing",
         "tags": [],
         "methods":["GET"],
-        "paths":["~/dispatch/listAddress"],
-        "original_path": "/listAddress"
+        "paths":["~/dispatch/listAddress"]
         },{
         "name": "Create_addresses",
         "tags": [],
         "methods":["POST"],
-        "paths":["~/dispatch/createAddress"],
-        "original_path": "/createAddress"
+        "paths":["~/dispatch/createAddress"]
         },{
         "name": "Update_addresses",
         "tags": [],
         "methods":["PUT"],
-        "paths":["~/dispatch/updateAddress"],
-        "original_path": "/updateAddress"
+        "paths":["~/dispatch/updateAddress"]
         },{
         "name": "Delete_addresses",
         "tags": [],
         "methods":["PUT"],
-        "paths":["~/dispatch/deleteAddress"],
-        "original_path": "/deleteAddress"
+        "paths":["~/dispatch/deleteAddress"]
         },{
         "name": "List_zones",
         "tags": [],
         "methods":["GET"],
-        "paths":["~/dispatch/getZones"],
-        "original_path": "/getZones"
+        "paths":["~/dispatch/getZones"]
         },{
         "name": "File_download",
         "tags": [],
         "methods":["GET"],
-        "paths":["~/dispatch/download"],
-        "original_path": "/download"
+        "paths":["~/dispatch/download"]
         },{
         "name": "List_cities",
         "tags": [],
         "methods":["GET"],
-        "paths":["~/dispatch/getCities"],
-        "original_path": "/getCities"
+        "paths":["~/dispatch/getCities"]
         },{
         "name": "List_services",
         "tags": [],
         "methods":["GET"],
-        "paths":["~/dispatch/getServices"],
-        "original_path": "/getServices"
+        "paths":["~/dispatch/getServices"]
         },{
         "name": "List_languages",
         "tags": [],
         "methods":["GET"],
-        "paths":["~/dispatch/lang"],
-        "original_path": "/lang"
+        "paths":["~/dispatch/lang"]
         },{
         "name": "List_sources",
         "tags": [],
         "methods":["GET"],
-        "paths":["~/dispatch/sources"],
-        "original_path": "/sources"
+        "paths":["~/dispatch/sources"]
         },{
         "name": "List_payment_methods",
         "tags": [],
         "methods":["GET"],
-        "paths":["~/dispatch/payment-methods"],
-        "original_path": "/payment-methods"
+        "paths":["~/dispatch/payment-methods"]
         },{
         "name": "Create_ride",
         "tags": [],
         "methods":["POST"],
-        "paths":["~/dispatch/ride/create"],
-        "original_path": "/ride/create"
+        "paths":["~/dispatch/ride/create"]
         },{
         "name": "Recreate_ride",
         "tags": [],
         "methods":["POST"],
-        "paths":["~/dispatch/ride/create/reinitiate"],
-        "original_path": "/ride/create/reinitiate"
+        "paths":["~/dispatch/ride/create/reinitiate"]
         },{
         "name": "File_upload",
         "tags": [],
         "methods":["POST"],
-        "paths":["~/dispatch/upload/tests"],
-        "original_path": "/upload/tests"
+        "paths":["~/dispatch/upload/tests"]
         },{
         "name": "File_upload2",
         "tags": [],
         "methods":["POST"],
-        "paths":["~/dispatch/file/upload"],
-        "original_path": "/file/upload"
+        "paths":["~/dispatch/file/upload"]
         },{
         "name": "Promo",
         "tags": [],
         "methods":["POST"],
-        "paths":["~/dispatch/apply/promo"],
-        "original_path": "/apply/promo"
+        "paths":["~/dispatch/apply/promo"]
         },{
         "name": "List_autocomplete",
         "tags": [],
         "methods":["GET"],
-        "paths":["~/dispatch/autocomplete"],
-        "original_path": "/autocomplete"
+        "paths":["~/dispatch/autocomplete"]
         },{
         "name": "geocoding",
         "tags": [],
         "methods":["GET"],
-        "paths":["~/dispatch/geocode"],
-        "original_path": "/geocode"
+        "paths":["~/dispatch/geocode"]
         },{
         "name": "users",
         "tags": [],
         "methods":["GET"],
-        "paths":["~/dispatch/users"],
-        "original_path": "/users"
+        "paths":["~/dispatch/users"]
         },{
         "name": "all_users",
         "tags": [],
         "methods":["GET"],
-        "paths":["~/dispatch/allUsers"],
-        "original_path": "/allUsers"
+        "paths":["~/dispatch/allUsers"]
         },{
         "name": "OTP_auth",
         "tags": [],
         "methods":["POST"],
-        "paths":["~/dispatch/check-otp"],
-        "original_path": "/check-otp"
+        "paths":["~/dispatch/check-otp"]
         },{
         "name": "Forgot_password",
         "tags": [],
         "methods":["POST"],
-        "paths":["~/dispatch/forgot-password"],
-        "original_path": "/forgot-password"
+        "paths":["~/dispatch/forgot-password"]
         },{
         "name": "Create_user",
         "tags": [],
         "methods":["POST"],
-        "paths":["~/dispatch/user/create"],
-        "original_path": "/user/create"
+        "paths":["~/dispatch/user/create"]
         },{
         "name": "Create_user_raptor",
         "tags": [],
         "methods":["POST"],
-        "paths":["~/dispatch/user/raptor/(?<id>[^/]+)/create"],
-        "original_path": "/user/raptor/$(uri_captures['id'])/create"
+        "paths":["~/dispatch/user/raptor/(?<id>[^/]+)/create"]
         },{
         "name": "Login",
         "tags": [],
         "methods":["POST"],
-        "paths":["~/dispatch/login"],
-        "original_path": "/login"
+        "paths":["~/dispatch/login"]
         },{
         "name": "List_performance",
         "tags": [],
         "methods":["GET"],
-        "paths":["~/dispatch/performance"],
-        "original_path": "/performance"
+        "paths":["~/dispatch/performance"]
         },{
         "name": "Update_users",
         "tags": [],
         "methods":["PUT"],
-        "paths":["~/dispatch/user/(?<id>[^/]+)/update"],
-        "original_path": "/user/$(uri_captures['id'])/update"
+        "paths":["~/dispatch/user/(?<id>[^/]+)/update"]
         },{
         "name": "Update_zones",
         "tags": [],
         "methods":["PUT"],
-        "paths":["~/dispatch/user/(?<id>[^/]+)/updateZones"],
-        "original_path": "/user/$(uri_captures['id'])/updateZones"
+        "paths":["~/dispatch/user/(?<id>[^/]+)/updateZones"]
         },{
         "name": "Update_password",
         "tags": [],
         "methods":["PUT"],
-        "paths":["~/dispatch/updatePassword"],
-        "original_path": "/updatePassword"
+        "paths":["~/dispatch/updatePassword"]
         },{
         "name": "Logout",
         "tags": [],
         "methods":["POST"],
-        "paths":["~/dispatch/logout"],
-        "original_path": "/logout"
+        "paths":["~/dispatch/logout"]
         },{
         "name": "Upload_image",
         "tags": [],
         "methods":["POST"],
-        "paths":["~/dispatch/uploadImage/(?<type>[^/]+)"],
-        "original_path": "/uploadImage/$(uri_captures['type'])"
+        "paths":["~/dispatch/uploadImage/(?<type>[^/]+)"]
         },{
         "name": "List_images",
         "tags": [],
         "methods":["GET"],
-        "paths":["~/dispatch/getImage/(?<type>[^/]+)/(?<image>[^/]+)"],
-        "original_path": "/getImage/$(uri_captures['type'])/$(uri_captures['image'])"
+        "paths":["~/dispatch/getImage/(?<type>[^/]+)/(?<image>[^/]+)"]
         },{
         "name": "booking_queue",
         "tags": [],
         "methods":["POST"],
-        "paths":["~/dispatch/booking_queue/add"],
-        "original_path": "/booking_queue/add"
+        "paths":["~/dispatch/booking_queue/add"]
         },{
         "name": "Add_queue",
         "tags": [],
         "methods":["POST"],
-        "paths":["~/dispatch/queue/add"],
-        "original_path": "/queue/add"
+        "paths":["~/dispatch/queue/add"]
         },{
         "name": "List_queue",
         "tags": [],
         "methods":["GET"],
-        "paths":["~/dispatch/booking_queue"],
-        "original_path": "/booking_queue"
+        "paths":["~/dispatch/booking_queue"]
         },{
         "name": "List_booking_queue",
         "tags": [],
         "methods":["GET"],
-        "paths":["~/dispatch/booking_queue/exists/(?<id>[^/]+)"],
-        "original_path": "/booking_queue/exists/$(uri_captures['id'])"
+        "paths":["~/dispatch/booking_queue/exists/(?<id>[^/]+)"]
         },{
         "name": "Update_booking_queue",
         "tags": [],
         "methods":["PUT"],
-        "paths":["~/dispatch/booking_queue/update"],
-        "original_path": "/booking_queue/update"
+        "paths":["~/dispatch/booking_queue/update"]
         },{
         "name": "Withdrawl",
         "tags": [],
         "methods":["POST"],
-        "paths":["~/dispatch/with-drawal"],
-        "original_path": "/with-drawal"
+        "paths":["~/dispatch/with-drawal"]
         },{
         "name": "Admin_bookings",
         "tags": [],
         "methods":["GET"],
-        "paths":["~/dispatch/admin/bookings"],
-        "original_path": "/admin/bookings"
+        "paths":["~/dispatch/admin/bookings"]
         },{
         "name": "Admin_cancel",
         "tags": [],
         "methods":["PUT"],
-        "paths":["~/dispatch/admin/cancel/trip"],
-        "original_path": "/admin/cancel/trip"
+        "paths":["~/dispatch/admin/cancel/trip"]
         },{
         "name": "List_wallet",
         "tags": [],
         "methods":["GET"],
-        "paths":["~/dispatch/wallet"],
-        "original_path": "/wallet"
+        "paths":["~/dispatch/wallet"]
         },{
         "name": "Update_wallet",
         "tags": [],
         "methods":["POST"],
-        "paths":["~/dispatch/wallet"],
-        "original_path": "/wallet"
+        "paths":["~/dispatch/wallet"]
         },{
         "name": "List_booking_notes",
         "tags": [],
         "methods":["GET"],
-        "paths":["~/dispatch/booking/notes/(?<booking_no>[^/]+)"],
-        "original_path": "/booking/notes/$(uri_captures['booking_no'])"
+        "paths":["~/dispatch/booking/notes/(?<booking_no>[^/]+)"]
         },{
         "name": "Update_booking_notes",
         "tags": [],
         "methods":["POST"],
-        "paths":["~/dispatch/booking/notes"],
-        "original_path": "/booking/notes"
+        "paths":["~/dispatch/booking/notes"]
     }]
 }

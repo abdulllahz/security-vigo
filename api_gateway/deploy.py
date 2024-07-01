@@ -7,11 +7,6 @@ import json
 import sys
 import os
 import io
-from dotenv import load_dotenv # pip3 install python-dotenv
-
-# Load environment variables from .env_staging file
-load_dotenv('.env_staging')
-
 
 ######################################################################################################################################
 # ASCII art
@@ -30,6 +25,11 @@ print('''\033[91m0\033[94m---\033[31mO
   \033[91m0
  \033[31mo\033[34m=\033[91m0
 \033[31mO\033[94m---\033[91m0\033[0m''')
+######################################################################################################################################
+#   Usage: sudo python3 deploy.py
+#    flags: 
+#     --db: self host DB
+#     --log: turn on logging 
 ######################################################################################################################################
 #
 #  Service Discovery:
@@ -53,29 +53,29 @@ print('''\033[91m0\033[94m---\033[31mO
 ######################################################################################################################################
 
 # Config variables
-logstash_user = os.getenv('LOGSTASH_USER')
-logstash_pass = os.getenv('LOGSTASH_PASS')
-dash_user = os.getenv('DASH_USER')
-dash_pass = os.getenv('DASH_PASS')
-kibana_user = os.getenv('KIBANA_USER')
-kibana_pass = os.getenv('KIBANA_PASS')
-project_prefix = os.getenv('PROJECT_PREFIX')
-path = os.getenv('PATH')
-postgres_host = os.getenv('POSTGRES_HOST')
-postgres_port = os.getenv('POSTGRES_PORT')
-postgres_user = os.getenv('POSTGRES_USER')
-postgres_pass = os.getenv('POSTGRES_PASS')
-redis_port = os.getenv('REDIS_PORT')
-elasticsearch_host = os.getenv('ELASTICSEARCH_HOST')
-elasticsearch_port = os.getenv('ELASTICSEARCH_PORT')
-logstash_port = os.getenv('LOGSTASH_PORT')
-logstash_host = os.getenv('LOGSTASH_HOST')
-kibana_port = os.getenv('KIBANA_PORT')
-kong_gateway_port = os.getenv('KONG_GATEWAY_PORT')
-kong_gateway_ssl_port = os.getenv('KONG_GATEWAY_SSL_PORT')
-kong_admin_port = os.getenv('KONG_ADMIN_PORT')
-kong_admin_ssl_port = os.getenv('KONG_ADMIN_SSL_PORT')
-kong_admin_ui_port = os.getenv('KONG_ADMIN_UI_PORT')
+logstash_user='logstash'
+logstash_pass='LoGstAsh_456'
+dash_user='Operations'
+dash_pass='Lol_Sometimes_4433'
+kibana_user='Kibana'
+kibana_pass='KibAna_456'
+project_prefix = 'BykeaKong'
+path='./config/'
+postgres_host=''
+postgres_port='5432'
+postgres_user='kong'
+postgres_pass='KoNg_123'
+redis_port='6379'
+elasticsearch_host=''
+elasticsearch_port='9200'
+logstash_port='5775'
+logstash_host=''
+kibana_port='5601'
+kong_gateway_port='8000'
+kong_gateway_ssl_port='8443'
+kong_admin_port='8001'
+kong_admin_ssl_port='8444'
+kong_admin_ui_port='8002'
 
 # Load configs
 toggle_devmode='--db' in sys.argv or '-d' in sys.argv
@@ -192,6 +192,7 @@ if toggle_devmode:
         network=network_name,
         ports=redis_port_mapped
     )
+    time.sleep(60)
 gw = client.containers.run(
     name= project_prefix+'Gateway',
     image='kong:3.6.1',
@@ -244,32 +245,32 @@ try:
         response = requests.post(f'http://127.0.0.1:{kong_admin_port}/services', json=payload, headers=header)
         service_id=response.json()['id']
     ######################################################################################################################################
+    # Populate mandatory plugin
+        payload={}
+        payload.update(common['rewriter'])
+        payload['tags']=['path_correction']
+        payload['instance_name']='ReWrite_'+config['name']
+        payload['config']['replace']['uri']=config['original_path']
+        payload.update({'service': {'id': service_id}})
+        #payload.update({'route': {'id': route_id}})
+        response = requests.post(f'http://127.0.0.1:{kong_admin_port}/plugins', json=payload, headers=header)
+    ######################################################################################################################################
     # Populate routes
         for route in config['routes']:
             payload={}
             payload.update(common['routes'])
             payload.update(route)
             payload.update({'service': {'id': service_id}})
-            payload.pop('original_path')
+            #payload.pop('original_path')
             response = requests.post(f'http://127.0.0.1:{kong_admin_port}/routes', json=payload, headers=header)
             route_id=response.json()['id']
-    ######################################################################################################################################
-    # Populate mandatory plugin
-            payload={}
-            payload.update(common['rewriter'])
-            payload['tags']=[route['paths'][0].replace('/','\\')]
-            payload['instance_name']='ReWrite_'+route['name']
-            payload['config']['replace']['uri']=route['original_path']
-            payload.update({'service': {'id': service_id}})
-            payload.update({'route': {'id': route_id}})
-            response = requests.post(f'http://127.0.0.1:{kong_admin_port}/routes/{route_id}/plugins', json=payload, headers=header)
     ######################################################################################################################################
     # Populate ServiceMap
     for service_map in service_maps:
         payload={}
         payload.update(common['routes'])
         payload.update(service_map['routes'][0])
-        payload.pop('original_path')
+        #payload.pop('original_path')
         response = requests.post(f'http://127.0.0.1:8001/routes', json=payload, headers=header)
         route_id=response.json()['id']
         payload={}
@@ -340,6 +341,9 @@ try:
 except Exception as e:
     print('Exception!')
     print(e)
+    print('Config!')
     print(config)
+    print('Payload!')
     print(payload)
+    print('Response!')
     print(response.json())

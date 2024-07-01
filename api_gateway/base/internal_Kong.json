@@ -4,8 +4,7 @@
         "protocols": ["http","https"],
         "methods": ["GET"],
         "paths": ["/api/v1/common/services"],
-        "tags": ["Core"],
-        "original_path": "/users/relogin"
+        "tags": ["Core"]
     }],
     "plugins":{
         "config": {
