@@ -234,6 +234,7 @@ try:
             payload.update(common['targets'])
             payload.update(target)
             payload.update({'upstream':{'id':upstream}})
+            payload.update({'target':f'{target["target"]}:443'})
             response = requests.post(f'http://127.0.0.1:{kong_admin_port}/upstreams/{upstream}/targets', json=payload, headers=header)
     ######################################################################################################################################
     # Populate services

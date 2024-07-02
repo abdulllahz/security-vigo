@@ -1,5 +1,5 @@
 {
-    "name":"Boleelagao",
+    "name":"nominatim",
     "original_path": "/$(uri_captures['default'])",
     "upstream":{
         "tags": ["Core","Auth","RateLimited","UserFacing"]
@@ -14,7 +14,7 @@
         "name": "DEFAULT",
         "protocols": ["http","https"],
         "methods": ["GET","PUT","POST","PATCH","DELETE","OPTIONS","HEAD","TRACE"],
-        "paths": ["~/bolee/(?<default>.*)"],
+        "paths": ["~/nominatim/(?<default>.*)"],
         "tags": ["Universal Acceptor"]
     }]
 }

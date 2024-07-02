@@ -21,7 +21,7 @@ for config in configs:
         for route in stuff['routes']:
             temp=route['name']
             route.update({
-                'name':f'{config_name}_{temp}',
+                'name':f'{temp}_{config["name"]}',
                 'hosts':[f'{config_name}']
             })
         f=open(path+f'enabled_{config_name}.json','w')
