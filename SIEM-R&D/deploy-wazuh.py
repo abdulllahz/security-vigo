@@ -44,10 +44,10 @@ Indexer= client.containers.run(
         detach=True,
         ports={
             '9200':9200,
-            '55000':55000
+            '55001':55001
         },
         network=network_name,
-        environment={'OPENSEARCH_JAVA_OPTS': '-Xms750m -Xmx750m'}
+        #environment={'OPENSEARCH_JAVA_OPTS': '-Xms750m -Xmx750m'}
         #volumes=volumes
 )
 
@@ -64,9 +64,9 @@ cmds=["apt update",
 "chmod 744 wazuh-install.sh",
 "chmod 744 wazuh-certs-tool.sh",
 "mkdir -p /usr/share/filebeat/module",
-f"sed -i 's/<indexer-node-ip>/{'127.0.0.1'}/g' config.yml",
-f"sed -i 's/<wazuh-manager-ip>/{'127.0.0.1'}/g' config.yml",
-f"sed -i 's/<dashboard-node-ip>/{'127.0.0.1'}/g' config.yml",
+f"sed -i 's/<indexer-node-ip>/{'siem.bykea.dev'}/g' config.yml",
+f"sed -i 's/<wazuh-manager-ip>/{'siem.bykea.dev'}/g' config.yml",
+f"sed -i 's/<dashboard-node-ip>/{'siem.bykea.dev'}/g' config.yml",
 "./wazuh-install.sh -dw deb",
 "./wazuh-certs-tool.sh --all",
 "tar -xzf wazuh-offline.tar.gz",
@@ -105,6 +105,9 @@ f"sed -i 's/<dashboard-node-ip>/{'127.0.0.1'}/g' config.yml",
 "chown -R wazuh-dashboard:wazuh-dashboard /etc/wazuh-dashboard/certs",
 "sed -i 's/${username}/admin/g' /etc/filebeat/filebeat.yml",
 "sed -i 's/${password}/admin/g' /etc/filebeat/filebeat.yml",
+"sed -i 's/#opensearch\.username:/opensearch\.username: admin/g' /etc/wazuh-dashboard/opensearch_dashboards.yml",
+"sed -i 's/#opensearch\.password:/opensearch\.password: admin/g' /etc/wazuh-dashboard/opensearch_dashboards.yml",
+"sed -i 's/127\.0\.0\.1:9200/siem\.bykea\.dev:9200/g' etc/filebeat/filebeat.yml"
 ]
 
 for cmd in cmds:
@@ -112,19 +115,19 @@ for cmd in cmds:
     print(f"[{result.exit_code}] "+cmd)
     print(result.output)
 
-result=Indexer.exec_run(user="wazuh-indexer",detach=True,cmd=f"/usr/share/wazuh-indexer/bin/systemd-entrypoint")
-print(result.output)
-print(result.exit_code)
-time.sleep(20)
-result=Indexer.exec_run(cmd=f"./usr/share/wazuh-indexer/bin/indexer-security-init.sh")
-print(result.output)
-print(result.exit_code)
-result=Indexer.exec_run(cmd=f"./etc/init.d/wazuh-manager start")
-print(result.output)
-print(result.exit_code)
-result=Indexer.exec_run(cmd=f"./etc/init.d/filebeat start")
-print(result.output)
-print(result.exit_code)
-result=Indexer.exec_run(cmd=f"./etc/systemd/system/wazuh-dashboard start")
-print(result.output)
-print(result.exit_code)
+#result=Indexer.exec_run(user="wazuh-indexer",detach=True,cmd=f"/usr/share/wazuh-indexer/bin/systemd-entrypoint")
+#print(result.output)
+#print(result.exit_code)
+#time.sleep(30)
+#result=Indexer.exec_run(cmd=f"./usr/share/wazuh-indexer/bin/indexer-security-init.sh")
+#print(result.output)
+#print(result.exit_code)
+#result=Indexer.exec_run(cmd=f"./etc/init.d/wazuh-manager start")
+#print(result.output)
+#print(result.exit_code)
+#result=Indexer.exec_run(cmd=f"./etc/init.d/filebeat start")
+#print(result.output)
+#print(result.exit_code)
+#result=Indexer.exec_run(user="wazuh-dashboard",detach=True,cmd=f"/usr/share/wazuh-dashboard/bin/opensearch-dashboards -e https://127.0.0.1:9200 -p 55001 -H 0.0.0.0")
+#print(result.output)
+#print(result.exit_code)
