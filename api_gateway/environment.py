@@ -4,6 +4,8 @@ import json
 import sys
 import os
 # Load configs
+# Example:
+# sudo python3 environment.py envX-#service.bykea.dev
 path='./config/'
 base='./base/'
 configs=[]

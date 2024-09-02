@@ -1,0 +1,20 @@
+{
+    "name":"loadboard",
+    "original_path": "/$(uri_captures['default'])",
+    "upstream":{
+        "tags": ["Core","Auth","RateLimited","UserFacing"]
+    },
+    "targets":[
+        {"target":"loadboard.bykea.net:443","weight":100,"tags":["test"]}
+    ],
+    "service":{
+        "tags": ["Core","Critical","UserFacing","RateLimited"]
+    },
+    "routes":[{
+        "name": "DEFAULT",
+        "protocols": ["http","https"],
+        "methods": ["GET","PUT","POST","PATCH","DELETE","OPTIONS","HEAD","TRACE"],
+        "paths": ["~/load/(?<default>.*)"],
+        "tags": ["Universal Acceptor"]
+    }]
+}

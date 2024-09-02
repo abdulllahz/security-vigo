@@ -1,11 +1,11 @@
 {
     "name":"nominatim",
-    "original_path": "/$(uri_captures['default'])",
+    "original_path": "/$(uri_captures['default'])/nominatim/reverse.php",
     "upstream":{
         "tags": ["Core","Auth","RateLimited","UserFacing"]
     },
     "targets":[
-        {"target":"enk8145uc07af.x.pipedream.net:443","weight":100,"tags":["test"]}
+        {"target":"nominatim.bykea.net:443","weight":100,"tags":["test"]}
     ],
     "service":{
         "tags": ["Core","Critical","UserFacing","RateLimited"]

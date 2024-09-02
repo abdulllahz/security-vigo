@@ -21,7 +21,8 @@ while (true) {
       client = new postgres.Client({user: 'bykea',password: 'bykea_123',host: 'db',database: 'authentication',port: 5432});
       await client.connect();
       console.log('Connected to the database successfully!');
-      break; // Exit the loop if the connection is successful
+      // Exit the loop if the connection is successful
+      break;
     } catch (error) {
       console.error('Failed to connect to the database:', error.message);
       await new Promise((resolve) => setTimeout(resolve, 3000));
@@ -29,8 +30,7 @@ while (true) {
 }
 app.listen(port, () => {
   console.log(`service is running on http://127.0.0.1:${port}`);
-});
-})();
+});})();
 
 //SERVICES
 async function InsertIdentity(client,pubkey){

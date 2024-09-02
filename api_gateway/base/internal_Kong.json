@@ -32,20 +32,23 @@
             "service_map":[{
                 "service_name":"talos","service_prefix":"talos/"},
                 {"service_name":"kronos","service_prefix":"kronos/","available_routes":[
-                    {"path_name":"kronos_get_bookings_for_driver","path":"bookings/partner/"},
+                    {"path_name":"kronos_get_bookings_for_driver","path":"v1/bookings/partner/"},
                     {"path_name":"kronos_get_bookings_for_customer","path":"v1/bookings/customer/"},
                     {"path_name":"kronos_get_bookings_by_id","path":"v1/bookings/:id/"},
-                    {"path_name":"kronos_partner_summary","path":"partner/summary/"},
-                    {"path_name":"kronos_partner_invoice","path":"bookings/:id/invoice/"},
+                    {"path_name":"kronos_partner_summary","path":"v1/partner/summary/"},
+                    {"path_name":"kronos_partner_invoice","path":"v1/bookings/:id/invoice/"},
                     {"path_name":"kronos_customer_invoice","path":"v1/bookings/:id/invoice/"},
-                    {"path_name":"kronos_partner_batch_invoice","path":"batch/:id/invoice/"},
+                    {"path_name":"kronos_partner_batch_invoice","path":"v1/batch/:id/invoice/"},
                     {"path_name":"kronos_customer_batch_invoice","path":"v1/batch/:id/invoice/"}
                 ]},
                 {"service_name":"raptor","service_prefix":"raptor/"},
                 {"service_name":"belaz","service_prefix":"belaz/"},
                 {"service_name":"bolee_lagao","service_prefix":"bolee-lagao/"},
                 {"service_name":"geocode","service_prefix":"geocode/"},
-                {"service_name":"nominatim","service_prefix":"nominatim/"}],
+                {"service_name":"nominatim","service_prefix":"nominatim/"},
+                {"service_name": "socket","service_prefix": "talos/socket.io/"},
+                {"service_name": "loadboard","service_prefix": "loadboard/"}
+            ],
                 "dt":"2024-05-13T11:33:51.116Z",
                 "_id":"663c6fa64c024e4a95242491"
             },
