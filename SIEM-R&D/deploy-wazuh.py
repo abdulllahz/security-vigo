@@ -7,14 +7,13 @@ import io
 client = docker.from_env()
 cur_dir = os.getcwd()
 install = open('wazuh-install.sh', 'r')
-certgen = open('wazuh-certs-tool.sh', 'r')
+#certgen = open('wazuh-certs-tool.sh', 'r')
 install_str=install.read()
-certgen_str=certgen.read()
+#certgen_str=certgen.read()
 install.close()
-certgen.close()
+#certgen.close()
 project_prefix = 'wazuh'
 script_version = '4.8.1-1'
-domain = '127.0.0.1'
 username = 'admin'
 password = 'admin'
 path = '/home/wazuh_files/'
@@ -48,12 +47,12 @@ hosts:
       run_as: false
 """,
 # Manager
-"""
+f"""
 output.elasticsearch:
-  hosts: ["127.0.0.1:9200"]
+  hosts: ["wazuh.indexer:9200"]
   protocol: https
-  username: ${username}
-  password: ${password}
+  username: {username}
+  password: {password}
   ssl.certificate_authorities:
     - /etc/filebeat/certs/root-ca.pem
   ssl.certificate: "/etc/filebeat/certs/filebeat.pem"
@@ -94,7 +93,7 @@ nodes:
   # Wazuh indexer nodes
   indexer:
     - name: node-1
-      ip: "siem.bykea.dev"
+      ip: "wazuh.indexer"
     #- name: node-2
     #  ip: "<indexer-node-ip>"
     #- name: node-3
@@ -105,7 +104,7 @@ nodes:
   # node, each one must have a node_type
   server:
     - name: wazuh-1
-      ip: "siem.bykea.dev"
+      ip: "wazuh.manager"
     #  node_type: master
     #- name: wazuh-2
     #  ip: "<wazuh-manager-ip>"
@@ -117,7 +116,7 @@ nodes:
   # Wazuh dashboard nodes
   dashboard:
     - name: dashboard
-      ip: "siem.bykea.dev"
+      ip: "wazuh.server"
 """
 ]
 cmds=[
@@ -127,7 +126,6 @@ cmds=[
     f"mkdir -p /usr/share/filebeat/module",
     f"mkdir -p /usr/share/wazuh-dashboard/data/wazuh/config/",
     f"chmod 777 wazuh-install.sh",
-    f"chmod 777 wazuh-certs-tool.sh",
     f"/wazuh-install.sh -dw deb",
     f"tar -xzf wazuh-offline.tar.gz",
     f"tar -xzf wazuh-offline/wazuh-files/wazuh-filebeat-0.4.tar.gz -C /usr/share/filebeat/module",
@@ -271,11 +269,11 @@ async def main():
     )
 
     push_string_to_container(Server,"wazuh-install.sh",          install_str,"/")
-    push_string_to_container(Server,"wazuh-certs-tool.sh",       certgen_str,"/")
+#    push_string_to_container(Server,"wazuh-certs-tool.sh",       certgen_str,"/")
     push_string_to_container(Manager,"wazuh-install.sh",         install_str,"/")
-    push_string_to_container(Manager,"wazuh-certs-tool.sh",      certgen_str,"/")
+#    push_string_to_container(Manager,"wazuh-certs-tool.sh",      certgen_str,"/")
     push_string_to_container(Indexer,"wazuh-install.sh",         install_str,"/")
-    push_string_to_container(Indexer,"wazuh-certs-tool.sh",      certgen_str,"/")
+#    push_string_to_container(Indexer,"wazuh-certs-tool.sh",      certgen_str,"/")
     for cmd in cmds:
         await asyncio.gather(
             cmd_run(Indexer,cmd),

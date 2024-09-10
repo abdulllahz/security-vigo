@@ -1,11 +1,13 @@
 {
     "name":"boleelagao",
     "original_path": "/$(uri_captures['default'])",
+    "original_host": "boleelagao.bykea.net",
     "upstream":{
         "tags": ["Core","Auth","RateLimited","UserFacing"]
     },
     "targets":[
-        {"target":"boleelagao.bykea.net:443","weight":100,"tags":["test"]}
+        {"target":"boleelagao.bykea.net:443","weight":100,"tags":["CF-DNS"]},
+        {"target":"a0fe565fedcac4f6eb40ba9320e40e88-979311317.eu-west-1.elb.amazonaws.com:443","weight":1,"tags":["AWS-ELB"]}
     ],
     "service":{
         "tags": ["Core","Critical","UserFacing","RateLimited"]

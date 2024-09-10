@@ -51,6 +51,21 @@ print('''\033[91m0\033[94m---\033[31mO
 #                                                                                                              |----------|
 #
 ######################################################################################################################################
+# Request API Gateway Release:
+# Requester: ___________________
+# RFC: https://developer.mozilla.org/en-US/docs/Web/HTTP/Resources_and_specifications
+# Related PR: ___________________
+# Related Release:  ___________________
+# Method :: Host+Path :: RequestSchema :: ResponseSchema :: Auth? :: Redis? :: Resources (SMS,Voicecall) ::
+# Expected Session QPS :: Expected Global QPS :: Usage Description :: Compliance
+# Gateway PR: ___________________
+# Interaction Diagram: ___________________
+# FE Dev Approval: Checkbox
+# BE Dev Approval: Checkbox
+# Sec Eng Approval: Checkbox
+# Data Eng Approval: Checkbox
+# Infra Eng Approval: Checkbox
+######################################################################################################################################
 
 # Config variables
 logstash_user='logstash'
@@ -76,6 +91,8 @@ kong_gateway_ssl_port='8443'
 kong_admin_port='8001'
 kong_admin_ssl_port='8444'
 kong_admin_ui_port='8002'
+forward_http='80'
+forward_https='443'
 
 # Load configs
 toggle_devmode='--db' in sys.argv or '-d' in sys.argv
@@ -110,8 +127,8 @@ elasticsearch_port_mapped={elasticsearch_port:elasticsearch_port,'9300':'9300'}
 logstash_port_mapped={f'{logstash_port}/udp':logstash_port}
 kibana_port_mapped={kibana_port:kibana_port}
 kong_port_mapped={
-        kong_gateway_port:kong_gateway_port,
-        kong_gateway_ssl_port:kong_gateway_ssl_port,
+        kong_gateway_port:forward_http,
+        kong_gateway_ssl_port:forward_https,
         kong_admin_port:kong_admin_port,
         kong_admin_ssl_port:kong_admin_ssl_port,
         kong_admin_ui_port:kong_admin_ui_port
@@ -252,6 +269,7 @@ try:
         payload['tags']=['path_correction']
         payload['instance_name']='ReWrite_'+config['name']
         payload['config']['replace']['uri']=config['original_path']
+        payload['config']['add']['headers']=f'Hosts: {config['original_host']}'
         payload.update({'service': {'id': service_id}})
         #payload.update({'route': {'id': route_id}})
         response = requests.post(f'http://127.0.0.1:{kong_admin_port}/plugins', json=payload, headers=header)

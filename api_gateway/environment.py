@@ -29,7 +29,6 @@ for config in configs:
         f=open(path+f'enabled_{config_name}.json','w')
         f.write(json.dumps(stuff))
         f.close()
-        #print(path+f'enabled_{config_name}.json')
 f=open(base+'internal_Kong.json','r')
 kong=json.load(f)
 f.close()
@@ -38,8 +37,7 @@ for environment in sys.argv[1:]:
     stuff.update(kong)
     temp=environment.replace('#service','api')
     stuff['routes'][0]['name']=f'{temp}_ServiceMap'
-    stuff['ServiceMap']['data']['base_url']=temp
+    stuff['ServiceMap']['data']['base_url']=f'{temp}/'
     f=open(path+f'enabled_{temp}_Kong.json','w')
     f.write(json.dumps(stuff))
     f.close()
-    #print(f'enabled_{temp}_Kong.json')
