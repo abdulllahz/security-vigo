@@ -1,0 +1,142 @@
+<!--Example:
+{
+    "route": {
+        "https_redirect_status_code": 426,
+        "methods": [
+            "GET",
+            "PUT",
+            "POST",
+            "PATCH",
+            "DELETE",
+            "OPTIONS",
+            "HEAD",
+            "TRACE"
+        ],
+        "tags": [
+            "Universal Acceptor"
+        ],
+        "service": {
+            "id": "4b745901-0aea-45d3-a256-44999d27f770"
+        },
+        "preserve_host": false,
+        "path_handling": "v0",
+        "ws_id": "d2cf3c5c-5bf5-4a37-866d-46f14627216a",
+        "paths": [
+            "~/talos/(?<default>.*)"
+        ],
+        "response_buffering": true,
+        "updated_at": 1724308375,
+        "id": "6cda286c-514f-4663-a50f-27acde498432",
+        "name": "DEFAULT_talos",
+        "created_at": 1724303754,
+        "strip_path": false,
+        "protocols": [
+            "http",
+            "https"
+        ],
+        "regex_priority": 0,
+        "request_buffering": true
+    },
+    "tries": [
+        {
+            "ip": "100.24.131.189",
+            "balancer_latency": 0,
+            "port": 443,
+            "balancer_start": 1726664564257,
+            "balancer_start_ns": 1726664564257500000,
+            "balancer_latency_ns": 7936
+        }
+    ],
+    "upstream_uri": "/api/v1/common/services",
+    "request_body": " aaaa ",
+    "service": {
+        "host": "payment1-talos.bykea.dev.kong.internal",
+        "enabled": true,
+        "write_timeout": 60000,
+        "protocol": "https",
+        "port": 443,
+        "created_at": 1724303754,
+        "updated_at": 1725269584,
+        "id": "4b745901-0aea-45d3-a256-44999d27f770",
+        "name": "payment1-talos.bykea.dev",
+        "ws_id": "d2cf3c5c-5bf5-4a37-866d-46f14627216a",
+        "retries": 5,
+        "connect_timeout": 60000,
+        "tags": [
+            "Core",
+            "Critical",
+            "UserFacing",
+            "RateLimited"
+        ],
+        "read_timeout": 60000
+    },
+    "latencies": {
+        "proxy": 282,
+        "kong": 1,
+        "request": 283
+    },
+    "request": {
+        "size": 257,
+        "uri": "/talos/api/v1/common/services",
+        "url": "https://payment1-api.bykea.dev:8443/talos/api/v1/common/services",
+        "querystring": {},
+        "tls": {
+            "version": "TLSv1.3",
+            "client_verify": "NONE",
+            "cipher": "TLS_AES_128_GCM_SHA256"
+        },
+        "id": "00d07f1f8371a906457b31650bf9d142",
+        "method": "POST",
+        "headers": {
+            "content-type": "application/x-www-form-urlencoded",
+            "cf-ipcountry": "IE",
+            "host": "payment1-api.bykea.dev",
+            "accept-encoding": "gzip, br",
+            "accept": "*/*",
+            "cf-connecting-ip": "54.75.185.103",
+            "content-length": "6",
+            "user-agent": "curl/8.9.1",
+            "cf-ray": "8c51883679971b8a-DUB",
+            "x-forwarded-proto": "https",
+            "cf-visitor": "{\"scheme\":\"https\"}",
+            "x-forwarded-for": "54.75.185.103",
+            "cdn-loop": "cloudflare; loops=1"
+        }
+    },
+    "source": "upstream",
+    "client_ip": "162.158.38.200",
+    "started_at": 1726664564256,
+    "upstream_status": "404",
+    "response": {
+        "size": 312,
+        "status": 404,
+        "headers": {
+            "content-type": "application/json; charset=utf-8",
+            "content-length": "23",
+            "date": "Wed, 18 Sep 2024 13:02:44 GMT",
+            "via": "kong/3.6.1",
+            "access-control-allow-origin": "*",
+            "x-kong-request-id": "00d07f1f8371a906457b31650bf9d142",
+            "server": "nginx/1.18.0 (Ubuntu)",
+            "x-kong-upstream-latency": "282",
+            "x-kong-proxy-latency": "1",
+            "connection": "close",
+            "etag": "W/\"17-SuRA/yvUWUo8rK6x7dKURLeBo+0\"",
+            "vary": "X-HTTP-Method-Override, Accept-Encoding"
+        }
+    },
+    "response_body": "kong.response.get_raw_body()"
+}
+-->
+
+<decoder name="Kong_Decoder">
+  <type>json</type>
+  <plugin_decoder>JSON_Decoder</plugin_decoder>
+  <program_name>Kong</program_name>
+</decoder>
+
+<decoder name="Kong_Admin_Decoder">
+  <type>json</type>
+  <plugin_decoder>JSON_Decoder</plugin_decoder>
+  <program_name>Kong-Admin</program_name>
+</decoder>
