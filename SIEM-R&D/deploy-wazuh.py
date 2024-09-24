@@ -6,12 +6,13 @@ import os
 import io
 client = docker.from_env()
 cur_dir = os.getcwd()
-install =               open("wazuh-install.sh", 'r')
-dashboard_indexer =     open("dashboard_indexer.conf", 'r')
-dashboard_manager =     open("dashboard_manager.conf", 'r')
+install =               open("wazuh-install.sh",'r')
+dashboard_indexer =     open("dashboard_indexer.conf",'r')
+dashboard_manager =     open("dashboard_manager.conf",'r')
 manager_indexer =       open("manager_indexer.conf",'r')
-preinstall_certgen =    open("preinstall_certgen.conf", 'r')
-forwarder_manager =     open("forwarder_manager.conf", 'r')
+preinstall_certgen =    open("preinstall_certgen.conf",'r')
+forwarder_manager =     open("forwarder_manager.conf",'r')
+forwarder_agent =       open("forwarder_agent.conf",'r')
 kong_decoder =          open('rules/0171-KongHTTP_decoders.xml','r')
 kong_rules =            open('rules/0261-KongHTTP_rules.xml','r')
 #certgen = open('wazuh-certs-tool.sh', 'r')
@@ -21,6 +22,7 @@ dashboard_manager_str=  dashboard_manager.read()
 manager_indexer_str=    manager_indexer.read()
 preinstall_certgen_str= preinstall_certgen.read()
 forwarder_manager_str=  forwarder_manager.read()
+forwarder_agent_str=    forwarder_agent.read()
 kong_decoder_str=       kong_decoder.read()
 kong_rules_str=         kong_rules.read()
 #certgen_str=certgen.read()
@@ -30,11 +32,13 @@ dashboard_manager       .close()
 manager_indexer         .close()
 preinstall_certgen      .close()
 forwarder_manager       .close()
+forwarder_agent         .close()
 kong_decoder            .close()
 kong_rules              .close()
 #certgen.close()
 project_prefix = 'wazuh'
 script_version = '4.8.1-1'
+agent_url = f'https://packages.wazuh.com/4.x/apt/pool/main/w/wazuh-agent/wazuh-agent_{script_version}_amd64.deb'
 path = '/home/wazuh_files/'
 certpath = f'{path}/wazuh-certificates'
 ui_username =       "admin"
@@ -47,6 +51,7 @@ dashboard_host =    "wazuh.dashboard"
 dashboard_port =    "443"
 indexer_port =      "9200"
 manager_port =      "55000"
+manager_agent_port= "1514"
 forwarder_port =    "7799"
 
 ###################################################################
@@ -84,12 +89,18 @@ config=[
     # Forwarder
         forwarder_manager_str.format(**{
             "forwarder_port":   forwarder_port
+        }),
+    # Agent
+        forwarder_agent_str.format(**{
+            "manager_host":       manager_host,
+            "manager_agent_port": manager_agent_port
         })
-]
+]       
 cmds=[
     # Prepration
         f"a:apt update",
-        f"a:apt install -y curl lsof gawk procps libcap2-bin lsb-release",
+        f"a:apt install -y curl lsof gawk procps libcap2-bin lsb-release wget",
+        f"f:curl {agent_url} -o /wazuh-agent_{script_version}_amd64.deb",
         f"m:mkdir -p /usr/share/filebeat/module",
         f"d:mkdir -p /usr/share/wazuh-dashboard/data/wazuh/config/",
         f"a:chmod 777 /wazuh-install.sh",
@@ -100,6 +111,7 @@ cmds=[
         f"m:dpkg -i /wazuh-offline/wazuh-packages/filebeat-oss-7.10.2-amd64.deb",
         f"i:dpkg -i /wazuh-offline/wazuh-packages/wazuh-indexer_{script_version}_amd64.deb",
         f"d:dpkg -i /wazuh-offline/wazuh-packages/wazuh-dashboard_{script_version}_amd64.deb",
+        f"f:dpkg -i /wazuh-agent_{script_version}_amd64.deb",
         f"m:mkdir /etc/filebeat/certs",
         f"i:mkdir /etc/wazuh-indexer/certs",
         f"d:mkdir /etc/wazuh-dashboard/certs",
@@ -144,22 +156,22 @@ def cmd_run(c,e):
             result["output"]=str(result["output"])+str(result_tmp.output)
         return result
     if e[0:2] == 'm:':
-        result_tmp=c['m'].exec_run(cmd=e[2:])
+        result_tmp=c['m'].exec_run(user="root",cmd=e[2:])
         result["exit_code"]=result["exit_code"]|result_tmp.exit_code
         result["output"]=str(result["output"])+str(result_tmp.output)
         return result
     if e[0:2] == 'i:':
-        result_tmp=c['i'].exec_run(cmd=e[2:])
+        result_tmp=c['i'].exec_run(user="root",cmd=e[2:])
         result["exit_code"]=result["exit_code"]|result_tmp.exit_code
         result["output"]=str(result["output"])+str(result_tmp.output)
         return result
     if e[0:2] == 'd:':
-        result_tmp=c['d'].exec_run(cmd=e[2:])
+        result_tmp=c['d'].exec_run(user="root",cmd=e[2:])
         result["exit_code"]=result["exit_code"]|result_tmp.exit_code
         result["output"]=str(result["output"])+str(result_tmp.output)
         return result
     if e[0:2] == 'f:':
-        result_tmp=c['f'].exec_run(cmd=e[2:])
+        result_tmp=c['f'].exec_run(user="root",cmd=e[2:])
         result["exit_code"]=result["exit_code"]|result_tmp.exit_code
         result["output"]=str(result["output"])+str(result_tmp.output)
         return result
@@ -266,8 +278,12 @@ async def main():
                 '7799':7799
             },
             network=network_name,
-            volumes=[f"{cur_dir}/wazuh_volume/:{path}"]
-            #environment={'OPENSEARCH_JAVA_OPTS': '-Xms750m -Xmx750m'}
+            volumes=[f"{cur_dir}/wazuh_volume/:{path}"],
+            environment={
+                'WAZUH_MANAGER':f'{manager_host}',
+                'WAZUH_AGENT_GROUP':'default',
+                'WAZUH_AGENT_NAME':'ForwarderAgent'
+            }
     )
     containers_set={"i":Indexer,"m":Manager,"d":Server,"f":Forwarder}
 ###################################################################
@@ -286,13 +302,13 @@ async def main():
         if result["exit_code"]!=0:
             print(result["output"])
             print("=================================")
-    
 # More FILES
     push_string_to_container(Server,"opensearch_dashboards.yml",    config[0],"/etc/wazuh-dashboard/")
     push_string_to_container(Server,"wazuh.yml",                    config[1],"/usr/share/wazuh-dashboard/data/wazuh/config/")
     push_string_to_container(Manager,"filebeat.yml",                config[2],"/etc/filebeat/")
+    push_string_to_container(Manager,"0171-KongHTTP_decoders.xml",  kong_decoder_str,"/var/ossec/ruleset/decoders/")
     push_string_to_container(Forwarder,"logstash.conf",             config[4],"/usr/share/logstash/pipeline/")
-    push_string_to_container(Forwarder,"0171-KongHTTP_decoders.xml",kong_decoder_str,"/usr/share/logstash/pipeline/")
+    push_string_to_container(Forwarder,"ossec.conf",                config[5],"/var/ossec/etc/")
 ###################################################################
 
 #result=Indexer.exec_run(user="wazuh-indexer",detach=True,cmd=f"/usr/share/wazuh-indexer/bin/systemd-entrypoint")
