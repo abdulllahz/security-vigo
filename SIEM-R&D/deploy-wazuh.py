@@ -66,12 +66,11 @@ config=[
             "dashboard_port":   dashboard_port
         }),
     # Indexer
-        dashboard_indexer_str.format(**{
+        dashboard_manager_str.format(**{
             "username":         ui_username,
             "password":         ui_password,
-            "dashboard_port":   dashboard_port,
-            "indexer_host":     indexer_host,
-            "indexer_port":     indexer_port
+            "manager_host":     manager_host,
+            "manager_port":     manager_port
         }),
     # Manager
         manager_indexer_str.format(**{

@@ -48,7 +48,8 @@
                 {"service_name":"geocode","service_prefix":"geocode/"},
                 {"service_name":"nominatim","service_prefix":"nominatim/"},
                 {"service_name":"socket","service_prefix":"talos/socket.io"},
-                {"service_name":"loadboard","service_prefix":"load/"}
+                {"service_name":"loadboard","service_prefix":"load/"},
+                {"service_name":"maps","service_prefix":"jabajaba/"}
             ],
                 "dt":"2024-05-13T11:33:51.116Z",
                 "_id":"663c6fa64c024e4a95242491"
