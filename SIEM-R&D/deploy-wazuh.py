@@ -66,15 +66,15 @@ forwarder_port =    "7799"
 # Populate configuration
 config=[
     dashboard_indexer_str.format(**{
-            "username":         username,
-            "password":         password,
+            "username":         indexerAdm_username,
+            "password":         indexerAdm_password,
             "indexer_host":     indexer_host,
             "indexer_port":     indexer_port,
             "dashboard_port":   dashboard_port
     }),
     dashboard_manager_str.format(**{
-            "username":         ui_username,
-            "password":         ui_password,
+            "username":         managerWUI_username,
+            "password":         managerWUI_password,
             "manager_host":     manager_host,
             "manager_port":     manager_port
     }),
