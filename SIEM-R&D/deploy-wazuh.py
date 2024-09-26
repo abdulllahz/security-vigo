@@ -41,10 +41,18 @@ script_version = '4.8.1-1'
 agent_url = f'https://packages.wazuh.com/4.x/apt/pool/main/w/wazuh-agent/wazuh-agent_{script_version}_amd64.deb'
 path = '/home/wazuh_files/'
 certpath = f'{path}/wazuh-certificates'
-ui_username =       "admin"
-ui_password =       "admin"
-username =          "wazuh-wui"
-password =          "wazuh-wui"
+username =  "admin"
+password =  "admin"
+
+indexerKib_username = ""
+indexerKib_password = ""
+indexerAdm_username = "admin"
+indexerAdm_password = "admin"
+managerApi_username = ""
+managerApi_password = ""
+managerWUI_username = "wazuh-wui"
+managerWUI_password = "wazuh-wui"
+
 indexer_host =      "wazuh.indexer"
 manager_host =      "wazuh.manager"
 dashboard_host =    "wazuh.dashboard"
@@ -57,43 +65,37 @@ forwarder_port =    "7799"
 ###################################################################
 # Populate configuration
 config=[
-    # Dashboards
-        dashboard_indexer_str.format(**{
+    dashboard_indexer_str.format(**{
             "username":         username,
             "password":         password,
             "indexer_host":     indexer_host,
             "indexer_port":     indexer_port,
             "dashboard_port":   dashboard_port
-        }),
-    # Indexer
-        dashboard_manager_str.format(**{
+    }),
+    dashboard_manager_str.format(**{
             "username":         ui_username,
             "password":         ui_password,
             "manager_host":     manager_host,
             "manager_port":     manager_port
-        }),
-    # Manager
-        manager_indexer_str.format(**{
-            "username":         username,
-            "password":         password,
+    }),
+    manager_indexer_str.format(**{
+            "username":         indexerAdm_username,
+            "password":         indexerAdm_password,
             "indexer_host":     indexer_host,
             "indexer_port":     indexer_port
-        }),
-    # Certgen
-        preinstall_certgen_str.format(**{
+    }),
+    preinstall_certgen_str.format(**{
             "indexer_host":     indexer_host,
             "manager_host":     manager_host,
             "dashboard_host":   dashboard_host,
-        }),
-    # Forwarder
-        forwarder_manager_str.format(**{
+    }),
+    forwarder_manager_str.format(**{
             "forwarder_port":   forwarder_port
-        }),
-    # Agent
-        forwarder_agent_str.format(**{
+    }),
+    forwarder_agent_str.format(**{
             "manager_host":       manager_host,
             "manager_agent_port": manager_agent_port
-        })
+    })
 ]       
 cmds=[
     # Prepration
@@ -137,12 +139,12 @@ cmds=[
         f"m:chown -R root:root                                    /etc/filebeat/certs",
         f"m:chmod go+r                                            /etc/filebeat/wazuh-template.json",
     # Save creds in manager
-        f"m:/var/ossec/bin/wazuh-keystore -f indexer -k username -v {username}",
-        f"m:/var/ossec/bin/wazuh-keystore -f indexer -k password -v {password}",
+        f"m:/var/ossec/bin/wazuh-keystore -f indexer -k username -v {indexerAdm_username}",
+        f"m:/var/ossec/bin/wazuh-keystore -f indexer -k password -v {indexerAdm_password}",
     # Save creds in filebeat
         f"m:filebeat keystore create",
-        f"m:echo admin | filebeat keystore add username --stdin --force",
-        f"m:echo admin | filebeat keystore add password --stdin --force"
+        f"m:echo {indexerAdm_username} | filebeat keystore add username --stdin --force",
+        f"m:echo {indexerAdm_password} | filebeat keystore add password --stdin --force"
 ]
 ###################################################################
 # Helpers

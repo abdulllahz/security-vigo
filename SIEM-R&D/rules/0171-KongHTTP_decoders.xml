@@ -130,13 +130,13 @@
 -->
 
 <decoder name="Kong_Decoder">
-  <type>json</type>
+  <type>web-logs</type>
   <plugin_decoder>JSON_Decoder</plugin_decoder>
   <program_name>Kong</program_name>
 </decoder>
 
 <decoder name="Kong_Admin_Decoder">
-  <type>json</type>
+  <type>web-logs</type>
   <plugin_decoder>JSON_Decoder</plugin_decoder>
   <program_name>Kong-Admin</program_name>
 </decoder>
