@@ -43,6 +43,7 @@
                     {"path_name":"kronos_customer_batch_invoice","path":"v1/batch/:id/invoice"}
                 ]},
                 {"service_name":"raptor","service_prefix":"raptor/"},
+                {"service_name":"faltu","service_prefix":"faltu/"},
                 {"service_name":"belaz","service_prefix":"belaz/"},
                 {"service_name":"bolee_lagao","service_prefix":"bolee/"},
                 {"service_name":"geocode","service_prefix":"geocode/"},

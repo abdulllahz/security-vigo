@@ -13,8 +13,6 @@ manager_indexer =       open("manager_indexer.conf",'r')
 preinstall_certgen =    open("preinstall_certgen.conf",'r')
 forwarder_manager =     open("forwarder_manager.conf",'r')
 forwarder_agent =       open("forwarder_agent.conf",'r')
-kong_decoder =          open('rules/0171-KongHTTP_decoders.xml','r')
-kong_rules =            open('rules/0261-KongHTTP_rules.xml','r')
 #certgen = open('wazuh-certs-tool.sh', 'r')
 install_str=            install.read()
 dashboard_indexer_str=  dashboard_indexer.read()
@@ -23,8 +21,6 @@ manager_indexer_str=    manager_indexer.read()
 preinstall_certgen_str= preinstall_certgen.read()
 forwarder_manager_str=  forwarder_manager.read()
 forwarder_agent_str=    forwarder_agent.read()
-kong_decoder_str=       kong_decoder.read()
-kong_rules_str=         kong_rules.read()
 #certgen_str=certgen.read()
 install                 .close()
 dashboard_indexer       .close()
@@ -33,8 +29,6 @@ manager_indexer         .close()
 preinstall_certgen      .close()
 forwarder_manager       .close()
 forwarder_agent         .close()
-kong_decoder            .close()
-kong_rules              .close()
 #certgen.close()
 project_prefix = 'wazuh'
 script_version = '4.8.1-1'
@@ -105,7 +99,7 @@ cmds=[
         f"m:mkdir -p /usr/share/filebeat/module",
         f"d:mkdir -p /usr/share/wazuh-dashboard/data/wazuh/config/",
         f"a:chmod 777 /wazuh-install.sh",
-        f"a:/wazuh-install.sh -dw deb",
+        f"a:/wazuh-install.sh -ws deb",
         f"a:tar -xzf wazuh-offline.tar.gz",
         f"m:tar -xzf wazuh-offline/wazuh-files/wazuh-filebeat-0.4.tar.gz -C /usr/share/filebeat/module",
         f"m:dpkg -i /wazuh-offline/wazuh-packages/wazuh-manager_{script_version}_amd64.deb",
@@ -255,7 +249,12 @@ async def main():
                 '514/udp':514
             },
             network=network_name,
-            volumes=[f"{cur_dir}/wazuh_volume/:{path}"]
+            volumes=[
+                f"{cur_dir}/wazuh_volume/:{path}",
+                f"{cur_dir}/decoder/:/var/ossec/ruleset/decoders/",
+                f"{cur_dir}/rule/:/var/ossec/ruleset/rules/",
+                f"{cur_dir}/sca/:/var/ossec/ruleset/decoders/sca/",
+            ]
             #environment={'OPENSEARCH_JAVA_OPTS': '-Xms750m -Xmx750m'}
     )
     Server= client.containers.run(
@@ -307,7 +306,6 @@ async def main():
     push_string_to_container(Server,"opensearch_dashboards.yml",    config[0],"/etc/wazuh-dashboard/")
     push_string_to_container(Server,"wazuh.yml",                    config[1],"/usr/share/wazuh-dashboard/data/wazuh/config/")
     push_string_to_container(Manager,"filebeat.yml",                config[2],"/etc/filebeat/")
-    push_string_to_container(Manager,"0171-KongHTTP_decoders.xml",  kong_decoder_str,"/var/ossec/ruleset/decoders/")
     push_string_to_container(Forwarder,"logstash.conf",             config[4],"/usr/share/logstash/pipeline/")
     push_string_to_container(Forwarder,"ossec.conf",                config[5],"/var/ossec/etc/")
 ###################################################################
