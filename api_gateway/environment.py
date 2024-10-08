@@ -23,8 +23,8 @@ for config in configs:
         for route in stuff['routes']:
             temp=route['name']
             route.update({
-                'name':f'{temp}_{config["name"]}',
-                'hosts':[f'{config_name}']
+                'name':f'{temp}_{config["name"]}'
+                #'hosts':[f'{config_name}']
             })
         f=open(path+f'enabled_{config_name}.json','w')
         f.write(json.dumps(stuff))
