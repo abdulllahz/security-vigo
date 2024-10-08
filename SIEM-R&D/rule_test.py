@@ -13,8 +13,6 @@ manager_indexer =       open("manager_indexer.conf",'r')
 preinstall_certgen =    open("preinstall_certgen.conf",'r')
 forwarder_manager =     open("forwarder_manager.conf",'r')
 forwarder_agent =       open("forwarder_agent.conf",'r')
-kong_decoder =          open('rules/0171-KongHTTP_decoders.xml','r')
-kong_rules =            open('rules/0261-KongHTTP_rules.xml','r')
 #certgen = open('wazuh-certs-tool.sh', 'r')
 install_str=            install.read()
 dashboard_indexer_str=  dashboard_indexer.read()
@@ -23,8 +21,6 @@ manager_indexer_str=    manager_indexer.read()
 preinstall_certgen_str= preinstall_certgen.read()
 forwarder_manager_str=  forwarder_manager.read()
 forwarder_agent_str=    forwarder_agent.read()
-kong_decoder_str=       kong_decoder.read()
-kong_rules_str=         kong_rules.read()
 #certgen_str=certgen.read()
 install                 .close()
 dashboard_indexer       .close()
@@ -33,8 +29,6 @@ manager_indexer         .close()
 preinstall_certgen      .close()
 forwarder_manager       .close()
 forwarder_agent         .close()
-kong_decoder            .close()
-kong_rules              .close()
 #certgen.close()
 project_prefix = 'wazuh'
 script_version = '4.8.1-1'
@@ -90,7 +84,10 @@ cmds=[
         f"m:cp {certpath}/root-ca.pem                             /etc/filebeat/certs/",
         f"m:cp {certpath}/wazuh-1.pem                             /etc/filebeat/certs/filebeat.pem",
         f"m:cp {certpath}/wazuh-1-key.pem                         /etc/filebeat/certs/filebeat-key.pem",
-    # Permission control          
+    # Permission control
+        f"m:chmod 777 -R                                          /var/ossec/ruleset/decoders/",
+        f"m:chmod 777 -R                                          /var/ossec/ruleset/rules/",
+        f"m:chmod 777 -R                                          /var/ossec/ruleset/sca/",
         f"m:chmod 500 -R                                          /etc/filebeat/certs",
         f"m:chown -R root:root                                    /etc/filebeat/certs",
         f"m:chmod go+r                                            /etc/filebeat/wazuh-template.json",
@@ -182,7 +179,9 @@ async def main():
             network=network_name,
             volumes=[
                 f"{cur_dir}/wazuh_volume/:{path}",
-                f"{cur_dir}/rules/:/var/ossec/ruleset/decoders/"
+                f"{cur_dir}/decoders/:/var/ossec/ruleset/decoders/",
+                f"{cur_dir}/rules/:/var/ossec/ruleset/rules/",
+                f"{cur_dir}/sca/:/var/ossec/ruleset/decoders/sca/",
             ]
     )
     containers_set={"m":Manager}

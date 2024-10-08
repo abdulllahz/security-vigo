@@ -84,7 +84,9 @@ config=[
             "dashboard_host":   dashboard_host,
     }),
     forwarder_manager_str.format(**{
-            "forwarder_port":   forwarder_port
+            "forwarder_port":     forwarder_port,
+            "manager_host":       manager_host,
+            "manager_agent_port": manager_agent_port
     }),
     forwarder_agent_str.format(**{
             "manager_host":       manager_host,
@@ -99,14 +101,13 @@ cmds=[
         f"m:mkdir -p /usr/share/filebeat/module",
         f"d:mkdir -p /usr/share/wazuh-dashboard/data/wazuh/config/",
         f"a:chmod 777 /wazuh-install.sh",
-        f"a:/wazuh-install.sh -ws deb",
+        f"a:/wazuh-install.sh -dw deb",
         f"a:tar -xzf wazuh-offline.tar.gz",
         f"m:tar -xzf wazuh-offline/wazuh-files/wazuh-filebeat-0.4.tar.gz -C /usr/share/filebeat/module",
         f"m:dpkg -i /wazuh-offline/wazuh-packages/wazuh-manager_{script_version}_amd64.deb",
-        f"m:dpkg -i /wazuh-offline/wazuh-packages/filebeat-oss-7.10.2-amd64.deb",
         f"i:dpkg -i /wazuh-offline/wazuh-packages/wazuh-indexer_{script_version}_amd64.deb",
         f"d:dpkg -i /wazuh-offline/wazuh-packages/wazuh-dashboard_{script_version}_amd64.deb",
-        f"f:dpkg -i /wazuh-agent_{script_version}_amd64.deb",
+        f"m:dpkg -i /wazuh-offline/wazuh-packages/filebeat-oss-7.10.2-amd64.deb",
         f"m:mkdir /etc/filebeat/certs",
         f"i:mkdir /etc/wazuh-indexer/certs",
         f"d:mkdir /etc/wazuh-dashboard/certs",
@@ -132,6 +133,9 @@ cmds=[
         f"m:chmod 500 -R                                          /etc/filebeat/certs",
         f"m:chown -R root:root                                    /etc/filebeat/certs",
         f"m:chmod go+r                                            /etc/filebeat/wazuh-template.json",
+        f"m:chmod 777 -R                                          /var/ossec/ruleset/decoders/",
+        f"m:chmod 777 -R                                          /var/ossec/ruleset/rules/",
+        f"m:chmod 777 -R                                          /var/ossec/ruleset/sca/",
     # Save creds in manager
         f"m:/var/ossec/bin/wazuh-keystore -f indexer -k username -v {indexerAdm_username}",
         f"m:/var/ossec/bin/wazuh-keystore -f indexer -k password -v {indexerAdm_password}",
@@ -192,6 +196,13 @@ def push_string_to_container(container, file_name, content, target_dir):
     tar_stream.seek(0)
     #tar_stream = create_tarfile_from_string(file_name, content)
     container.put_archive(path=target_dir, data=tar_stream)
+def push_folder(container,directory,target):
+    for filename in os.listdir(directory):
+        path = os.path.join(directory_path, filename)
+        if os.path.isfile(path):
+            temp=open(path,'r')
+            push_string_to_container(container,filename,temp.read(),target)
+    return True
 async def cleanup(client):
     containers = client.containers.list()
     for container in containers:
@@ -250,12 +261,8 @@ async def main():
             },
             network=network_name,
             volumes=[
-                f"{cur_dir}/wazuh_volume/:{path}",
-                f"{cur_dir}/decoder/:/var/ossec/ruleset/decoders/",
-                f"{cur_dir}/rule/:/var/ossec/ruleset/rules/",
-                f"{cur_dir}/sca/:/var/ossec/ruleset/decoders/sca/",
+                f"{cur_dir}/wazuh_volume/:{path}"
             ]
-            #environment={'OPENSEARCH_JAVA_OPTS': '-Xms750m -Xmx750m'}
     )
     Server= client.containers.run(
             name= project_prefix+'.server',
@@ -298,7 +305,7 @@ async def main():
         #print(result)
         if result["exit_code"]!=0:
             print("=================================")
-        print(f"[{result["exit_code"]}] "+cmd)
+        print(f"[{result['exit_code']}] "+cmd)
         if result["exit_code"]!=0:
             print(result["output"])
             print("=================================")
@@ -307,7 +314,9 @@ async def main():
     push_string_to_container(Server,"wazuh.yml",                    config[1],"/usr/share/wazuh-dashboard/data/wazuh/config/")
     push_string_to_container(Manager,"filebeat.yml",                config[2],"/etc/filebeat/")
     push_string_to_container(Forwarder,"logstash.conf",             config[4],"/usr/share/logstash/pipeline/")
-    push_string_to_container(Forwarder,"ossec.conf",                config[5],"/var/ossec/etc/")
+    push_folder(Manager,f"{cur_dir}/decoders",                      "/var/ossec/ruleset/decoders/")
+    push_folder(Manager,f"{cur_dir}/rules",                         "/var/ossec/ruleset/rules/")
+    push_folder(Manager,f"{cur_dir}/sca",                           "/var/ossec/ruleset/sca/")
 ###################################################################
 
 #result=Indexer.exec_run(user="wazuh-indexer",detach=True,cmd=f"/usr/share/wazuh-indexer/bin/systemd-entrypoint")
