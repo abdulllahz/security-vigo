@@ -58,41 +58,39 @@ forwarder_port =    "7799"
 
 ###################################################################
 # Populate configuration
-config=[
-    dashboard_indexer_str.format(**{
-            "username":         indexerAdm_username,
-            "password":         indexerAdm_password,
-            "indexer_host":     indexer_host,
-            "indexer_port":     indexer_port,
-            "dashboard_port":   dashboard_port
-    }),
-    dashboard_manager_str.format(**{
-            "username":         managerWUI_username,
-            "password":         managerWUI_password,
-            "manager_host":     manager_host,
-            "manager_port":     manager_port
-    }),
-    manager_indexer_str.format(**{
-            "username":         indexerAdm_username,
-            "password":         indexerAdm_password,
-            "indexer_host":     indexer_host,
-            "indexer_port":     indexer_port
-    }),
-    preinstall_certgen_str.format(**{
-            "indexer_host":     indexer_host,
-            "manager_host":     manager_host,
-            "dashboard_host":   dashboard_host,
-    }),
-    forwarder_manager_str.format(**{
-            "forwarder_port":     forwarder_port,
-            "manager_host":       manager_host,
-            "manager_agent_port": manager_agent_port
-    }),
-    forwarder_agent_str.format(**{
-            "manager_host":       manager_host,
-            "manager_agent_port": manager_agent_port
-    })
-]       
+#config=[
+#    dashboard_indexer_str.format(**{
+#            "username":         indexerAdm_username,
+#            "password":         indexerAdm_password,
+#            "indexer_host":     indexer_host,
+#            "indexer_port":     indexer_port,
+#            "dashboard_port":   dashboard_port
+#    }),
+#    dashboard_manager_str.format(**{
+#            "username":         managerWUI_username,
+#            "password":         managerWUI_password,
+#            "manager_host":     manager_host,
+#            "manager_port":     manager_port
+#    }),
+#    manager_indexer_str.format(**{
+#            "username":         indexerAdm_username,
+#            "password":         indexerAdm_password,
+#            "indexer_host":     indexer_host,
+#            "indexer_port":     indexer_port
+#    }),
+#    #preinstall_certgen_str.format(**{
+#    #        "indexer_host":     indexer_host,
+#    #        "manager_host":     manager_host,
+#    #        "dashboard_host":   dashboard_host,
+#    #}),
+#    forwarder_manager_str.format(**{
+#            "forwarder_port":     forwarder_port,
+#    }),
+#    forwarder_agent_str.format(**{
+#            "manager_host":       manager_host,
+#            "manager_agent_port": manager_agent_port
+#    })
+#]       
 cmds=[
     # Prepration
         f"a:apt update",
@@ -146,6 +144,16 @@ cmds=[
 ]
 ###################################################################
 # Helpers
+#def create_tarfile_from_string(file_name, content):
+#    tar_stream = io.BytesIO()
+#    with tarfile.open(fileobj=tar_stream, mode='w') as tar:
+#        # Create a file-like object from the string
+#        file_data = io.BytesIO(content.encode('utf-8'))
+#        tarinfo = tarfile.TarInfo(name=file_name)
+#        tarinfo.size = len(file_data.getvalue())
+#        tar.addfile(tarinfo, file_data)
+#    tar_stream.seek(0)
+#    return tar_stream
 def cmd_run(c,e):
     result={"exit_code":0,"output":""}
     if e[0:2] == 'a:':
@@ -175,21 +183,14 @@ def cmd_run(c,e):
         result["output"]=str(result["output"])+str(result_tmp.output)
         return result
     return
-def create_tarfile_from_string(file_name, content):
+def push_file_to_container(container, content, target_dir, file_name, params):
+    temp = open(content,'r')
+    filestr = temp.read()
+    temp.close()
+    filestr.format(**params)
     tar_stream = io.BytesIO()
     with tarfile.open(fileobj=tar_stream, mode='w') as tar:
-        # Create a file-like object from the string
-        file_data = io.BytesIO(content.encode('utf-8'))
-        tarinfo = tarfile.TarInfo(name=file_name)
-        tarinfo.size = len(file_data.getvalue())
-        tar.addfile(tarinfo, file_data)
-    tar_stream.seek(0)
-    return tar_stream
-def push_string_to_container(container, file_name, content, target_dir):
-    tar_stream = io.BytesIO()
-    with tarfile.open(fileobj=tar_stream, mode='w') as tar:
-        # Create a file-like object from the string
-        file_data = io.BytesIO(content.encode('utf-8'))
+        file_data = io.BytesIO(filestr.encode('utf-8'))
         tarinfo = tarfile.TarInfo(name=file_name)
         tarinfo.size = len(file_data.getvalue())
         tar.addfile(tarinfo, file_data)
@@ -201,7 +202,7 @@ def push_folder(container,directory,target):
         path = os.path.join(directory_path, filename)
         if os.path.isfile(path):
             temp=open(path,'r')
-            push_string_to_container(container,filename,temp.read(),target)
+            push_file_to_container(container,filename,target,filename,{})
     return True
 async def cleanup(client):
     containers = client.containers.list()
@@ -216,7 +217,7 @@ async def cleanup(client):
     for network in networks:
         if project_prefix in network.name:
             network.remove()
-###################################################################
+##################################################################
 async def main():
     client = docker.from_env()
 ##################################################################
@@ -295,10 +296,10 @@ async def main():
     containers_set={"i":Indexer,"m":Manager,"d":Server,"f":Forwarder}
 ###################################################################
 # Files!
-    push_string_to_container(Server,"wazuh-install.sh",          install_str,"/")
-    push_string_to_container(Manager,"wazuh-install.sh",         install_str,"/")
-    push_string_to_container(Indexer,"wazuh-install.sh",         install_str,"/")
-    push_string_to_container(Forwarder,"wazuh-install.sh",       install_str,"/")
+    push_file_to_container(Server,"wazuh-install.sh","/","wazuh-install.sh",{})
+    push_file_to_container(Manager,"wazuh-install.sh","/","wazuh-install.sh",{})
+    push_file_to_container(Indexer,"wazuh-install.sh","/","wazuh-install.sh",{})
+    push_file_to_container(Forwarder,"wazuh-install.sh","/","wazuh-install.sh",{})
 # Command Runners
     for cmd in cmds:
         result=cmd_run(containers_set,cmd)
@@ -310,10 +311,42 @@ async def main():
             print(result["output"])
             print("=================================")
 # More FILES
-    push_string_to_container(Server,"opensearch_dashboards.yml",    config[0],"/etc/wazuh-dashboard/")
-    push_string_to_container(Server,"wazuh.yml",                    config[1],"/usr/share/wazuh-dashboard/data/wazuh/config/")
-    push_string_to_container(Manager,"filebeat.yml",                config[2],"/etc/filebeat/")
-    push_string_to_container(Forwarder,"logstash.conf",             config[4],"/usr/share/logstash/pipeline/")
+    push_file_to_container(Server,
+        "dashboard_indexer.conf",
+        "/etc/wazuh-dashboard/","opensearch_dashboards.yml", {
+            "username":         indexerAdm_username,
+            "password":         indexerAdm_password,
+            "indexer_host":     indexer_host,
+            "indexer_port":     indexer_port,
+            "dashboard_port":   dashboard_port
+    })
+    push_file_to_container(Server, 
+        "dashboard_manager.conf",
+        "/usr/share/wazuh-dashboard/data/wazuh/config/","wazuh.yml", {
+            "username":         managerWUI_username,
+            "password":         managerWUI_password,
+            "manager_host":     manager_host,
+            "manager_port":     manager_port
+    })
+    push_file_to_container(Manager,
+        "manager_indexer.conf", 
+        "/etc/filebeat/", "filebeat.yml", {
+            "username":         indexerAdm_username,
+            "password":         indexerAdm_password,
+            "indexer_host":     indexer_host,
+            "indexer_port":     indexer_port
+    })
+    push_file_to_container(Forwarder, 
+        "forwarder_manager.conf", 
+        "/usr/share/logstash/pipeline/", "logstash.conf", {
+            "forwarder_port":     forwarder_port,
+    })
+    push_file_to_container(Forwarder, 
+        "forwarder_agent.conf", 
+        "/var/ossec/etc/", "ossec.conf", {
+            "manager_host":       manager_host,
+            "manager_agent_port": manager_agent_port
+    })
     push_folder(Manager,f"{cur_dir}/decoders",                      "/var/ossec/ruleset/decoders/")
     push_folder(Manager,f"{cur_dir}/rules",                         "/var/ossec/ruleset/rules/")
     push_folder(Manager,f"{cur_dir}/sca",                           "/var/ossec/ruleset/sca/")
