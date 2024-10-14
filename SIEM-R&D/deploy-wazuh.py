@@ -6,30 +6,6 @@ import os
 import io
 client = docker.from_env()
 cur_dir = os.getcwd()
-install =               open("wazuh-install.sh",'r')
-dashboard_indexer =     open("dashboard_indexer.conf",'r')
-dashboard_manager =     open("dashboard_manager.conf",'r')
-manager_indexer =       open("manager_indexer.conf",'r')
-preinstall_certgen =    open("preinstall_certgen.conf",'r')
-forwarder_manager =     open("forwarder_manager.conf",'r')
-forwarder_agent =       open("forwarder_agent.conf",'r')
-#certgen = open('wazuh-certs-tool.sh', 'r')
-install_str=            install.read()
-dashboard_indexer_str=  dashboard_indexer.read()
-dashboard_manager_str=  dashboard_manager.read()
-manager_indexer_str=    manager_indexer.read()
-preinstall_certgen_str= preinstall_certgen.read()
-forwarder_manager_str=  forwarder_manager.read()
-forwarder_agent_str=    forwarder_agent.read()
-#certgen_str=certgen.read()
-install                 .close()
-dashboard_indexer       .close()
-dashboard_manager       .close()
-manager_indexer         .close()
-preinstall_certgen      .close()
-forwarder_manager       .close()
-forwarder_agent         .close()
-#certgen.close()
 project_prefix = 'wazuh'
 script_version = '4.8.1-1'
 agent_url = f'https://packages.wazuh.com/4.x/apt/pool/main/w/wazuh-agent/wazuh-agent_{script_version}_amd64.deb'
@@ -187,7 +163,8 @@ def push_file_to_container(container, content, target_dir, file_name, params):
     temp = open(content,'r')
     filestr = temp.read()
     temp.close()
-    filestr.format(**params)
+    if {}==params:
+        filestr.format(**params)
     tar_stream = io.BytesIO()
     with tarfile.open(fileobj=tar_stream, mode='w') as tar:
         file_data = io.BytesIO(filestr.encode('utf-8'))
@@ -199,10 +176,10 @@ def push_file_to_container(container, content, target_dir, file_name, params):
     container.put_archive(path=target_dir, data=tar_stream)
 def push_folder(container,directory,target):
     for filename in os.listdir(directory):
-        path = os.path.join(directory_path, filename)
+        path = os.path.join(directory, filename)
         if os.path.isfile(path):
             temp=open(path,'r')
-            push_file_to_container(container,filename,target,filename,{})
+            push_file_to_container(container,path,target,filename,{})
     return True
 async def cleanup(client):
     containers = client.containers.list()
@@ -341,12 +318,12 @@ async def main():
         "/usr/share/logstash/pipeline/", "logstash.conf", {
             "forwarder_port":     forwarder_port,
     })
-    push_file_to_container(Forwarder, 
-        "forwarder_agent.conf", 
-        "/var/ossec/etc/", "ossec.conf", {
-            "manager_host":       manager_host,
-            "manager_agent_port": manager_agent_port
-    })
+    #push_file_to_container(Forwarder, 
+    #    "forwarder_agent.conf",
+    #    "/var/ossec/etc/", "ossec.conf", {
+    #        "manager_host":       manager_host,
+    #        "manager_agent_port": manager_agent_port
+    #})
     push_folder(Manager,f"{cur_dir}/decoders",                      "/var/ossec/ruleset/decoders/")
     push_folder(Manager,f"{cur_dir}/rules",                         "/var/ossec/ruleset/rules/")
     push_folder(Manager,f"{cur_dir}/sca",                           "/var/ossec/ruleset/sca/")
@@ -399,4 +376,3 @@ asyncio.run(main())
 # DB Logs
 # AWS Logs
 # Git logs
-
