@@ -6,8 +6,8 @@
         "tags": ["Core","Auth","RateLimited","UserFacing"]
     },
     "targets":[
-        {"target":"loadboard.bykea.net:443","weight":100,"tags":["CF-DNS"]},
-        {"target":"loadboard-bykea-prod-237775886.eu-west-1.elb.amazonaws.com:443","weight":1,"tags":["AWS-ELB"]}
+        {"target":"loadboard.bykea.net:443","weight":0,"tags":["CF-DNS"]},
+        {"target":"loadboard-bykea-prod-237775886.eu-west-1.elb.amazonaws.com:443","weight":100,"tags":["AWS-ELB"]}
     ],
     "service":{
         "tags": ["Core","Critical","UserFacing","RateLimited"]

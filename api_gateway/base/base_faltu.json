@@ -6,8 +6,7 @@
         "tags": ["Core","Auth","RateLimited","UserFacing"]
     },
     "targets":[
-        {"target":"d1vz7wt1zd2jl3.cloudfront.net:443","weight":100,"tags":["CF-DNS"]},
-        {"target":"ad4b86a8d9fe54f4cade4f116c0e0f39-52131415.eu-west-1.elb.amazonaws.com:443","weight":1,"tags":["AWS-ELB"]}
+        {"target":"d1vz7wt1zd2jl3.cloudfront.net:443","weight":100,"tags":["CF-DNS"]}
     ],
     "service":{
         "tags": ["Core","Critical","UserFacing","RateLimited"]
