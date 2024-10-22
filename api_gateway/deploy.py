@@ -269,7 +269,7 @@ try:
         payload['tags']=['path_correction']
         payload['instance_name']='ReWrite_'+config['name']
         payload['config']['replace']['uri']=config['original_path']
-        payload['config']['add']['headers']=[f'Hosts: {config["original_host"]}']
+        payload['config']['replace']['headers']=[f'Hosts: {config["original_host"]}']
         payload.update({'service': {'id': service_id}})
         #payload.update({'route': {'id': route_id}})
         response = requests.post(f'http://127.0.0.1:{kong_admin_port}/plugins', json=payload, headers=header)
