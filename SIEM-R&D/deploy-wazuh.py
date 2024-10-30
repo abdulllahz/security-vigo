@@ -6,34 +6,33 @@ import os
 import io
 
 ### Variables
-    client = docker.from_env()
-    cur_dir = os.getcwd()
-    project_prefix = 'wazuh'
-    script_version = '4.8.1-1'
-    agent_url = f'https://packages.wazuh.com/4.x/apt/pool/main/w/wazuh-agent/wazuh-agent_{script_version}_amd64.deb'
-    path = '/home/wazuh_files/'
-    certpath = f'{path}/wazuh-certificates'
+client = docker.from_env()
+cur_dir = os.getcwd()
+project_prefix = 'wazuh'
+script_version = '4.8.1-1'
+agent_url = f'https://packages.wazuh.com/4.x/apt/pool/main/w/wazuh-agent/wazuh-agent_{script_version}_amd64.deb'
+path = '/home/wazuh_files/'
+certpath = f'{path}/wazuh-certificates'
 ### Credentials
-    username =  "admin"
-    password =  "admin"
-    indexerKib_username = ""
-    indexerKib_password = ""
-    indexerAdm_username = "admin"
-    indexerAdm_password = "admin"
-    managerApi_username = ""
-    managerApi_password = ""
-    managerWUI_username = "wazuh-wui"
-    managerWUI_password = "wazuh-wui"
+username =  "admin"
+password =  "admin"
+indexerKib_username = ""
+indexerKib_password = ""
+indexerAdm_username = "admin"
+indexerAdm_password = "admin"
+managerApi_username = ""
+managerApi_password = ""
+managerWUI_username = "wazuh-wui"
+managerWUI_password = "wazuh-wui"
 ### Host/Ports
-    indexer_host =      "wazuh.indexer"
-    manager_host =      "wazuh.manager"
-    dashboard_host =    "wazuh.dashboard"
-    dashboard_port =    "443"
-    indexer_port =      "9200"
-    manager_port =      "55000"
-    manager_agent_port= "1514"
-    forwarder_port =    "7799"
-       
+indexer_host =      "wazuh.indexer"
+manager_host =      "wazuh.manager"
+dashboard_host =    "wazuh.dashboard"
+dashboard_port =    "443"
+indexer_port =      "9200"
+manager_port =      "55000"
+manager_agent_port= "1514"
+forwarder_port =    "7799"
 
 ###################################################################
 # Helpers
@@ -121,7 +120,8 @@ async def main():
         f"m:mkdir /etc/filebeat/certs",
         f"i:mkdir /etc/wazuh-indexer/certs",
         f"d:mkdir /etc/wazuh-dashboard/certs",
-        f"f:mkdir /var/ossec/etc/"
+        f"f:mkdir /var/ossec",
+        f"f:mkdir /var/ossec/etc",
 ###################################################################
 # Copy Certificates
         f"m:cp /wazuh-offline/wazuh-files/filebeat.yml            /etc/filebeat/",
