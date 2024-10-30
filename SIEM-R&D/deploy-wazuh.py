@@ -4,132 +4,39 @@ import docker
 import time
 import os
 import io
-client = docker.from_env()
-cur_dir = os.getcwd()
-project_prefix = 'wazuh'
-script_version = '4.8.1-1'
-agent_url = f'https://packages.wazuh.com/4.x/apt/pool/main/w/wazuh-agent/wazuh-agent_{script_version}_amd64.deb'
-path = '/home/wazuh_files/'
-certpath = f'{path}/wazuh-certificates'
-username =  "admin"
-password =  "admin"
 
-indexerKib_username = ""
-indexerKib_password = ""
-indexerAdm_username = "admin"
-indexerAdm_password = "admin"
-managerApi_username = ""
-managerApi_password = ""
-managerWUI_username = "wazuh-wui"
-managerWUI_password = "wazuh-wui"
+### Variables
+    client = docker.from_env()
+    cur_dir = os.getcwd()
+    project_prefix = 'wazuh'
+    script_version = '4.8.1-1'
+    agent_url = f'https://packages.wazuh.com/4.x/apt/pool/main/w/wazuh-agent/wazuh-agent_{script_version}_amd64.deb'
+    path = '/home/wazuh_files/'
+    certpath = f'{path}/wazuh-certificates'
+### Credentials
+    username =  "admin"
+    password =  "admin"
+    indexerKib_username = ""
+    indexerKib_password = ""
+    indexerAdm_username = "admin"
+    indexerAdm_password = "admin"
+    managerApi_username = ""
+    managerApi_password = ""
+    managerWUI_username = "wazuh-wui"
+    managerWUI_password = "wazuh-wui"
+### Host/Ports
+    indexer_host =      "wazuh.indexer"
+    manager_host =      "wazuh.manager"
+    dashboard_host =    "wazuh.dashboard"
+    dashboard_port =    "443"
+    indexer_port =      "9200"
+    manager_port =      "55000"
+    manager_agent_port= "1514"
+    forwarder_port =    "7799"
+       
 
-indexer_host =      "wazuh.indexer"
-manager_host =      "wazuh.manager"
-dashboard_host =    "wazuh.dashboard"
-dashboard_port =    "443"
-indexer_port =      "9200"
-manager_port =      "55000"
-manager_agent_port= "1514"
-forwarder_port =    "7799"
-
-###################################################################
-# Populate configuration
-#config=[
-#    dashboard_indexer_str.format(**{
-#            "username":         indexerAdm_username,
-#            "password":         indexerAdm_password,
-#            "indexer_host":     indexer_host,
-#            "indexer_port":     indexer_port,
-#            "dashboard_port":   dashboard_port
-#    }),
-#    dashboard_manager_str.format(**{
-#            "username":         managerWUI_username,
-#            "password":         managerWUI_password,
-#            "manager_host":     manager_host,
-#            "manager_port":     manager_port
-#    }),
-#    manager_indexer_str.format(**{
-#            "username":         indexerAdm_username,
-#            "password":         indexerAdm_password,
-#            "indexer_host":     indexer_host,
-#            "indexer_port":     indexer_port
-#    }),
-#    #preinstall_certgen_str.format(**{
-#    #        "indexer_host":     indexer_host,
-#    #        "manager_host":     manager_host,
-#    #        "dashboard_host":   dashboard_host,
-#    #}),
-#    forwarder_manager_str.format(**{
-#            "forwarder_port":     forwarder_port,
-#    }),
-#    forwarder_agent_str.format(**{
-#            "manager_host":       manager_host,
-#            "manager_agent_port": manager_agent_port
-#    })
-#]       
-cmds=[
-    # Prepration
-        f"a:apt update",
-        f"a:apt install -y curl lsof gawk procps libcap2-bin lsb-release wget",
-        f"f:curl {agent_url} -o /wazuh-agent_{script_version}_amd64.deb",
-        f"m:mkdir -p /usr/share/filebeat/module",
-        f"d:mkdir -p /usr/share/wazuh-dashboard/data/wazuh/config/",
-        f"a:chmod 777 /wazuh-install.sh",
-        f"a:/wazuh-install.sh -dw deb",
-        f"a:tar -xzf wazuh-offline.tar.gz",
-        f"m:tar -xzf wazuh-offline/wazuh-files/wazuh-filebeat-0.4.tar.gz -C /usr/share/filebeat/module",
-        f"m:dpkg -i /wazuh-offline/wazuh-packages/wazuh-manager_{script_version}_amd64.deb",
-        f"i:dpkg -i /wazuh-offline/wazuh-packages/wazuh-indexer_{script_version}_amd64.deb",
-        f"d:dpkg -i /wazuh-offline/wazuh-packages/wazuh-dashboard_{script_version}_amd64.deb",
-        f"m:dpkg -i /wazuh-offline/wazuh-packages/filebeat-oss-7.10.2-amd64.deb",
-        f"m:mkdir /etc/filebeat/certs",
-        f"i:mkdir /etc/wazuh-indexer/certs",
-        f"d:mkdir /etc/wazuh-dashboard/certs",
-    # Copy Certificates
-        f"m:cp /wazuh-offline/wazuh-files/filebeat.yml            /etc/filebeat/",
-        f"m:cp /wazuh-offline/wazuh-files/wazuh-template.json     /etc/filebeat/",
-        f"m:cp {certpath}/root-ca.pem                             /etc/filebeat/certs/",
-        f"m:cp {certpath}/wazuh-1.pem                             /etc/filebeat/certs/filebeat.pem",
-        f"m:cp {certpath}/wazuh-1-key.pem                         /etc/filebeat/certs/filebeat-key.pem",
-        f"i:cp {certpath}/node-1.pem                              /etc/wazuh-indexer/certs/indexer.pem",
-        f"i:cp {certpath}/node-1-key.pem                          /etc/wazuh-indexer/certs/indexer-key.pem",
-        f"i:cp {certpath}/admin-key.pem                           /etc/wazuh-indexer/certs/",
-        f"i:cp {certpath}/admin.pem                               /etc/wazuh-indexer/certs/",
-        f"i:cp {certpath}/root-ca.pem                             /etc/wazuh-indexer/certs/",
-        f"d:cp {certpath}/wazuh-1.pem                             /etc/wazuh-dashboard/certs/dashboard.pem",
-        f"d:cp {certpath}/wazuh-1-key.pem                         /etc/wazuh-dashboard/certs/dashboard-key.pem",
-        f"d:cp {certpath}/root-ca.pem                             /etc/wazuh-dashboard/certs/",
-    # Permission control          
-        f"i:chmod 500 -R                                          /etc/wazuh-indexer/certs",
-        f"i:chown -R wazuh-indexer:wazuh-indexer                  /etc/wazuh-indexer/certs",
-        f"d:chmod 500 -R                                          /etc/wazuh-dashboard/certs",
-        f"d:chown -R wazuh-dashboard:wazuh-dashboard              /etc/wazuh-dashboard/certs",
-        f"m:chmod 500 -R                                          /etc/filebeat/certs",
-        f"m:chown -R root:root                                    /etc/filebeat/certs",
-        f"m:chmod go+r                                            /etc/filebeat/wazuh-template.json",
-        f"m:chmod 777 -R                                          /var/ossec/ruleset/decoders/",
-        f"m:chmod 777 -R                                          /var/ossec/ruleset/rules/",
-        f"m:chmod 777 -R                                          /var/ossec/ruleset/sca/",
-    # Save creds in manager
-        f"m:/var/ossec/bin/wazuh-keystore -f indexer -k username -v {indexerAdm_username}",
-        f"m:/var/ossec/bin/wazuh-keystore -f indexer -k password -v {indexerAdm_password}",
-    # Save creds in filebeat
-        f"m:filebeat keystore create",
-        f"m:echo {indexerAdm_username} | filebeat keystore add username --stdin --force",
-        f"m:echo {indexerAdm_password} | filebeat keystore add password --stdin --force"
-]
 ###################################################################
 # Helpers
-#def create_tarfile_from_string(file_name, content):
-#    tar_stream = io.BytesIO()
-#    with tarfile.open(fileobj=tar_stream, mode='w') as tar:
-#        # Create a file-like object from the string
-#        file_data = io.BytesIO(content.encode('utf-8'))
-#        tarinfo = tarfile.TarInfo(name=file_name)
-#        tarinfo.size = len(file_data.getvalue())
-#        tar.addfile(tarinfo, file_data)
-#    tar_stream.seek(0)
-#    return tar_stream
 def cmd_run(c,e):
     result={"exit_code":0,"output":""}
     if e[0:2] == 'a:':
@@ -163,8 +70,8 @@ def push_file_to_container(container, content, target_dir, file_name, params):
     temp = open(content,'r')
     filestr = temp.read()
     temp.close()
-    if {}==params:
-        filestr.format(**params)
+    if {}!=params:
+        filestr=filestr.format(**params)
     tar_stream = io.BytesIO()
     with tarfile.open(fileobj=tar_stream, mode='w') as tar:
         file_data = io.BytesIO(filestr.encode('utf-8'))
@@ -196,7 +103,62 @@ async def cleanup(client):
             network.remove()
 ##################################################################
 async def main():
-    client = docker.from_env()
+    cmds=[
+# Prepration
+        f"a:apt update",
+        f"a:apt install -y curl lsof gawk procps libcap2-bin lsb-release wget",
+        f"f:curl {agent_url} -o /wazuh-agent_{script_version}_amd64.deb",
+        f"m:mkdir -p /usr/share/filebeat/module",
+        f"d:mkdir -p /usr/share/wazuh-dashboard/data/wazuh/config/",
+        f"a:chmod 777 /wazuh-install.sh",
+        f"a:/wazuh-install.sh -dw deb",
+        f"a:tar -xzf wazuh-offline.tar.gz",
+        f"m:tar -xzf wazuh-offline/wazuh-files/wazuh-filebeat-0.4.tar.gz -C /usr/share/filebeat/module",
+        f"m:dpkg -i /wazuh-offline/wazuh-packages/wazuh-manager_{script_version}_amd64.deb",
+        f"i:dpkg -i /wazuh-offline/wazuh-packages/wazuh-indexer_{script_version}_amd64.deb",
+        f"d:dpkg -i /wazuh-offline/wazuh-packages/wazuh-dashboard_{script_version}_amd64.deb",
+        f"m:dpkg -i /wazuh-offline/wazuh-packages/filebeat-oss-7.10.2-amd64.deb",
+        f"m:mkdir /etc/filebeat/certs",
+        f"i:mkdir /etc/wazuh-indexer/certs",
+        f"d:mkdir /etc/wazuh-dashboard/certs",
+###################################################################
+# Copy Certificates
+        f"m:cp /wazuh-offline/wazuh-files/filebeat.yml            /etc/filebeat/",
+        f"m:cp /wazuh-offline/wazuh-files/wazuh-template.json     /etc/filebeat/",
+        f"m:cp {certpath}/root-ca.pem                             /etc/filebeat/certs/",
+        f"m:cp {certpath}/wazuh-1.pem                             /etc/filebeat/certs/filebeat.pem",
+        f"m:cp {certpath}/wazuh-1-key.pem                         /etc/filebeat/certs/filebeat-key.pem",
+        f"i:cp {certpath}/node-1.pem                              /etc/wazuh-indexer/certs/indexer.pem",
+        f"i:cp {certpath}/node-1-key.pem                          /etc/wazuh-indexer/certs/indexer-key.pem",
+        f"i:cp {certpath}/admin-key.pem                           /etc/wazuh-indexer/certs/",
+        f"i:cp {certpath}/admin.pem                               /etc/wazuh-indexer/certs/",
+        f"i:cp {certpath}/root-ca.pem                             /etc/wazuh-indexer/certs/",
+        f"d:cp {certpath}/wazuh-1.pem                             /etc/wazuh-dashboard/certs/dashboard.pem",
+        f"d:cp {certpath}/wazuh-1-key.pem                         /etc/wazuh-dashboard/certs/dashboard-key.pem",
+        f"d:cp {certpath}/root-ca.pem                             /etc/wazuh-dashboard/certs/",
+###################################################################
+# Permission control          
+        f"i:chmod 500 -R                                          /etc/wazuh-indexer/certs",
+        f"i:chown -R wazuh-indexer:wazuh-indexer                  /etc/wazuh-indexer/certs",
+        f"d:chmod 500 -R                                          /etc/wazuh-dashboard/certs",
+        f"d:chown -R wazuh-dashboard:wazuh-dashboard              /etc/wazuh-dashboard/certs",
+        f"m:chmod 500 -R                                          /etc/filebeat/certs",
+        f"m:chown -R root:root                                    /etc/filebeat/certs",
+        f"m:chmod go+r                                            /etc/filebeat/wazuh-template.json",
+        f"m:chmod 777 -R                                          /var/ossec/ruleset/decoders/",
+        f"m:chmod 777 -R                                          /var/ossec/ruleset/rules/",
+        f"m:chmod 777 -R                                          /var/ossec/ruleset/sca/",
+###################################################################
+# Save creds in manager
+        f"m:/var/ossec/bin/wazuh-keystore -f indexer -k username -v {indexerAdm_username}",
+        f"m:/var/ossec/bi3.254.154.57:n/wazuh-keystore -f indexer -k password -v {indexerAdm_password}",
+###################################################################
+# Save creds in filebeat
+        f"m:filebeat keystore create",
+        f"m:echo {indexerAdm_username} | filebeat keystore add username --stdin --force",
+        f"m:echo {indexerAdm_password} | filebeat keystore add password --stdin --force"
+]
+
 ##################################################################
 # Remove residual
     await cleanup(client)
@@ -277,16 +239,17 @@ async def main():
     push_file_to_container(Manager,"wazuh-install.sh","/","wazuh-install.sh",{})
     push_file_to_container(Indexer,"wazuh-install.sh","/","wazuh-install.sh",{})
     push_file_to_container(Forwarder,"wazuh-install.sh","/","wazuh-install.sh",{})
+###################################################################
 # Command Runners
     for cmd in cmds:
         result=cmd_run(containers_set,cmd)
-        #print(result)
         if result["exit_code"]!=0:
             print("=================================")
         print(f"[{result['exit_code']}] "+cmd)
         if result["exit_code"]!=0:
             print(result["output"])
             print("=================================")
+###################################################################            
 # More FILES
     push_file_to_container(Server,
         "dashboard_indexer.conf",
@@ -317,13 +280,14 @@ async def main():
         "forwarder_manager.conf", 
         "/usr/share/logstash/pipeline/", "logstash.conf", {
             "forwarder_port":     forwarder_port,
+            "manager_agent_port": manager_agent_port,
     })
-    #push_file_to_container(Forwarder, 
-    #    "forwarder_agent.conf",
-    #    "/var/ossec/etc/", "ossec.conf", {
-    #        "manager_host":       manager_host,
-    #        "manager_agent_port": manager_agent_port
-    #})
+    push_file_to_container(Forwarder, 
+        "forwarder_agent.conf",
+        "/var/ossec/etc/", "ossec.conf", {
+            "manager_host":       manager_host,
+            "manager_agent_port": manager_agent_port
+    })
     push_folder(Manager,f"{cur_dir}/decoders",                      "/var/ossec/ruleset/decoders/")
     push_folder(Manager,f"{cur_dir}/rules",                         "/var/ossec/ruleset/rules/")
     push_folder(Manager,f"{cur_dir}/sca",                           "/var/ossec/ruleset/sca/")

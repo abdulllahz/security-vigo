@@ -1,6 +1,6 @@
 <decoder name="KongHTTP">
   <prematch>^KongHTTP </prematch>
-  <type>webX</type>
+  <type>web-logs</type>
   <plugin_decoder offset="after_prematch">JSON_Decoder</plugin_decoder>
 </decoder>
 
