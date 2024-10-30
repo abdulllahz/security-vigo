@@ -121,6 +121,7 @@ async def main():
         f"m:mkdir /etc/filebeat/certs",
         f"i:mkdir /etc/wazuh-indexer/certs",
         f"d:mkdir /etc/wazuh-dashboard/certs",
+        f"f:mkdir /var/ossec/etc/"
 ###################################################################
 # Copy Certificates
         f"m:cp /wazuh-offline/wazuh-files/filebeat.yml            /etc/filebeat/",
@@ -151,7 +152,7 @@ async def main():
 ###################################################################
 # Save creds in manager
         f"m:/var/ossec/bin/wazuh-keystore -f indexer -k username -v {indexerAdm_username}",
-        f"m:/var/ossec/bi3.254.154.57:n/wazuh-keystore -f indexer -k password -v {indexerAdm_password}",
+        f"m:/var/ossec/bin/wazuh-keystore -f indexer -k password -v {indexerAdm_password}",
 ###################################################################
 # Save creds in filebeat
         f"m:filebeat keystore create",
