@@ -1,11 +1,12 @@
-<decoder name="KongHTTP">
-  <prematch>^KongHTTP </prematch>
-  <type>web-logs</type>
-  <plugin_decoder offset="after_prematch">JSON_Decoder</plugin_decoder>
+<decoder name="KongHTTP_parent">
+  <type>web-log</type>
+  <prematch>KongHTTP</prematch>
+  <regex>^&lt;([0-9]+)&gt;([0-9]+) (.*? .*?) (.*?) (KongHTTP) (.*) ([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}) </regex>
+  <order>Priority, Version, Time, Source, Component, ProcessID, MessageID</order>
 </decoder>
 
-<decoder name="KongAdmin">
-  <prematch>^KongAdmin </prematch>
-  <type>syslog</type>
+<decoder name="KongHTTP_Body">
+  <parent>KongHTTP_parent</parent>
+  <prematch offset="after_parent">body=</prematch>
   <plugin_decoder offset="after_prematch">JSON_Decoder</plugin_decoder>
 </decoder>

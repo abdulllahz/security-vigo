@@ -4,6 +4,7 @@ import docker
 import time
 import os
 import io
+#<130>1 2024-10-28 10:31:07 aaaaaaaa KongHTTP PID a1bf4b20-adf8-4a35-a282-b953cd6c998e body={"__SId":"aaaaaaaa"}
 
 ### Variables
 client = docker.from_env()
@@ -14,8 +15,8 @@ agent_url = f'https://packages.wazuh.com/4.x/apt/pool/main/w/wazuh-agent/wazuh-a
 path = '/home/wazuh_files/'
 certpath = f'{path}/wazuh-certificates'
 ### Credentials
-username =  "admin"
-password =  "admin"
+username =            "admin"
+password =            "admin"
 indexerKib_username = ""
 indexerKib_password = ""
 indexerAdm_username = "admin"
