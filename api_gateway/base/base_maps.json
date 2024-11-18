@@ -1,7 +1,7 @@
 {
     "name":"maps",
     "original_path": "/$(uri_captures['default'])",
-    "original_host": "map.bykea.net",
+    "original_host": "maps.bykea.net",
     "upstream":{
         "tags": ["Core","Auth","RateLimited","UserFacing"]
     },

@@ -114,9 +114,10 @@ async def main():
         f"a:/wazuh-install.sh -dw deb",
         f"a:tar -xzf wazuh-offline.tar.gz",
         f"m:tar -xzf wazuh-offline/wazuh-files/wazuh-filebeat-0.4.tar.gz -C /usr/share/filebeat/module",
-        f"m:dpkg -i /wazuh-offline/wazuh-packages/wazuh-manager_{script_version}_amd64.deb",
+        f"f:dpkg -i /wazuh-agent_{script_version}_amd64.deb"
         f"i:dpkg -i /wazuh-offline/wazuh-packages/wazuh-indexer_{script_version}_amd64.deb",
         f"d:dpkg -i /wazuh-offline/wazuh-packages/wazuh-dashboard_{script_version}_amd64.deb",
+        f"m:dpkg -i /wazuh-offline/wazuh-packages/wazuh-manager_{script_version}_amd64.deb",
         f"m:dpkg -i /wazuh-offline/wazuh-packages/filebeat-oss-7.10.2-amd64.deb",
         f"m:mkdir /etc/filebeat/certs",
         f"i:mkdir /etc/wazuh-indexer/certs",
@@ -158,7 +159,8 @@ async def main():
 # Save creds in filebeat
         f"m:filebeat keystore create",
         f"m:echo {indexerAdm_username} | filebeat keystore add username --stdin --force",
-        f"m:echo {indexerAdm_password} | filebeat keystore add password --stdin --force"
+        f"m:echo {indexerAdm_password} | filebeat keystore add password --stdin --force",
+
 ]
 
 ##################################################################
@@ -295,27 +297,29 @@ async def main():
     push_folder(Manager,f"{cur_dir}/sca",                           "/var/ossec/ruleset/sca/")
 ###################################################################
 
+#Post install commands
 #result=Indexer.exec_run(user="wazuh-indexer",detach=True,cmd=f"/usr/share/wazuh-indexer/bin/systemd-entrypoint")
 #print(result.output)
 #print(result.exit_code)
 #time.sleep(30)
-#result=Indexer.exec_run(cmd=f"./usr/share/wazuh-indexer/bin/indexer-security-init.sh")
+#result=Indexer.exec_run(user="root",cmd=f"./usr/share/wazuh-indexer/bin/indexer-security-init.sh")
 #print(result.output)
 #print(result.exit_code)
-#result=Manager.exec_run(cmd=f"./etc/init.d/wazuh-manager start")
+#result=Manager.exec_run(user="root",cmd=f"./etc/init.d/wazuh-manager start")
 #print(result.output)
 #print(result.exit_code)
-#result=Manager.exec_run(cmd=f"./etc/init.d/filebeat start")
+#result=Manager.exec_run(user="root",cmd=f"./etc/init.d/filebeat start")
 #print(result.output)
 #print(result.exit_code)
 #result=Server.exec_run(user="wazuh-dashboard",detach=True,cmd=f"/usr/share/wazuh-dashboard/bin/opensearch-dashboards --allow-root -p 443 -H 0.0.0.0")
 #print(result.output)
 #print(result.exit_code)
-#result=Indexer.exec_run(cmd=f"wazuh-offline/wazuh-files/wazuh-template.json")
+#result=Indexer.exec_run(user="logstash",cmd=f"logstash")
 #print(result.output)
 #print(result.exit_code)
-# Do this after a startup.
-# 
+#result=Indexer.exec_run(user="root",cmd=f"/var/ossec/bin/wazuh-control")
+#print(result.output)
+#print(result.exit_code)
 
 # Notes!
 # Overview: Meaningless

@@ -29,7 +29,8 @@ print('''\033[91m0\033[94m---\033[31mO
 #   Usage: sudo python3 deploy.py
 #    flags: 
 #     --db: self host DB
-#     --log: turn on logging 
+#     --log: turn on logging
+#     --staging: prepare for staging environments
 ######################################################################################################################################
 #
 #  Service Discovery:
@@ -97,6 +98,7 @@ forward_https='443'
 # Load configs
 toggle_devmode='--db' in sys.argv or '-d' in sys.argv
 toggle_logging='--log' in sys.argv or '-l' in sys.argv
+toggle_staging='--staging' in sys.argv or '-s' in sys.argv
 if toggle_devmode:
     elasticsearch_host=project_prefix+'ElasticSearch'
     postgres_host=project_prefix+'DB'
@@ -280,6 +282,8 @@ try:
             payload.update(common['routes'])
             payload.update(route)
             payload.update({'service': {'id': service_id}})
+            if toggle_staging:
+                payload.update({'service': {'hosts': common['environment']}})
             #payload.pop('original_path')
             response = requests.post(f'http://127.0.0.1:{kong_admin_port}/routes', json=payload, headers=header)
             route_id=response.json()['id']

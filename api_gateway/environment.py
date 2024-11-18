@@ -17,13 +17,15 @@ for config in configs:
     for environment in sys.argv[1:]:
         stuff=copy.deepcopy(config)
         config_name=f'{environment}'
+        stuff['environment']=config_name[0:config_name.find('#service')-1]
         config_name=config_name.replace('#service',config['name'])
         stuff['targets'][0]['target']=config_name
         stuff['name']=config_name
+        
         for route in stuff['routes']:
             temp=route['name']
             route.update({
-                'name':f'{temp}_{config["name"]}'
+                'name':f'{temp}_{config["name"]}',
                 #'hosts':[f'{config_name}']
             })
         f=open(path+f'enabled_{config_name}.json','w')
