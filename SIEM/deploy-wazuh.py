@@ -114,7 +114,7 @@ async def main():
         f"a:/wazuh-install.sh -dw deb",
         f"a:tar -xzf wazuh-offline.tar.gz",
         f"m:tar -xzf wazuh-offline/wazuh-files/wazuh-filebeat-0.4.tar.gz -C /usr/share/filebeat/module",
-        f"f:dpkg -i /wazuh-agent_{script_version}_amd64.deb"
+        f"f:dpkg -i /wazuh-agent_{script_version}_amd64.deb",
         f"i:dpkg -i /wazuh-offline/wazuh-packages/wazuh-indexer_{script_version}_amd64.deb",
         f"d:dpkg -i /wazuh-offline/wazuh-packages/wazuh-dashboard_{script_version}_amd64.deb",
         f"m:dpkg -i /wazuh-offline/wazuh-packages/wazuh-manager_{script_version}_amd64.deb",
@@ -122,8 +122,8 @@ async def main():
         f"m:mkdir /etc/filebeat/certs",
         f"i:mkdir /etc/wazuh-indexer/certs",
         f"d:mkdir /etc/wazuh-dashboard/certs",
-        f"f:mkdir /var/ossec",
-        f"f:mkdir /var/ossec/etc",
+#        f"f:mkdir /var/ossec",
+#        f"f:mkdir /var/ossec/etc",
 ###################################################################
 # Copy Certificates
         f"m:cp /wazuh-offline/wazuh-files/filebeat.yml            /etc/filebeat/",
@@ -159,10 +159,7 @@ async def main():
 # Save creds in filebeat
         f"m:filebeat keystore create",
         f"m:echo {indexerAdm_username} | filebeat keystore add username --stdin --force",
-        f"m:echo {indexerAdm_password} | filebeat keystore add password --stdin --force",
-
-]
-
+        f"m:echo {indexerAdm_password} | filebeat keystore add password --stdin --force"]
 ##################################################################
 # Remove residual
     await cleanup(client)
