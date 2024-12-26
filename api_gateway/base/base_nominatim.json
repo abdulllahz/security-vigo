@@ -1,4 +1,5 @@
 {
+    "meta":["rewriter"],
     "name":"nominatim",
     "original_path": "/$(uri_captures['default'])/nominatim/reverse.php",
     "original_host": "geocode-beta.bykea.net",

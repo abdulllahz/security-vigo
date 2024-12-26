@@ -1,4 +1,5 @@
 {
+    "meta":["rewriter"],
     "name":"faltu",
     "original_path": "/300x300/$(uri_captures['default'])",
     "original_host": "d1vz7wt1zd2jl3.cloudfront.net",

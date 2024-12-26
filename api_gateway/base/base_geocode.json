@@ -1,4 +1,5 @@
 {
+    "meta":["rewriter"],
     "name":"geocode-beta",
     "original_path": "/$(uri_captures['default'])",
     "original_host": "googleplace.bykea.net",

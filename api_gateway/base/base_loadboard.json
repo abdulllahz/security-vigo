@@ -1,4 +1,5 @@
 {
+    "meta":["rewriter"],
     "name":"loadboard",
     "original_path": "/$(uri_captures['default'])",
     "original_host": "loadboard.bykea.net",

@@ -1,5 +1,5 @@
 {
-    "meta":["redirector"]
+    "meta":["redirector"],
     "name":"store",
     "original_host": "https://bykea.store",
     "routes":[{

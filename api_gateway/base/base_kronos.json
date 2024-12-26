@@ -1,4 +1,5 @@
 {
+    "meta":["rewriter"],
     "name":"kronos",
     "original_path": "/$(uri_captures['default'])",
     "original_host": "kronos-kn.bykea.net",
