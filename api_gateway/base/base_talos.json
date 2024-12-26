@@ -1,4 +1,5 @@
 {
+    "meta":["rewriter"],
     "name":"talos",
     "original_path": "/$(uri_captures['default'])",
     "original_host": "talos.bykea.net",

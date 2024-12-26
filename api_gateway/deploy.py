@@ -214,7 +214,7 @@ if toggle_devmode:
     time.sleep(60)
 gw = client.containers.run(
     name= project_prefix+'Gateway',
-    image='kong:3.6.1',
+    image='kong:3.9.0',
     command='tail -f /dev/null',
     detach=True,
     network=network_name,
@@ -240,21 +240,22 @@ try:
     ######################################################################################################################################
     # Populate upstreams
     for config in configs:
-        payload={}
-        payload.update(common['upstream'])
-        payload.update(config['upstream'])
-        payload.update({'name':f'{config["name"]}.kong.internal'})
-        response = requests.post(f'http://127.0.0.1:{kong_admin_port}/upstreams', json=payload, headers=header)
-        upstream=response.json()['id']
+        if('upstream' in config):
+            payload={}
+            payload.update(common['upstream'])
+            payload.update(config['upstream'])
+            payload.update({'name':f'{config["name"]}.kong.internal'})
+            response = requests.post(f'http://127.0.0.1:{kong_admin_port}/upstreams', json=payload, headers=header)
+            upstream=response.json()['id']
     ######################################################################################################################################
     # Populate targets
-        for target in config['targets']:
-            payload={}
-            payload.update(common['targets'])
-            payload.update(target)
-            payload.update({'upstream':{'id':upstream}})
-            #payload.update({'target':f'{target["target"]}:443'})
-            response = requests.post(f'http://127.0.0.1:{kong_admin_port}/upstreams/{upstream}/targets', json=payload, headers=header)
+            for target in config['targets']:
+                payload={}
+                payload.update(common['targets'])
+                payload.update(target)
+                payload.update({'upstream':{'id':upstream}})
+                #payload.update({'target':f'{target["target"]}:443'})
+                response = requests.post(f'http://127.0.0.1:{kong_admin_port}/upstreams/{upstream}/targets', json=payload, headers=header)
     ######################################################################################################################################
     # Populate services
         payload={}
@@ -266,15 +267,23 @@ try:
         service_id=response.json()['id']
     ######################################################################################################################################
     # Populate mandatory plugin
-        payload={}
-        payload.update(common['rewriter'])
-        payload['tags']=['path_correction']
-        payload['instance_name']='ReWrite_'+config['name']
-        payload['config']['replace']['uri']=config['original_path']
-        payload['config']['replace']['headers']=[f'Host: {config["original_host"]}']
-        payload.update({'service': {'id': service_id}})
-        #payload.update({'route': {'id': route_id}})
-        response = requests.post(f'http://127.0.0.1:{kong_admin_port}/plugins', json=payload, headers=header)
+        if('rewriter' in common['meta'])
+            payload={}
+            payload.update(common['rewriter'])
+            payload['tags']=['path_correction']
+            payload['instance_name']='ReWrite_'+config['name']
+            payload['config']['replace']['uri']=config['original_path']
+            payload['config']['replace']['headers']=[f'Host: {config["original_host"]}']
+            payload.update({'service': {'id': service_id}})
+            #payload.update({'route': {'id': route_id}})
+            response = requests.post(f'http://127.0.0.1:{kong_admin_port}/plugins', json=payload, headers=header)
+        if('redirector' in common['meta']):
+            payload.update(common['redirector'])
+            payload['tags']=['redirection']
+            payload['instance_name']='Redirect_'+config['name']
+            payload['config']['location']=config['original_host']
+            payload.update({'service': {'id': service_id}})
+            response = requests.post(f'http://127.0.0.1:{kong_admin_port}/plugins', json=payload, headers=header)
     ######################################################################################################################################
     # Populate routes
         for route in config['routes']:

@@ -43,7 +43,6 @@
                     {"path_name":"kronos_customer_batch_invoice","path":"v1/batch/:id/invoice"}
                 ]},
                 {"service_name":"raptor","service_prefix":"raptor/"},
-                {"service_name":"faltu","service_prefix":"faltu/"},
                 {"service_name":"belaz","service_prefix":"belaz/"},
                 {"service_name":"bolee_lagao","service_prefix":"bolee/"},
                 {"service_name":"geocode","service_prefix":"geocode/"},
@@ -51,7 +50,9 @@
                 {"service_name":"socket","service_prefix":"talos/socket.io"},
                 {"service_name":"socket","service_prefix":"socket.io/"},
                 {"service_name":"loadboard","service_prefix":"load/"},
-                {"service_name":"maps","service_prefix":"jabajaba/"}
+                {"service_name":"maps","service_prefix":"jabajaba/"},
+                {"service_name":"display_image_url","service_prefix":"faltu/"},
+                {"service_name":"bykea_store_url","service_prefix":"goto_store/"}
             ],
                 "dt":"2024-05-13T11:33:51.116Z",
                 "_id":"663c6fa64c024e4a95242491"

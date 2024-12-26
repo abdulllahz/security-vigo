@@ -1,7 +1,7 @@
 {
     "name":"nominatim",
     "original_path": "/$(uri_captures['default'])/nominatim/reverse.php",
-    "original_host": "nominatim.bykea.net",
+    "original_host": "geocode-beta.bykea.net",
     "upstream":{
         "tags": ["Core","Auth","RateLimited","UserFacing"]
     },

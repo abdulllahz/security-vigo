@@ -1,7 +1,7 @@
 {
     "name":"geocode-beta",
     "original_path": "/$(uri_captures['default'])",
-    "original_host": "geocode-beta.bykea.net",
+    "original_host": "googleplace.bykea.net",
     "upstream":{
         "tags": ["Core","Auth","RateLimited","UserFacing"]
     },

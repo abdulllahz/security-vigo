@@ -33,6 +33,7 @@ dashboard_port =    "443"
 indexer_port =      "9200"
 manager_port =      "55000"
 manager_agent_port= "1514"
+manager_syslog_port= "514"
 forwarder_port =    "7799"
 
 ###################################################################
@@ -108,6 +109,7 @@ async def main():
         f"a:apt update",
         f"a:apt install -y curl lsof gawk procps libcap2-bin lsb-release wget",
         f"f:curl {agent_url} -o /wazuh-agent_{script_version}_amd64.deb",
+        f"f:/usr/share/logstash/bin/logstash-plugin install logstash-output-syslog"
         f"m:mkdir -p /usr/share/filebeat/module",
         f"d:mkdir -p /usr/share/wazuh-dashboard/data/wazuh/config/",
         f"a:chmod 777 /wazuh-install.sh",
@@ -198,7 +200,7 @@ async def main():
                 # Agent connection service
                 '1514/udp':1514,
                 # Syslog collection
-                '514/udp':514
+                # '514/udp':514
             },
             network=network_name,
             volumes=[
@@ -281,7 +283,12 @@ async def main():
         "forwarder_manager.conf", 
         "/usr/share/logstash/pipeline/", "logstash.conf", {
             "forwarder_port":     forwarder_port,
-            "manager_agent_port": manager_agent_port,
+            "manager_host":       manager_host,
+            "manager_syslog_port": manager_syslog_port
+    })
+    push_file_to_container(Forwarder, 
+        "manager_config.conf", 
+        "/var/ossec/etc/", "ossec.conf", {
     })
     push_file_to_container(Forwarder, 
         "forwarder_agent.conf",
@@ -292,6 +299,7 @@ async def main():
     push_folder(Manager,f"{cur_dir}/decoders",                      "/var/ossec/ruleset/decoders/")
     push_folder(Manager,f"{cur_dir}/rules",                         "/var/ossec/ruleset/rules/")
     push_folder(Manager,f"{cur_dir}/sca",                           "/var/ossec/ruleset/sca/")
+
 ###################################################################
 
 #Post install commands

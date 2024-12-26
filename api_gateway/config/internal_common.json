@@ -49,5 +49,11 @@
             "rename": {"body": [],"headers": [],"querystring": []},
             "replace": {"body": [],"headers": [],"querystring": [],"uri": "/2277"}
         }
+    },
+    "redirector": {
+        "config": {
+            "status_code": 301,
+            "keep_incoming_path": false
+        }
     }
 }
