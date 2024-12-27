@@ -51,6 +51,7 @@
         }
     },
     "redirector": {
+        "name": "redirect",
         "config": {
             "status_code": 301,
             "keep_incoming_path": false

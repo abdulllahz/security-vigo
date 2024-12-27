@@ -19,7 +19,8 @@ for config in configs:
         config_name=f'{environment}'
         stuff['environment']=config_name[0:config_name.find('#service')-1]
         config_name=config_name.replace('#service',config['name'])
-        stuff['targets'][0]['target']=config_name
+        if("targets" in stuff):
+            stuff['targets'][0]['target']=config_name
         stuff['name']=config_name
         
         for route in stuff['routes']:

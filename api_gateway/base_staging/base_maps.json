@@ -1,0 +1,22 @@
+{
+    "meta":["rewriter"],
+    "name":"maps",
+    "original_path": "/$(uri_captures['default'])",
+    "original_host": "maps.bykea.net",
+    "upstream":{
+        "tags": ["Core","Auth","RateLimited","UserFacing"]
+    },
+    "targets":[
+        {"target":"maps.bykea.net:443","weight":0,"tags":["CF-DNS"]}
+    ],
+    "service":{
+        "tags": ["Core","Critical","UserFacing","RateLimited"]
+    },
+    "routes":[{
+        "name": "DEFAULT",
+        "protocols": ["http","https"],
+        "methods": ["GET","PUT","POST","PATCH","DELETE","OPTIONS","HEAD","TRACE"],
+        "paths": ["~/jabajaba/(?<default>.*)"],
+        "tags": ["Universal Acceptor"]
+    }]
+}

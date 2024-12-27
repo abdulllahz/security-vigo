@@ -1,0 +1,22 @@
+{
+    "meta":["rewriter"],
+    "name":"nominatim",
+    "original_path": "/$(uri_captures['default'])/nominatim/reverse.php",
+    "original_host": "geocode-beta.bykea.net",
+    "upstream":{
+        "tags": ["Core","Auth","RateLimited","UserFacing"]
+    },
+    "targets":[
+        {"target":"geocode-beta.bykea.net:443","weight":0,"tags":["CF-DNS"]}
+    ],
+    "service":{
+        "tags": ["Core","Critical","UserFacing","RateLimited"]
+    },
+    "routes":[{
+        "name": "DEFAULT",
+        "protocols": ["http","https"],
+        "methods": ["GET","PUT","POST","PATCH","DELETE","OPTIONS","HEAD","TRACE"],
+        "paths": ["~/nominatim/(?<default>.*)"],
+        "tags": ["Universal Acceptor"]
+    }]
+}

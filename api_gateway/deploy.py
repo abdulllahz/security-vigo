@@ -267,7 +267,7 @@ try:
         service_id=response.json()['id']
     ######################################################################################################################################
     # Populate mandatory plugin
-        if('rewriter' in common['meta'])
+        if('rewriter' in config['meta']):
             payload={}
             payload.update(common['rewriter'])
             payload['tags']=['path_correction']
@@ -277,7 +277,8 @@ try:
             payload.update({'service': {'id': service_id}})
             #payload.update({'route': {'id': route_id}})
             response = requests.post(f'http://127.0.0.1:{kong_admin_port}/plugins', json=payload, headers=header)
-        if('redirector' in common['meta']):
+        if('redirector' in config['meta']):
+            payload={}
             payload.update(common['redirector'])
             payload['tags']=['redirection']
             payload['instance_name']='Redirect_'+config['name']

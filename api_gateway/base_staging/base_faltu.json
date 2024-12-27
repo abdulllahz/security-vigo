@@ -1,0 +1,22 @@
+{
+    "meta":["rewriter"],
+    "name":"faltu",
+    "original_path": "/300x300/$(uri_captures['default'])",
+    "original_host": "d1vz7wt1zd2jl3.cloudfront.net",
+    "upstream":{
+        "tags": ["Core","Auth","RateLimited","UserFacing"]
+    },
+    "targets":[
+        {"target":"d1vz7wt1zd2jl3.cloudfront.net:443","weight":100,"tags":["CF-DNS"]}
+    ],
+    "service":{
+        "tags": ["Core","Critical","UserFacing","RateLimited"]
+    },
+    "routes":[{
+        "name": "DEFAULT",
+        "protocols": ["http","https"],
+        "methods": ["GET","PUT","POST","PATCH","DELETE","OPTIONS","HEAD","TRACE"],
+        "paths": ["~/faltu/(?<default>.*)"],
+        "tags": ["Universal Acceptor"]
+    }]
+}
