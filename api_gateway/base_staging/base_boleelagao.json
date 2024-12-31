@@ -7,7 +7,7 @@
         "tags": ["Core","Auth","RateLimited","UserFacing"]
     },
     "targets":[
-        {"target":"payment1-boleelagao.bykea.dev:443","weight":0,"tags":["CF-DNS"]}
+        {"target":"payment1-boleelagao.bykea.dev:443","weight":100,"tags":["CF-DNS"]}
     ],
     "service":{
         "tags": ["Core","Critical","UserFacing","RateLimited"]
