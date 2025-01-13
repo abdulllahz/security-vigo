@@ -20,9 +20,8 @@ for config in configs:
         stuff['environment']=config_name[0:config_name.find('#service')-1]
         config_name=config_name.replace('#service',config['name'])
         if("targets" in stuff):
-            stuff['targets'][0]['target']=stuff["targets"]
+            stuff['targets']=copy.deepcopy(stuff["targets"])
         stuff['name']=config_name
-        
         for route in stuff['routes']:
             temp=route['name']
             route.update({

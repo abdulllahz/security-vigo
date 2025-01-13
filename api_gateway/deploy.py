@@ -10,21 +10,21 @@ import io
 
 ######################################################################################################################################
 # ASCII art
-print('''\033[91m0\033[94m---\033[31mO
- \033[91m0\033[34m=\033[31mo
-  \033[91m0
- \033[31mo\033[34m=\033[91m0
-\033[31mO\033[94m---\033[91m0
-\033[31m0\033[94m---\033[91mO
- \033[31m0\033[34m=\033[91mo
-  \033[31m0
- \033[91mo\33[34m=\033[31m0
-\033[91mO\033[94m---\033[31m0
-\033[91m0\033[94m---\033[31mO
- \033[91m0\033[34m=\033[31mo
-  \033[91m0
- \033[31mo\033[34m=\033[91m0
-\033[31mO\033[94m---\033[91m0\033[0m''')
+print('''\t\033[91m0\033[94m---\033[31mO
+ \t\033[91m0\033[34m=\033[31mo
+  \t\033[91m0
+ \t\033[31mo\033[34m=\033[91m0
+\t\033[31mO\033[94m---\033[91m0
+\t\033[31m0\033[94m---\033[91mO
+ \t\033[31m0\033[34m=\033[91mo
+  \t\033[31m0
+ \t\033[91mo\33[34m=\033[31m0
+\t\033[91mO\033[94m---\033[31m0
+\t\033[91m0\033[94m---\033[31mO
+ \t\033[91m0\033[34m=\033[31mo
+  \t\033[91m0
+ \t\033[31mo\033[34m=\033[91m0
+\t\033[31mO\033[94m---\033[91m0\033[0m''')
 ######################################################################################################################################
 #   Usage: sudo python3 deploy.py
 #    flags: 
@@ -67,178 +67,146 @@ print('''\033[91m0\033[94m---\033[31mO
 # Data Eng Approval: Checkbox
 # Infra Eng Approval: Checkbox
 ######################################################################################################################################
-
+try:
+######################################################################################################################################
 # Config variables
-logstash_user='logstash'
-logstash_pass='LoGstAsh_456'
-dash_user='Operations'
-dash_pass='Lol_Sometimes_4433'
-kibana_user='Kibana'
-kibana_pass='KibAna_456'
-project_prefix = 'BykeaKong'
-path='./config/'
-postgres_host=''
-postgres_port='5432'
-postgres_user='kong'
-postgres_pass='KoNg_123'
-redis_port='6379'
-elasticsearch_host=''
-elasticsearch_port='9200'
-logstash_port='5775'
-logstash_host=''
-kibana_port='5601'
-kong_gateway_port='8000'
-kong_gateway_ssl_port='8443'
-kong_admin_port='8001'
-kong_admin_ssl_port='8444'
-kong_admin_ui_port='8002'
-forward_http='80'
-forward_https='443'
+# ELK
+    elasticsearch_host=''
+    elasticsearch_port='9200'
+    logstash_user='logstash'
+    logstash_pass='LoGstAsh_456'
+    logstash_port='5775'
+    logstash_host=''
+    dash_user='Operations'
+    dash_pass='Lol_Sometimes_4433'
+    kibana_user='Kibana'
+    kibana_pass='KibAna_456'
+    kibana_port='5601'
+# Postgres
+    postgres_host=''
+    postgres_port=''
+    postgres_user=''
+    postgres_pass=''
+# Redis
+    redis_port='6379'
+# Kong
+    project_prefix = 'BykeaKong'
+    path='./config/'
+    kong_gateway_port='8000'
+    kong_gateway_ssl_port='8443'
+    kong_admin_port='8001'
+    kong_admin_ssl_port='8444'
+    kong_admin_ui_port='8002'
+    forward_https='443'
+    forward_http='80'
+######################################################################################################################################
+# Init!
+    toggle_devmode='--db' in sys.argv or '-d' in sys.argv
+    toggle_logging='--log' in sys.argv or '-l' in sys.argv
+    toggle_staging='--staging' in sys.argv or '-s' in sys.argv
+    if toggle_devmode:
+        elasticsearch_host=project_prefix+'ElasticSearch'
+        postgres_host=project_prefix+'DB'
+        logstash_host=project_prefix+'LogStash'
 
-# Load configs
-toggle_devmode='--db' in sys.argv or '-d' in sys.argv
-toggle_logging='--log' in sys.argv or '-l' in sys.argv
-toggle_staging='--staging' in sys.argv or '-s' in sys.argv
-if toggle_devmode:
-    elasticsearch_host=project_prefix+'ElasticSearch'
-    postgres_host=project_prefix+'DB'
-    logstash_host=project_prefix+'LogStash'
-
-pipeline=f'''
-input {{
-  udp {{
-    port => {logstash_port}
-    codec => json
-  }}
-}}
-output {{
-  elasticsearch {{
-    hosts => ["{elasticsearch_host}:{elasticsearch_port}"]
-    ssl => true
-    ssl_certificate_verification => false
-    cacert => "/usr/share/logstash/certificates/http_ca.crt"
-    index => "http-%{{+YYYY.MM.dd}}"
-    user => "{logstash_user}"
-    password => "{logstash_pass}"
-  }}
-}}
-'''
-redis_port_mapped={redis_port:redis_port}
-postgres_port_mapped={postgres_port:postgres_port}
-elasticsearch_port_mapped={elasticsearch_port:elasticsearch_port,'9300':'9300'}
-logstash_port_mapped={f'{logstash_port}/udp':logstash_port}
-kibana_port_mapped={kibana_port:kibana_port}
-kong_port_mapped={
-        kong_gateway_port:forward_http,
-        kong_gateway_ssl_port:forward_https,
-        kong_admin_port:kong_admin_port,
-        kong_admin_ssl_port:kong_admin_ssl_port,
-        kong_admin_ui_port:kong_admin_ui_port
-}
-header={'Content-Type': 'application/json','accept': 'application/json'}
-
-# Helpers
-def create_tarfile_from_string(file_name, content):
-    tar_stream = io.BytesIO()
-    with tarfile.open(fileobj=tar_stream, mode='w') as tar:
-        # Create a file-like object from the string
-        file_data = io.BytesIO(content.encode('utf-8'))
-        tarinfo = tarfile.TarInfo(name=file_name)
-        tarinfo.size = len(file_data.getvalue())
-        tar.addfile(tarinfo, file_data)
-    tar_stream.seek(0)
-    return tar_stream
-
-def push_string_to_container(container, file_name, content, target_dir):
-    tar_stream = create_tarfile_from_string(file_name, content)
-    container.put_archive(path=target_dir, data=tar_stream)
-
-def parse_json_config(fpath):
-    f=open(fpath,'r')
-    string=json.load(f)
+    pipeline_f=open("pipeline/logstash.conf",'r')
+    pipeline_str=pipeline_f.read()
+    pipeline_f.close()
+    pipeline=pipeline_str.format(**{
+        "logstash_port": logstash_port,
+        "elasticsearch_host": elasticsearch_host,
+        "elasticsearch_port": elasticsearch_port,
+        "logstash_user": logstash_user,
+        "logstash_pass": logstash_pass
+    })
+    redis_port_mapped={redis_port:redis_port}
+    postgres_port_mapped={postgres_port:postgres_port}
+    elasticsearch_port_mapped={elasticsearch_port:elasticsearch_port,'9300':'9300'}
+    logstash_port_mapped={f'{logstash_port}/udp':logstash_port}
+    kibana_port_mapped={kibana_port:kibana_port}
+    kong_port_mapped={
+            kong_gateway_port:forward_http,
+            kong_gateway_ssl_port:forward_https,
+            kong_admin_port:kong_admin_port,
+            kong_admin_ssl_port:kong_admin_ssl_port,
+            kong_admin_ui_port:kong_admin_ui_port
+    }
+    header={'Content-Type': 'application/json','accept': 'application/json'}
+    client = docker.from_env()
+    configs=[parse_json_config(path + file) for file in predicate_filelist(False)]
+    service_maps=[parse_json_config(path + file) for file in predicate_filelist(True)]
+    f=open(path+'internal_common.json','r')
+    common=json.load(f)
     f.close()
-    return string
-
-def predicate_filelist(internal):
-    if internal:
-        return [file for file in os.listdir('./config/') if file.endswith('.json') and 'Kong' in file and file.startswith('enabled_')]
-    else:
-        return [file for file in os.listdir('./config/') if file.endswith('.json') and 'Kong' not in file and file.startswith('enabled_')]
-
-client = docker.from_env()
-configs=[parse_json_config(path + file) for file in predicate_filelist(False)]
-service_maps=[parse_json_config(path + file) for file in predicate_filelist(True)]
-f=open(path+'internal_common.json','r')
-common=json.load(f)
-f.close()
 ######################################################################################################################################
 # Remove residual
-containers = client.containers.list()
-for container in containers:
-    if project_prefix in container.name:
-        container.kill()
-containers = client.containers.list(all=True)
-for container in containers:
-    if project_prefix in container.name:
-        container.remove()
-networks = client.networks.list()
-for network in networks:
-    if project_prefix in network.name:
-        network.remove()
+    containers = client.containers.list()
+    for container in containers:
+        if project_prefix in container.name:
+            container.kill()
+    containers = client.containers.list(all=True)
+    for container in containers:
+        if project_prefix in container.name:
+            container.remove()
+    networks = client.networks.list()
+    for network in networks:
+        if project_prefix in network.name:
+            network.remove()
 ######################################################################################################################################
 # Create networks
-network_name=project_prefix+'_network'
-network = client.networks.create(network_name, driver='bridge')
+    network_name=project_prefix+'_network'
+    network = client.networks.create(network_name, driver='bridge')
 ######################################################################################################################################
 # Run containers
-if toggle_devmode:
-    db = client.containers.run(
-        name= project_prefix+'DB',
-        image='postgres:9.6.24-alpine',
-        detach=True,
-        network=network_name,
-        ports=postgres_port_mapped,
-        environment={
-            'POSTGRES_DB':'kong',
-            'POSTGRES_USER':postgres_user,
-            'POSTGRES_PASSWORD':postgres_pass
-        }
-    )
-    rs = client.containers.run(
-        name= project_prefix+'Cache',
-        image='redis:7.0.15-alpine',
-        detach=True,
-        network=network_name,
-        ports=redis_port_mapped
-    )
+    if toggle_devmode:
+        db = client.containers.run(
+            name= project_prefix+'DB',
+            image='postgres:9.6.24-alpine',
+            detach=True,
+            network=network_name,
+            ports=postgres_port_mapped,
+            environment={
+                'POSTGRES_DB':'kong',
+                'POSTGRES_USER':postgres_user,
+                'POSTGRES_PASSWORD':postgres_pass
+            }
+        )
+        rs = client.containers.run(
+            name= project_prefix+'Cache',
+            image='redis:7.0.15-alpine',
+            detach=True,
+            network=network_name,
+            ports=redis_port_mapped
+        )
     time.sleep(60)
-gw = client.containers.run(
-    name= project_prefix+'Gateway',
-    image='kong:3.9.0',
-    command='tail -f /dev/null',
-    detach=True,
-    network=network_name,
-    environment={
-        'KONG_DATABASE': 'postgres',
-        'KONG_PG_HOST': postgres_host,
-        'KONG_PG_PASSWORD': postgres_pass,
-        'KONG_CASSANDRA_CONTACT_POINTS': 'kong-database',
-        'KONG_PROXY_ACCESS_LOG': '/dev/stdout',
-        'KONG_ADMIN_ACCESS_LOG': '/dev/stdout',
-        'KONG_PROXY_ERROR_LOG': '/dev/stderr',
-        'KONG_ADMIN_ERROR_LOG': '/dev/stderr',
-        'KONG_ADMIN_LISTEN': f'0.0.0.0:{kong_admin_port},0.0.0.0:{kong_admin_ssl_port} ssl'
-    },
-    ports=kong_port_mapped
-)
-
-gw.exec_run(cmd='kong migrations bootstrap')
-gw.exec_run(cmd='kong start')
-gw.exec_run(cmd='''curl -Ls https://get.konghq.com/quickstart | \\
-                bash -s -- -i kong -t latest''')
-try:
-    ######################################################################################################################################
-    # Populate upstreams
+    gw = client.containers.run(
+        name= project_prefix+'Gateway',
+        image='kong:3.9.0',
+        command='tail -f /dev/null',
+        detach=True,
+        network=network_name,
+        environment={
+            'KONG_PG_SSL': 'on',
+            'KONG_PG_USER': postgres_user,
+            'KONG_PG_DATABASE': 'postgres',
+            'KONG_PG_HOST': postgres_host,
+            'KONG_PG_PASSWORD': postgres_pass,
+            'KONG_CASSANDRA_CONTACT_POINTS': 'kong-database',
+            'KONG_PROXY_ACCESS_LOG': '/dev/stdout',
+            'KONG_ADMIN_ACCESS_LOG': '/dev/stdout',
+            'KONG_PROXY_ERROR_LOG': '/dev/stderr',
+            'KONG_ADMIN_ERROR_LOG': '/dev/stderr',
+            'KONG_ADMIN_LISTEN': f'0.0.0.0:{kong_admin_port},0.0.0.0:{kong_admin_ssl_port} ssl'
+        },
+        volumes=["/tmp/kong:/tmp/"]
+        ports=kong_port_mapped
+    )
+    run_cmd(gw,'kong migrations bootstrap -v')
+    run_cmd(gw,'kong start')
+    run_cmd(gw,'''curl -Ls https://get.konghq.com/quickstart | \\
+            bash -s -- -i kong -t latest''')
+######################################################################################################################################
+# Populate upstreams
     for config in configs:
         if('upstream' in config):
             payload={}
@@ -247,18 +215,16 @@ try:
             payload.update({'name':f'{config["name"]}.kong.internal'})
             response = requests.post(f'http://127.0.0.1:{kong_admin_port}/upstreams', json=payload, headers=header)
             upstream=response.json()['id']
-    ######################################################################################################################################
-    # Populate targets
+######################################################################################################################################
+# Populate targets
             for target in config['targets']:
                 payload={}
                 payload.update(common['targets'])
                 payload.update(target)
                 payload.update({'upstream':{'id':upstream}})
-                print(payload)
-                #payload.update({'target':f'{target["target"]}:443'})
                 response = requests.post(f'http://127.0.0.1:{kong_admin_port}/upstreams/{upstream}/targets', json=payload, headers=header)
-    ######################################################################################################################################
-    # Populate services
+######################################################################################################################################
+# Populate services
         payload={}
         payload.update(common['service'])
         payload.update(config['service'])
@@ -266,8 +232,8 @@ try:
         payload.update({'host':f'{config["name"]}.kong.internal'})
         response = requests.post(f'http://127.0.0.1:{kong_admin_port}/services', json=payload, headers=header)
         service_id=response.json()['id']
-    ######################################################################################################################################
-    # Populate mandatory plugin
+######################################################################################################################################
+# Populate mandatory plugin
         if('rewriter' in config['meta']):
             payload={}
             payload.update(common['rewriter'])
@@ -276,7 +242,6 @@ try:
             payload['config']['replace']['uri']=config['original_path']
             payload['config']['replace']['headers']=[f'Host: {config["original_host"]}']
             payload.update({'service': {'id': service_id}})
-            #payload.update({'route': {'id': route_id}})
             response = requests.post(f'http://127.0.0.1:{kong_admin_port}/plugins', json=payload, headers=header)
         if('redirector' in config['meta']):
             payload={}
@@ -286,8 +251,8 @@ try:
             payload['config']['location']=config['original_host']
             payload.update({'service': {'id': service_id}})
             response = requests.post(f'http://127.0.0.1:{kong_admin_port}/plugins', json=payload, headers=header)
-    ######################################################################################################################################
-    # Populate routes
+######################################################################################################################################
+# Populate routes
         for route in config['routes']:
             payload={}
             payload.update(common['routes'])
@@ -298,13 +263,12 @@ try:
             #payload.pop('original_path')
             response = requests.post(f'http://127.0.0.1:{kong_admin_port}/routes', json=payload, headers=header)
             route_id=response.json()['id']
-    ######################################################################################################################################
-    # Populate ServiceMap
+######################################################################################################################################
+# Populate ServiceMap
     for service_map in service_maps:
         payload={}
         payload.update(common['routes'])
         payload.update(service_map['routes'][0])
-        #payload.pop('original_path')
         response = requests.post(f'http://127.0.0.1:8001/routes', json=payload, headers=header)
         route_id=response.json()['id']
         payload={}
@@ -313,8 +277,8 @@ try:
         payload.update({'route': {'id': route_id}})
         payload['config'].update({'body':json.dumps(service_map['ServiceMap'])})
         response = requests.post(f'http://127.0.0.1:{kong_admin_port}/routes/{route_id}/plugins', json=payload, headers=header)
-    ######################################################################################################################################
-    # Populate Logger
+######################################################################################################################################
+# Populate Logger
     if toggle_logging:
         if toggle_devmode:
             es = client.containers.run(
@@ -325,8 +289,8 @@ try:
                 ports=elasticsearch_port_mapped,
                 mem_limit= '2g',
                 environment= {
-    	            'discovery.type': 'single-node',
-    	            'ES_JAVA_OPTS': '-Xms768m -Xmx768m'
+                    'discovery.type': 'single-node',
+                    'ES_JAVA_OPTS': '-Xms768m -Xmx768m'
                 }
             )
             ls = client.containers.run(
@@ -345,7 +309,7 @@ try:
                 ports=kibana_port_mapped
             )
             time.sleep(60)
-            es.logs().decode('utf-8') #empty the stream first!
+            es.logs().decode('utf-8')
             result=es.exec_run(cmd=f'bin/elasticsearch-users useradd {kibana_user} -p {kibana_pass} -r kibana_system')
             result=es.exec_run(cmd=f'bin/elasticsearch-users useradd {dash_user} -p {dash_pass} -r superuser')
             result=es.exec_run(cmd=f'bin/elasticsearch-users useradd {logstash_user} -p {logstash_pass} -r superuser')
@@ -381,3 +345,39 @@ except Exception as e:
     print(payload)
     print('Response!')
     print(response.json())
+######################################################################################################################################
+# Helpers
+def create_tarfile_from_string(file_name, content):
+    tar_stream = io.BytesIO()
+    with tarfile.open(fileobj=tar_stream, mode='w') as tar:
+        # Create a file-like object from the string
+        file_data = io.BytesIO(content.encode('utf-8'))
+        tarinfo = tarfile.TarInfo(name=file_name)
+        tarinfo.size = len(file_data.getvalue())
+        tar.addfile(tarinfo, file_data)
+    tar_stream.seek(0)
+    return tar_stream
+def push_string_to_container(container, file_name, content, target_dir):
+    #tar_stream = create_tarfile_from_string(file_name, content)
+    tar_stream = io.BytesIO()
+    with tarfile.open(fileobj=tar_stream, mode='w') as tar:
+        file_data = io.BytesIO(content.encode('utf-8'))
+        tarinfo = tarfile.TarInfo(name=file_name)
+        tarinfo.size = len(file_data.getvalue())
+        tar.addfile(tarinfo, file_data)
+    tar_stream.seek(0)
+    container.put_archive(path=target_dir, data=tar_stream)
+def parse_json_config(fpath):
+    f=open(fpath,'r')
+    string=json.load(f)
+    f.close()
+    return string
+def predicate_filelist(internal):
+    if internal:
+        return [file for file in os.listdir('./config/') if file.endswith('.json') and 'Kong' in file and file.startswith('enabled_')]
+    else:
+        return [file for file in os.listdir('./config/') if file.endswith('.json') and 'Kong' not in file and file.startswith('enabled_')]
+def run_cmd(container,command):
+    results=container.exec_run(cmd=command)
+    if(0!=results.exit_code):
+        print(results.output)
