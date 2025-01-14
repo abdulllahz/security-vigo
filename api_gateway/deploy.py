@@ -10,21 +10,21 @@ import io
 
 ######################################################################################################################################
 # ASCII art
-print('''\t\033[91m0\033[94m---\033[31mO
- \t\033[91m0\033[34m=\033[31mo
-  \t\033[91m0
- \t\033[31mo\033[34m=\033[91m0
-\t\033[31mO\033[94m---\033[91m0
-\t\033[31m0\033[94m---\033[91mO
- \t\033[31m0\033[34m=\033[91mo
-  \t\033[31m0
- \t\033[91mo\33[34m=\033[31m0
-\t\033[91mO\033[94m---\033[31m0
-\t\033[91m0\033[94m---\033[31mO
- \t\033[91m0\033[34m=\033[31mo
-  \t\033[91m0
- \t\033[31mo\033[34m=\033[91m0
-\t\033[31mO\033[94m---\033[91m0\033[0m''')
+print('''\033[91m0\033[94m---\033[31mO
+\u0020\033[91m0\033[34m=\033[31mo
+\u0020\u0020\033[91m0
+\u0020\033[31mo\033[34m=\033[91m0
+\033[31mO\033[94m---\033[91m0
+\033[31m0\033[94m---\033[91mO
+\u0020\033[31m0\033[34m=\033[91mo
+\u0020\u0020\033[31m0
+\u0020\033[91mo\33[34m=\033[31m0
+\033[91mO\033[94m---\033[31m0
+\033[91m0\033[94m---\033[31mO
+\u0020\033[91m0\033[34m=\033[31mo
+\u0020\u0020\033[91m0
+\u0020\033[31mo\033[34m=\033[91m0
+\033[31mO\033[94m---\033[91m0\033[0m''')
 ######################################################################################################################################
 #   Usage: sudo python3 deploy.py
 #    flags: 
@@ -70,40 +70,40 @@ print('''\t\033[91m0\033[94m---\033[31mO
 try:
 ######################################################################################################################################
 # Helpers
- def create_tarfile_from_string(file_name, content):
-     tar_stream = io.BytesIO()
-     with tarfile.open(fileobj=tar_stream, mode='w') as tar:
-         # Create a file-like object from the string
-         file_data = io.BytesIO(content.encode('utf-8'))
-         tarinfo = tarfile.TarInfo(name=file_name)
-         tarinfo.size = len(file_data.getvalue())
-         tar.addfile(tarinfo, file_data)
-     tar_stream.seek(0)
-     return tar_stream
- def push_string_to_container(container, file_name, content, target_dir):
-     #tar_stream = create_tarfile_from_string(file_name, content)
-     tar_stream = io.BytesIO()
-     with tarfile.open(fileobj=tar_stream, mode='w') as tar:
-         file_data = io.BytesIO(content.encode('utf-8'))
-         tarinfo = tarfile.TarInfo(name=file_name)
-         tarinfo.size = len(file_data.getvalue())
-         tar.addfile(tarinfo, file_data)
-     tar_stream.seek(0)
-     container.put_archive(path=target_dir, data=tar_stream)
- def parse_json_config(fpath):
-     f=open(fpath,'r')
-     string=json.load(f)
-     f.close()
-     return string
- def predicate_filelist(internal):
-     if internal:
-         return [file for file in os.listdir('./config/') if file.endswith('.json') and 'Kong' in file and file.startswith('enabled_')]
-     else:
-         return [file for file in os.listdir('./config/') if file.endswith('.json') and 'Kong' not in file and file.startswith('enabled_')]
- def run_cmd(container,command):
-     results=container.exec_run(cmd=command)
-     if(0!=results.exit_code):
-         print(results.output)
+    def create_tarfile_from_string(file_name, content):
+        tar_stream = io.BytesIO()
+        with tarfile.open(fileobj=tar_stream, mode='w') as tar:
+            # Create a file-like object from the string
+            file_data = io.BytesIO(content.encode('utf-8'))
+            tarinfo = tarfile.TarInfo(name=file_name)
+            tarinfo.size = len(file_data.getvalue())
+            tar.addfile(tarinfo, file_data)
+        tar_stream.seek(0)
+        return tar_stream
+    def push_string_to_container(container, file_name, content, target_dir):
+        #tar_stream = create_tarfile_from_string(file_name, content)
+        tar_stream = io.BytesIO()
+        with tarfile.open(fileobj=tar_stream, mode='w') as tar:
+            file_data = io.BytesIO(content.encode('utf-8'))
+            tarinfo = tarfile.TarInfo(name=file_name)
+            tarinfo.size = len(file_data.getvalue())
+            tar.addfile(tarinfo, file_data)
+        tar_stream.seek(0)
+        container.put_archive(path=target_dir, data=tar_stream)
+    def parse_json_config(fpath):
+        f=open(fpath,'r')
+        string=json.load(f)
+        f.close()
+        return string
+    def predicate_filelist(internal):
+        if internal:
+            return [file for file in os.listdir('./config/') if file.endswith('.json') and 'Kong' in file and file.startswith('enabled_')]
+        else:
+            return [file for file in os.listdir('./config/') if file.endswith('.json') and 'Kong' not in file and file.startswith('enabled_')]
+    def run_cmd(container,command):
+        results=container.exec_run(cmd=command)
+        if(0!=results.exit_code):
+            print(results.output)
 ######################################################################################################################################
 # Config variables
 # ELK
@@ -234,7 +234,7 @@ try:
             'KONG_ADMIN_ERROR_LOG': '/dev/stderr',
             'KONG_ADMIN_LISTEN': f'0.0.0.0:{kong_admin_port},0.0.0.0:{kong_admin_ssl_port} ssl'
         },
-        volumes=["/tmp/kong:/tmp/"]
+        volumes=["/tmp/kong:/tmp/"],
         ports=kong_port_mapped
     )
     run_cmd(gw,'kong migrations bootstrap -v')
