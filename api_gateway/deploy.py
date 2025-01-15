@@ -101,7 +101,7 @@ try:
         else:
             return [file for file in os.listdir('./config/') if file.endswith('.json') and 'Kong' not in file and file.startswith('enabled_')]
     def run_cmd(container,command):
-        results=container.exec_run(cmd=command)
+        results=container.exec_run(user="root", cmd=command)
         if(0!=results.exit_code):
             print(results.output)
 ######################################################################################################################################
@@ -119,10 +119,10 @@ try:
     kibana_pass='KibAna_456'
     kibana_port='5601'
 # Postgres
-    postgres_host=''
-    postgres_port=''
-    postgres_user=''
-    postgres_pass=''
+    postgres_host='BykeaKongDB'
+    postgres_port='5432'
+    postgres_user='kong'
+    postgres_pass='Kong_X1789'
 # Redis
     redis_port='6379'
 # Kong
@@ -174,6 +174,7 @@ try:
     f=open(path+'internal_common.json','r')
     common=json.load(f)
     f.close()
+    base_dir=os.getcwd()
 ######################################################################################################################################
 # Remove residual
     containers = client.containers.list()
@@ -234,13 +235,17 @@ try:
             'KONG_ADMIN_ERROR_LOG': '/dev/stderr',
             'KONG_ADMIN_LISTEN': f'0.0.0.0:{kong_admin_port},0.0.0.0:{kong_admin_ssl_port} ssl'
         },
-        volumes=["/tmp/kong:/tmp/"],
+        volumes=[f"{base_dir}/logs:/tmp/kong"],
         ports=kong_port_mapped
     )
+    print("==========================")
     run_cmd(gw,'kong migrations bootstrap -v')
     run_cmd(gw,'kong start')
+    run_cmd(gw,'apt update')
+    run_cmd(gw,'apt install -y curl')
     run_cmd(gw,'''curl -Ls https://get.konghq.com/quickstart | \\
             bash -s -- -i kong -t latest''')
+    print("==========================")
 ######################################################################################################################################
 # Populate upstreams
     for config in configs:
@@ -316,6 +321,17 @@ try:
 ######################################################################################################################################
 # Populate Logger
     if toggle_logging:
+        fb = client.containers.run(
+            name= project_prefix+'FileBeat',
+            image='docker.elastic.co/beats/filebeat:8.17.0',
+            detach=True,
+            command='tail -f /dev/null',
+            network=network_name,
+            environment={
+                "ELASTICSEARCH_HOSTS": "https://Operation:Lol_Sometimes_4433@BykeaKongElasticSearch:9200"  # If required
+            },
+            volumes=[f"{base_dir}/logs:/tmp/kong"]
+        )
         if toggle_devmode:
             es = client.containers.run(
                 name= project_prefix+'ElasticSearch',
@@ -354,6 +370,7 @@ try:
             log=kb.logs().decode('utf-8')
             index=log.find('code=')+5
             ls.exec_run(cmd='mkdir /usr/share/logstash/certificates')
+            ls.exec_run(cmd='mkdir /usr/share/filebeat/certificates')
             certificate=es.exec_run(cmd='cat /usr/share/elasticsearch/config/certs/http_ca.crt').output.decode('utf-8')
             push_string_to_container(ls,'http_ca.crt', certificate, '/usr/share/logstash/certificates')
             push_string_to_container(ls,'logstash.conf', pipeline, '/usr/share/logstash/pipeline')
