@@ -4,7 +4,12 @@ import docker
 import time
 import os
 import io
+
 #<130>1 2024-10-28 10:31:07 aaaaaaaa KongHTTP PID a1bf4b20-adf8-4a35-a282-b953cd6c998e body={"__SId":"aaaaaaaa"}
+# send JSON to Logstash
+# logstash parses
+# logstash outputs
+# nc is able to listen to syslog
 
 ### Variables
 client = docker.from_env()
