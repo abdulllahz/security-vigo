@@ -11,46 +11,48 @@ import io
 
 try:
 ######################################################################################################################################
-#   Usage: sudo python3 deploy.py
-#    flags: 
-#     --db: self host DB
-#     --log: turn on logging
-#     --staging: prepare for staging environments
+# Usage
+  #   sudo python3 deploy.py
+  #    flags: 
+  #     --db: self host DB
+  #     --log: turn on logging
+  #     --staging: prepare for staging environments
 ######################################################################################################################################
-#
-#  Service Discovery:
-#      |---------|   |-------------------------|   |------------------------------|   
-#  ===>| Ingress |===| /api/v1/common/services |===| Plugins (Request Terminator) |===||
-#      |---------|   |-------------------------|   |------------------------------|   || 
-#                                                                                     ||
-#                                                                               |------------|it oughta be having some if 
-#  <============================================================================| ServiceMap |
-#                                                                               |------------|
-#  
-#  Service Routing: 
-#      |---------|   |--------|   |---------|   |----------|   |-----------|   |------- |   |--------|   |------|
-#  ===>| Ingress |===| Routes |===| Plugins |===| Services |===| Upstreams |===| Target |===| Egress |===| Node |===||
-#      |---------|   |--------|   |---------|   |----------|   |-----------|   |--------|   |--------|   |------|   ||
-#                                                                                                                   ||
-#                                                                                                              |----------|
-#  <===========================================================================================================| Response |
-#                                                                                                              |----------|
-#
-######################################################################################################################################
-# Request API Gateway Release:
-# Requester: ___________________
-# RFC: https://developer.mozilla.org/en-US/docs/Web/HTTP/Resources_and_specifications
-# Related PR: ___________________
-# Related Release:  ___________________
-# Method :: Host+Path :: RequestSchema :: ResponseSchema :: Auth? :: Redis? :: Resources (SMS,Voicecall) :: Expected Session QPS :: Expected Global QPS :: Usage Description :: Compliance
-# ______ :: _________ :: _____________ :: ______________ :: _____ :: ______ :: _________________________ :: ____________________ :: ___________________ :: _________________ :: __________
-# Gateway PR: ___________________
-# Interaction Diagram: ___________________
-# FE Dev Approval: Checkbox
-# BE Dev Approval: Checkbox
-# Sec Eng Approval: Checkbox
-# Data Eng Approval: Checkbox
-# Infra Eng Approval: Checkbox
+# Architecture
+  #
+  #  Service Discovery:
+  #      |---------|   |-------------------------|   |------------------------------|   
+  #  ===>| Ingress |===| /api/v1/common/services |===| Plugins (Request Terminator) |===||
+  #      |---------|   |-------------------------|   |------------------------------|   || 
+  #                                                                                     ||
+  #                                                                               |------------|it oughta be having some if 
+  #  <============================================================================| ServiceMap |
+  #                                                                               |------------|
+  #  
+  #  Service Routing: 
+  #      |---------|   |--------|   |---------|   |----------|   |-----------|   |------- |   |--------|   |------|
+  #  ===>| Ingress |===| Routes |===| Plugins |===| Services |===| Upstreams |===| Target |===| Egress |===| Node |===||
+  #      |---------|   |--------|   |---------|   |----------|   |-----------|   |--------|   |--------|   |------|   ||
+  #                                                                                                                   ||
+  #                                                                                                              |----------|
+  #  <===========================================================================================================| Response |
+  #                                                                                                              |----------|
+  #
+  ######################################################################################################################################
+  # Request API Gateway Release:
+  # Requester: ___________________
+  # RFC: https://developer.mozilla.org/en-US/docs/Web/HTTP/Resources_and_specifications
+  # Related PR: ___________________
+  # Related Release:  ___________________
+  # Method :: Host+Path :: RequestSchema :: ResponseSchema :: Auth? :: Redis? :: Resources (SMS,Voicecall) :: Expected Session QPS :: Expected Global QPS :: Usage Description :: Compliance
+  # ______ :: _________ :: _____________ :: ______________ :: _____ :: ______ :: _________________________ :: ____________________ :: ___________________ :: _________________ :: __________
+  # Gateway PR: ___________________
+  # Interaction Diagram: ___________________
+  # FE Dev Approval: Checkbox
+  # BE Dev Approval: Checkbox
+  # Sec Eng Approval: Checkbox
+  # Data Eng Approval: Checkbox
+  # Infra Eng Approval: Checkbox
 ######################################################################################################################################
 # Helpers
     def create_tarfile_from_string(file_name, content):
@@ -197,17 +199,17 @@ try:
     }
     header={'Content-Type': 'application/json','accept': 'application/json'}
     client = docker.from_env()
-    deployment_logs.append("connected to container engine")
+    deployment_logs.append("Connected to container engine")
     configs=[parse_json_config(path + file) for file in predicate_filelist(False)]
-    deployment_logs.append("loaded external configs")
+    deployment_logs.append("Loaded external configs")
     service_maps=[parse_json_config(path + file) for file in predicate_filelist(True)]
-    deployment_logs.append("loaded internal configs")
+    deployment_logs.append("Loaded internal configs")
     f=open(path+'internal_common.json','r')
     common=json.load(f)
     f.close()
-    deployment_logs.append("loaded common parameters")
+    deployment_logs.append("Loaded common parameters")
     base_dir=os.getcwd()
-    deployment_logs.append("init section done")
+    deployment_logs.append("Init section done")
 ######################################################################################################################################
 # Remove residual
     containers = client.containers.list()
@@ -222,12 +224,12 @@ try:
     for network in networks:
         if project_prefix in network.name:
             network.remove()
-    deployment_logs.append("killed old residual containers")
+    deployment_logs.append("Killed old residual containers")
 ######################################################################################################################################
 # Create networks
     network_name=project_prefix+'_network'
     network = client.networks.create(network_name, driver='bridge')
-    deployment_logs.append("network created")
+    deployment_logs.append("Network created")
 ######################################################################################################################################
 # Run containers
     if toggle_aiomode:
@@ -243,7 +245,7 @@ try:
                 'POSTGRES_PASSWORD':postgres_pass
             }
         )
-        deployment_logs.append("spun up postgres")
+        deployment_logs.append("Spun up postgres")
         rs = client.containers.run(
             name= project_prefix+'Cache',
             image='redis:7.0.15-alpine',
@@ -251,7 +253,7 @@ try:
             network=network_name,
             ports=redis_port_mapped
         )
-        deployment_logs.append("spun up redis")
+        deployment_logs.append("Spun up redis")
     time.sleep(10)
     gw = client.containers.run(
         name= project_prefix+'Gateway',
@@ -275,16 +277,16 @@ try:
         volumes=[f"{base_dir}/logs:/tmp/kong"],
         ports=kong_port_mapped
     )
-    deployment_logs.append("spun up kong")
+    deployment_logs.append("Spun up kong")
     run_cmd(gw,'kong migrations bootstrap -v')
-    deployment_logs.append("running migrations")
+    deployment_logs.append("Running migrations")
     run_cmd(gw,'kong start')
-    deployment_logs.append("started kong")
+    deployment_logs.append("Started kong")
     run_cmd(gw,'apt update')
     run_cmd(gw,'apt install -y curl')
     run_cmd(gw,'''curl -Ls https://get.konghq.com/quickstart | \\
             bash -s -- -i kong -t latest''')
-    deployment_logs.append("added UI")
+    deployment_logs.append("Added UI")
 ######################################################################################################################################
 # Populate upstreams
     for config in configs:
@@ -345,7 +347,7 @@ try:
             route_id=response.json()['id']
 ######################################################################################################################################
 # Populate ServiceMap
-    deployment_logs.append("gateway populated")
+    deployment_logs.append("Gateway populated")
     for service_map in service_maps:
         payload={}
         payload.update(common['routes'])
@@ -358,7 +360,7 @@ try:
         payload.update({'route': {'id': route_id}})
         payload['config'].update({'body':json.dumps(service_map['ServiceMap'])})
         response = requests.post(f'http://127.0.0.1:{kong_admin_port}/routes/{route_id}/plugins', json=payload, headers=header)
-    deployment_logs.append("service discovery is ready")
+    deployment_logs.append("Service discovery is ready")
 ######################################################################################################################################
 # Populate Logger
     if toggle_logging:
@@ -373,7 +375,7 @@ try:
             },
             volumes=[f"{base_dir}/logs:/tmp/kong"]
         )
-        deployment_logs.append("spun up filebeat")
+        deployment_logs.append("Spun up filebeat")
         if toggle_aiomode:
             es = client.containers.run(
                 name= project_prefix+'ElasticSearch',
@@ -387,7 +389,7 @@ try:
                     'ES_JAVA_OPTS': '-Xms768m -Xmx768m'
                 }
             )
-            deployment_logs.append("spun up elasticsearch")
+            deployment_logs.append("Spun up elasticsearch")
             ls = client.containers.run(
                 name= project_prefix+'LogStash',
                 image='logstash:8.13.4',
@@ -396,7 +398,7 @@ try:
                 command='tail -f /dev/null',
                 ports=logstash_port_mapped
             )
-            deployment_logs.append("spun up logstash")
+            deployment_logs.append("Spun up logstash")
             kb = client.containers.run(
                 name= project_prefix+'Kibana',
                 image='kibana:8.13.4',
@@ -404,13 +406,13 @@ try:
                 network=network_name,
                 ports=kibana_port_mapped
             )
-            deployment_logs.append("spun up kibana")
+            deployment_logs.append("Spun up kibana")
             time.sleep(60)
             es.logs().decode('utf-8')
             result=es.exec_run(cmd=f'bin/elasticsearch-users useradd {kibana_user} -p {kibana_pass} -r kibana_system')
             result=es.exec_run(cmd=f'bin/elasticsearch-users useradd {dash_user} -p {dash_pass} -r superuser')
             result=es.exec_run(cmd=f'bin/elasticsearch-users useradd {logstash_user} -p {logstash_pass} -r superuser')
-            deployment_logs.append("users added")
+            deployment_logs.append("Users added")
             result=es.exec_run(cmd=f'bin/elasticsearch-create-enrollment-token -s kibana')
             token=result.output.decode('utf-8')
             log=kb.logs().decode('utf-8')
@@ -436,9 +438,10 @@ try:
         }, headers=header)
     die=True
     thread1.join()
-
-    print('enrollment token: '+token)
-    print('kibana Code: '+log[index:index+6])
+    deployment_logs.append("Done")
+    if toggle_logging:
+        print('enrollment token: '+token)
+        print('kibana Code: '+log[index:index+6])
 except Exception as e:
     die=True
     thread1.join()
