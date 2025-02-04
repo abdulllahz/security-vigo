@@ -454,3 +454,23 @@ except Exception as e:
     print(payload)
     print('Response!')
     print(response.json())
+
+
+
+
+replace_field(node){
+    if(typeof node === "string"){
+        translate_predicate(node)
+        return 0;
+    }
+    if(typeof node === "object"){
+        array.forEach(children => {
+            replace_field(children);
+        });
+    }
+    return 1;
+}
+
+translate_predicate(field){
+    console.log(field)
+}
