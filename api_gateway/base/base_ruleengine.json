@@ -18,5 +18,12 @@
         "methods": ["POST"],
         "paths": ["~/rully/(?<default>api/bykea-rule-engine)"],
         "tags": ["Universal Acceptor"]
+    },
+    {
+        "name": "RuleEngine",
+        "protocols": ["http","https"],
+        "methods": ["POST"],
+        "paths": ["~/rully/(?<default>api/re/acknowledge)"],
+        "tags": ["Universal Acceptor"]
     }]
 }
