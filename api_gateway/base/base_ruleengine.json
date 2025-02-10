@@ -13,10 +13,10 @@
         "tags": ["Core","Critical","UserFacing","RateLimited"]
     },
     "routes":[{
-        "name": "DEFAULT",
+        "name": "RuleEngine",
         "protocols": ["http","https"],
-        "methods": ["GET","PUT","POST","PATCH","DELETE","OPTIONS","HEAD","TRACE"],
-        "paths": ["~/rully/(?<default>.*)"],
+        "methods": ["POST"],
+        "paths": ["~/rully/(?<default>api/bykea-rule-engine)"],
         "tags": ["Universal Acceptor"]
     }]
 }
