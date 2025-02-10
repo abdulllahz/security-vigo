@@ -13,14 +13,14 @@
         "tags": ["Core","Critical","UserFacing","RateLimited"]
     },
     "routes":[{
-        "name": "RuleEngine",
+        "name": "RuleEngineCore",
         "protocols": ["http","https"],
         "methods": ["POST"],
         "paths": ["~/rully/(?<default>api/bykea-rule-engine)"],
         "tags": ["Universal Acceptor"]
     },
     {
-        "name": "RuleEngine",
+        "name": "RuleEngineAcknowledge",
         "protocols": ["http","https"],
         "methods": ["POST"],
         "paths": ["~/rully/(?<default>api/re/acknowledge)"],

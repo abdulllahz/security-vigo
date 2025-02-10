@@ -31,7 +31,6 @@
         "data":{
             "base_url":"PLACEHOLDER",
             "service_map":[
-                {"service_name":"talos","service_prefix":"talos/"},
                 {"service_name":"kronos","service_prefix":"kronos/","available_routes":[
                     {"path_name":"kronos_get_bookings_for_driver","path":"v1/bookings/partner"},
                     {"path_name":"kronos_get_bookings_for_customer","path":"v1/bookings/customer"},
@@ -42,13 +41,17 @@
                     {"path_name":"kronos_partner_batch_invoice","path":"v1/batch/:id/invoice"},
                     {"path_name":"kronos_customer_batch_invoice","path":"v1/batch/:id/invoice"}
                 ]},
+                {"service_name":"rule_engine","service_prefix":"rully/","available_routes":[
+                    {"path_name":"bykea_rule_engine","path":"api/bykea-rule-engine"},
+                    {"path_name":"bykea_rule_engine_acknowledge","path":"api/re/acknowledge"}
+                ]},
+                {"service_name":"talos","service_prefix":"talos/"},
                 {"service_name":"raptor","service_prefix":"raptor/"},
                 {"service_name":"belaz","service_prefix":"belaz/"},
                 {"service_name":"bolee_lagao","service_prefix":"bolee/"},
                 {"service_name":"geocode","service_prefix":"geocode/"},
                 {"service_name":"nominatim","service_prefix":"nominatim/"},
                 {"service_name":"socket","service_prefix":"talos/socket.io"},
-                {"service_name":"socket","service_prefix":"socket.io/"},
                 {"service_name":"loadboard","service_prefix":"load/"},
                 {"service_name":"maps","service_prefix":"jabajaba/"},
                 {"service_name":"display_image_url","service_prefix":"faltu/"},

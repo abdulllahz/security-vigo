@@ -20,12 +20,5 @@
         "methods": ["GET","PUT","POST","PATCH","DELETE","OPTIONS","HEAD","TRACE"],
         "paths": ["~/talos/(?<default>.*)"],
         "tags": ["Universal Acceptor"]
-    },
-    {
-        "name": "DEFAULTSocket",
-        "protocols": ["http","https"],
-        "methods": ["GET","PUT","POST","PATCH","DELETE","OPTIONS","HEAD","TRACE"],
-        "paths": ["~/(?<default>socket.io.*)"],
-        "tags": ["Universal Acceptor"]
     }]
 }
