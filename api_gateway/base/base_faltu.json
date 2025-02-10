@@ -1,7 +1,7 @@
 {
     "meta":["redirector"],
     "name":"faltu",
-    "original_host": "d1vz7wt1zd2jl3.cloudfront.net",
+    "original_host": "https://d1vz7wt1zd2jl3.cloudfront.net",
     "routes":[{
         "name": "DEFAULT",
         "protocols": ["http","https"],
