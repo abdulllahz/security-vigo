@@ -6,6 +6,7 @@ import os
 import io
 
 #<130>1 2024-10-28 10:31:07 aaaaaaaa KongHTTP PID a1bf4b20-adf8-4a35-a282-b953cd6c998e body={"__SId":"aaaaaaaa"}
+#<13>1 2025-02-12T12:39:48.377+00:00 localhost:50234/abc KongHTTP TODO 485578c4-bd79-461d-828a-b724c46d1ba5 - 2025-02-12T12:39:48.377Z localhost {"__SId":"abc"}
 # send JSON to Logstash
 # logstash parses
 # logstash outputs
@@ -114,7 +115,7 @@ async def main():
         f"a:apt update",
         f"a:apt install -y curl lsof gawk procps libcap2-bin lsb-release wget",
         f"f:curl {agent_url} -o /wazuh-agent_{script_version}_amd64.deb",
-        f"f:/usr/share/logstash/bin/logstash-plugin install logstash-output-syslog"
+        f"f:/usr/share/logstash/bin/logstash-plugin install logstash-output-syslog",
         f"m:mkdir -p /usr/share/filebeat/module",
         f"d:mkdir -p /usr/share/wazuh-dashboard/data/wazuh/config/",
         f"a:chmod 777 /wazuh-install.sh",
@@ -294,6 +295,7 @@ async def main():
     push_file_to_container(Forwarder, 
         "manager_config.conf", 
         "/var/ossec/etc/", "ossec.conf", {
+            "manager_syslog_port": manager_syslog_port
     })
     push_file_to_container(Forwarder, 
         "forwarder_agent.conf",
