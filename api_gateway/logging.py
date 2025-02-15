@@ -2,11 +2,11 @@ import os
 import time
 import socket
 
-LOG_FILE = "/var/log/logfile.log"
-MAX_FILE_SIZE = 10 * 1024 * 1024  # 10 MB
-TCP_HOST = "remote.server.ip"
-TCP_PORT = 12345
-DWELL_TIME = 10
+LOG_FILE = "logs/internal"
+MAX_FILE_SIZE = 10*1024*1024
+TCP_HOST = "aggregator.bykea.prod"
+TCP_PORT = 7799
+DWELL_TIME = 100
 
 while True:
     try:
