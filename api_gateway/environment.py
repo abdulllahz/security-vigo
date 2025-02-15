@@ -37,7 +37,7 @@ f.close()
 for environment in sys.argv[1:]:
     stuff={}
     stuff.update(kong)
-    temp=environment.replace('#service','api')
+    temp=environment.replace('#service','tomoe')
     stuff['routes'][0]['name']=f'{temp}_ServiceMap'
     stuff['ServiceMap']['data']['base_url']=f'{temp}/'
     f=open(path+f'enabled_{temp}_Kong.json','w')
