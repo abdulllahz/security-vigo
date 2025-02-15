@@ -7,7 +7,6 @@ MAX_FILE_SIZE = 10*1024*1024
 TCP_HOST = "aggregator.bykea.prod"
 TCP_PORT = 7799
 DWELL_TIME = 100
-
 while True:
     try:
         if os.path.getsize(LOG_FILE) > MAX_FILE_SIZE:

@@ -113,9 +113,7 @@ try:
             f'{dred}\u00200\033[34m={red}o\033[0m',
             f'{dred}\u0020\u00200\033[0m',
             f'{red}\u0020o\33[34m={dred}0\033[0m',
-            f'{red}O\033[94m---{dred}0\033[0m',
-            f'{red}0\033[94m---{dred}O\033[0m',
-            f'{red}\u00200\033[34m={dred}o\033[0m'
+            f'{red}O\033[94m---{dred}0\033[0m'
             ]
         frame=len(arr)
         for i in range(0,10000):
@@ -268,10 +266,10 @@ try:
             'KONG_PG_HOST': postgres_host,
             'KONG_PG_PASSWORD': postgres_pass,
             'KONG_CASSANDRA_CONTACT_POINTS': 'kong-database',
-            'KONG_PROXY_ACCESS_LOG': '{base_dir}/logs/internal',
-            'KONG_ADMIN_ACCESS_LOG': '{base_dir}/logs/internal',
-            'KONG_PROXY_ERROR_LOG': '{base_dir}/logs/internal',
-            'KONG_ADMIN_ERROR_LOG': '{base_dir}/logs/internal',
+            'KONG_PROXY_ACCESS_LOG': '/tmp/kong/internal',
+            'KONG_ADMIN_ACCESS_LOG': '/tmp/kong/internal',
+            'KONG_PROXY_ERROR_LOG':  '/tmp/kong/internal',
+            'KONG_ADMIN_ERROR_LOG':  '/tmp/kong/internal',
             'KONG_ADMIN_LISTEN': f'0.0.0.0:{kong_admin_port},0.0.0.0:{kong_admin_ssl_port} ssl'
         },
         volumes=[f"{base_dir}/logs:/tmp/kong"],
