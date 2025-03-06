@@ -8,7 +8,7 @@
     },
     "targets":[
         {"target":"geocode-beta.bykea.net:443","weight":0,"tags":["CF-DNS"]},
-        {"target":"ad4b86a8d9fe54f4cade4f116c0e0f39-52131415.eu-west-1.elb.amazonaws.com:443","weight":100,"tags":["AWS-ELB"]}
+        {"target":"a4f888dab632245fcbc256ff7d743ee9-113436061.eu-west-1.elb.amazonaws.com:443","weight":100,"tags":["AWS-ELB"]}
     ],
     "service":{
         "tags": ["Core","Critical","UserFacing","RateLimited"]
