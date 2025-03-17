@@ -17,6 +17,7 @@ try:
   #     --db: self host DB
   #     --log: turn on logging
   #     --staging: prepare for staging environments
+  #     --migrate: run migrations or skip
 ######################################################################################################################################
 # Architecture
   #
@@ -166,6 +167,7 @@ try:
     toggle_aiomode='--db' in sys.argv or '-d' in sys.argv
     toggle_logging='--log' in sys.argv or '-l' in sys.argv
     toggle_staging='--staging' in sys.argv or '-s' in sys.argv
+    toggle_migrations='--migrate' in sys.argv or '-m' in sys.argv
     if toggle_aiomode:
         elasticsearch_host=project_prefix+'ElasticSearch'
         postgres_host=project_prefix+'DB'
@@ -276,8 +278,10 @@ try:
         ports=kong_port_mapped
     )
     deployment_logs.append("Spun up kong")
-    run_cmd(gw,'kong migrations bootstrap -v')
-    deployment_logs.append("Running migrations")
+    if toggle_migrations:
+        run_cmd(gw,'kong migrations bootstrap -v')
+        deployment_logs.append("Running migrations")
+        configs=[]
     run_cmd(gw,'kong start')
     deployment_logs.append("Started kong")
     run_cmd(gw,'apt update')
