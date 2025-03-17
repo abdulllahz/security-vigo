@@ -63,8 +63,8 @@ ls = client.containers.run(
 )
 ls.exec_run(cmd='mkdir /usr/share/logstash/certificates')
 #push_string_to_container(ls,'http_ca.crt', certificate, '/usr/share/logstash/certificates')
-push_string_to_container(ls,'logstash.conf', buffer, '/usr/share/logstash/pipeline')
-ls.exec_run(cmd='logstash --path.settings /usr/share/logstash/pipeline/logstash.conf', detach=False)       
+push_string_to_container(ls,'pipelines.yml', buffer, '/usr/share/logstash/pipeline')
+ls.exec_run(cmd='logstash --path.settings /usr/share/logstash/pipeline/pipelines.yml', detach=True)
 #except Exception as e:
 #    print('Exception!')
 #    print(e)
