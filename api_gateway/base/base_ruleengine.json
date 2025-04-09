@@ -1,8 +1,5 @@
 {
-    "meta":["rewriter"],
     "name":"rully",
-    "original_path": "/$(uri_captures['default'])",
-    "original_host": "rule-engine.bykea.net",
     "upstream":{
         "tags": ["Core","Auth","RateLimited","UserFacing"]
     },
@@ -10,7 +7,8 @@
         {"target":"aa0e34f216bbb4cac9eab91bfd8276f3-2019948665.eu-west-1.elb.amazonaws.com:443","weight":100,"tags":["AWS-ELB"]}
     ],
     "service":{
-        "tags": ["Core","Critical","UserFacing","RateLimited"]
+        "tags": ["Core","Critical","UserFacing","RateLimited"],
+        "meta": [{"rewriter":{"config":{"replace":{"headers":["Host: rule-engine.bykea.net"],"uri":"/$(uri_captures['default'])"}}}}]
     },
     "routes":[{
         "name": "RuleEngineCore",

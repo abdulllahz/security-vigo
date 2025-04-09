@@ -1,8 +1,5 @@
 {
-    "meta":["rewriter"],
     "name":"nominatim",
-    "original_path": "/$(uri_captures['default'])/nominatim/reverse.php",
-    "original_host": "geocode-beta.bykea.net",
     "upstream":{
         "tags": ["Core","Auth","RateLimited","UserFacing"]
     },
@@ -11,7 +8,8 @@
         {"target":"a4f888dab632245fcbc256ff7d743ee9-113436061.eu-west-1.elb.amazonaws.com:443","weight":100,"tags":["AWS-ELB"]}
     ],
     "service":{
-        "tags": ["Core","Critical","UserFacing","RateLimited"]
+        "tags": ["Core","Critical","UserFacing","RateLimited"],
+        "meta": [{"rewriter":{"config":{"replace":{"headers":["Host: geocode-beta.bykea.net"],"uri":"/$(uri_captures['default'])"}}}}]
     },
     "routes":[{
         "name": "DEFAULT",

@@ -21,14 +21,14 @@ for config in configs:
         config_name=config_name.replace('#service',config['name'])
         if("targets" in stuff):
             stuff['targets']=copy.deepcopy(stuff["targets"])
-        stuff['name']=config_name
+        stuff['name']=config['name']
         for route in stuff['routes']:
             temp=route['name']
             route.update({
                 'name':f'{temp}_{config["name"]}',
                 #'hosts':[f'{config_name}']
             })
-        f=open(path+f'enabled_{config_name}.json','w')
+        f=open(path+f'enabled_{config['name']}.json','w')
         f.write(json.dumps(stuff))
         f.close()
 f=open(base+'internal_Kong.json','r')
@@ -38,8 +38,8 @@ for environment in sys.argv[1:]:
     stuff={}
     stuff.update(kong)
     temp=environment.replace('#service','tomoe')
-    stuff['routes'][0]['name']=f'{temp}_ServiceMap'
+    stuff['routes'][0]['name']=f'tomoe_ServiceMap'
     stuff['ServiceMap']['data']['base_url']=f'{temp}/'
-    f=open(path+f'enabled_{temp}_Kong.json','w')
+    f=open(path+f'enabled_tomoe_Kong.json','w')
     f.write(json.dumps(stuff))
     f.close()

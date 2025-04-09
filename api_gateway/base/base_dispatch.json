@@ -1,8 +1,6 @@
 {
     "meta":["rewriter"],
     "name":"dispatch",
-    "original_path": "/$(uri_captures['default'])",
-    "original_host": "dispatch.bykea.net",
     "upstream":{
         "tags": ["Core","Auth","RateLimited","UserFacing"]
     },
@@ -10,7 +8,8 @@
         {"target":"dispatch.bykea.net:443","weight":100,"tags":["test"]}
     ],
     "service":{
-        "tags": ["Core","Critical","UserFacing","RateLimited"]
+        "tags": ["Core","Critical","UserFacing","RateLimited"],
+        "meta": [{"rewriter":{"config":{"replace":{"headers":["Host: dispatch.bykea.net"],"uri":"/$(uri_captures['default'])"}}}}]
     },
     "routes":[{
         "name": "Scheduled_bookings",

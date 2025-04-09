@@ -1,7 +1,5 @@
 {
-    "meta":["redirector"],
     "name":"store",
-    "original_host": "https://bykea.store",
     "routes":[{
         "name": "DEFAULT",
         "protocols": ["http","https"],
@@ -10,6 +8,7 @@
         "tags": ["Universal Acceptor"]
     }],
     "service":{
-        "tags": ["Core","Critical","UserFacing","RateLimited"]
+        "tags": ["Core","Critical","UserFacing","RateLimited"],
+        "meta": [{"redirector":{"config":{"location": "https://bykea.store"}}}]
     }
 }

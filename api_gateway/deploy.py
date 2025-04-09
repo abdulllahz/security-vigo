@@ -56,18 +56,40 @@ try:
   # Infra Eng Approval: Checkbox
 ######################################################################################################################################
 # Helpers
-    def create_tarfile_from_string(file_name, content):
-        tar_stream = io.BytesIO()
-        with tarfile.open(fileobj=tar_stream, mode='w') as tar:
-            # Create a file-like object from the string
-            file_data = io.BytesIO(content.encode('utf-8'))
-            tarinfo = tarfile.TarInfo(name=file_name)
-            tarinfo.size = len(file_data.getvalue())
-            tar.addfile(tarinfo, file_data)
-        tar_stream.seek(0)
-        return tar_stream
+    def process_nested_plugins(id,scope,config,header):
+        tag=next(iter(config))
+        #if('rewriter' in config['meta']):
+        #    payload={}
+        #    payload.update(common['rewriter'])
+        #    payload['tags']=['path_correction']
+        #    payload['instance_name']='ReWrite_'+config['name']
+        #    payload['config']['replace']['uri']=config['original_path']
+        #    payload['config']['replace']['headers']=[f'Host: {config["original_host"]}']
+        #    payload.update({'service': {'id': service_id}})
+        #    response = requests.post(f'http://127.0.0.1:{kong_admin_port}/plugins', json=payload, headers=header)
+        #if('redirector' in config['meta']):
+        #    payload={}
+        #    payload.update(common['redirector'])
+        #    payload['tags']=['redirection']
+        #    payload['instance_name']='Redirect_'+config['name']
+        #    payload['config']['location']=config['original_host']
+        #    payload.update({'service': {'id': service_id}})
+        #    response = requests.post(f'http://127.0.0.1:{kong_admin_port}/plugins', json=payload, headers=header)
+        #
+        payload={}
+        payload.update(common[tag])
+        payload['instance_name']=tag+'_'+id
+        payload.update(config[tag])
+        if scope=="service":
+            payload.update({'service': {'id': service_id}})
+        elif scope=="route":
+            payload.update({'service': {'id': service_id}})
+        elif scope=="consumer":
+            payload.update({'service': {'id': service_id}})
+        else:
+           raise Exception("Invalid scope")
+        return requests.post(f'http://127.0.0.1:{kong_admin_port}/plugins', json=payload, headers=header)
     def push_string_to_container(container, file_name, content, target_dir):
-        #tar_stream = create_tarfile_from_string(file_name, content)
         tar_stream = io.BytesIO()
         with tarfile.open(fileobj=tar_stream, mode='w') as tar:
             file_data = io.BytesIO(content.encode('utf-8'))
@@ -81,7 +103,9 @@ try:
         string=json.load(f)
         f.close()
         return string
-    def predicate_filelist(internal):
+    def predicate_filelist(internal,toggle_migrations):
+        if not toggle_migrations:
+            return []
         if internal:
             return [file for file in os.listdir('./config/') if file.endswith('.json') and 'Kong' in file and file.startswith('enabled_')]
         else:
@@ -95,27 +119,27 @@ try:
         red='\033[91m'
         dred='\033[31m'
         arr=[
-            f'{red}0\033[94m---{dred}O\033[0m',
-            f'{red}\u00200\033[34m={dred}o\033[0m',
-            f'{red}\u0020\u00200\033[0m',
-            f'{dred}\u0020o\033[34m={red}0\033[0m',
-            f'{dred}O\033[94m---{red}0\033[0m',
-            f'{dred}0\033[94m---{red}O\033[0m',
-            f'{dred}\u00200\033[34m={red}o\033[0m',
-            f'{dred}\u0020\u00200\033[0m',
-            f'{red}\u0020o\33[34m={dred}0\033[0m',
-            f'{red}O\033[94m---{dred}0\033[0m',
-            f'{red}0\033[94m---{dred}O\033[0m',
-            f'{red}\u00200\033[34m={dred}o\033[0m',
-            f'{red}\u0020\u00200\033[0m',
-            f'{dred}\u0020o\033[34m={red}0\033[0m',
-            f'{dred}O\033[94m---{red}0\033[0m',
-            f'{dred}0\033[94m---{red}O\033[0m',
-            f'{dred}\u00200\033[34m={red}o\033[0m',
-            f'{dred}\u0020\u00200\033[0m',
-            f'{red}\u0020o\33[34m={dred}0\033[0m',
-            f'{red}O\033[94m---{dred}0\033[0m'
-            ]
+            f' {red}0\033[94m---{dred}O\033[0m ',
+            f' {red}\u00200\033[34m={dred}o\033[0m ',
+            f' {red}\u0020\u00200\033[0m ',
+            f' {dred}\u0020o\033[34m={red}0\033[0m ',
+            f' {dred}O\033[94m---{red}0\033[0m ',
+            f' {dred}0\033[94m---{red}O\033[0m ',
+            f' {dred}\u00200\033[34m={red}o\033[0m ',
+            f' {dred}\u0020\u00200\033[0m ',
+            f' {red}\u0020o\33[34m={dred}0\033[0m ',
+            f' {red}O\033[94m---{dred}0\033[0m ',
+            f' {red}0\033[94m---{dred}O\033[0m ',
+            f' {red}\u00200\033[34m={dred}o\033[0m ',
+            f' {red}\u0020\u00200\033[0m ',
+            f' {dred}\u0020o\033[34m={red}0\033[0m ',
+            f' {dred}O\033[94m---{red}0\033[0m ',
+            f' {dred}0\033[94m---{red}O\033[0m ',
+            f' {dred}\u00200\033[34m={red}o\033[0m ',
+            f' {dred}\u0020\u00200\033[0m ',
+            f' {red}\u0020o\33[34m={dred}0\033[0m ',
+            f' {red}O\033[94m---{dred}0\033[0m '
+        ]
         frame=len(arr)
         for i in range(0,10000):
             for j in range(0,frame):
@@ -164,7 +188,7 @@ try:
     thread1 = threading.Thread(target=animate)
     die=False
     thread1.start()
-    toggle_aiomode='--db' in sys.argv or '-d' in sys.argv
+    toggle_aiomode='--aio' in sys.argv or '-a' in sys.argv
     toggle_logging='--log' in sys.argv or '-l' in sys.argv
     toggle_staging='--staging' in sys.argv or '-s' in sys.argv
     toggle_migrations='--migrate' in sys.argv or '-m' in sys.argv
@@ -200,9 +224,9 @@ try:
     header={'Content-Type': 'application/json','accept': 'application/json'}
     client = docker.from_env()
     deployment_logs.append("Connected to container engine")
-    configs=[parse_json_config(path + file) for file in predicate_filelist(False)]
+    configs=[parse_json_config(path + file) for file in predicate_filelist(False,toggle_migrations)]
     deployment_logs.append("Loaded external configs")
-    service_maps=[parse_json_config(path + file) for file in predicate_filelist(True)]
+    service_maps=[parse_json_config(path + file) for file in predicate_filelist(True,toggle_migrations)]
     deployment_logs.append("Loaded internal configs")
     f=open(path+'internal_common.json','r')
     common=json.load(f)
@@ -278,21 +302,20 @@ try:
         ports=kong_port_mapped
     )
     deployment_logs.append("Spun up kong")
-    if toggle_migrations:
-        run_cmd(gw,'kong migrations bootstrap -v')
-        deployment_logs.append("Running migrations")
-        configs=[]
+    run_cmd(gw,'kong migrations bootstrap -v')
+    deployment_logs.append("Running migrations")
     run_cmd(gw,'kong start')
     deployment_logs.append("Started kong")
-    run_cmd(gw,'apt update')
-    run_cmd(gw,'apt install -y curl')
-    run_cmd(gw,'''curl -Ls https://get.konghq.com/quickstart | \\
-            bash -s -- -i kong -t latest''')
-    deployment_logs.append("Added UI")
+    time.sleep(10)
+    #run_cmd(gw,'apt update')
+    #run_cmd(gw,'apt install -y curl')
+    #run_cmd(gw,'''curl -Ls https://get.konghq.com/quickstart | \\
+    #        bash -s -- -i kong -t latest''')
+    #deployment_logs.append("Added UI")
 ######################################################################################################################################
 # Populate upstreams
     for config in configs:
-        if('upstream' in config):
+        if "upstream" in config:
             payload={}
             payload.update(common['upstream'])
             payload.update(config['upstream'])
@@ -301,6 +324,7 @@ try:
             upstream=response.json()['id']
 ######################################################################################################################################
 # Populate targets
+        if "targets" in config:
             for target in config['targets']:
                 payload={}
                 payload.update(common['targets'])
@@ -310,43 +334,37 @@ try:
 ######################################################################################################################################
 # Populate services
         payload={}
+        plugins=False
         payload.update(common['service'])
         payload.update(config['service'])
         payload.update({'name':config['name']})
         payload.update({'host':f'{config["name"]}.kong.internal'})
+        if "meta" in payload:
+            plugins=payload.pop("meta")
         response = requests.post(f'http://127.0.0.1:{kong_admin_port}/services', json=payload, headers=header)
         service_id=response.json()['id']
+        if plugins:
+            for plugin in plugins:
+                process_nested_plugins(service_id,"service",plugin,header)
 ######################################################################################################################################
 # Populate mandatory plugin
-        if('rewriter' in config['meta']):
-            payload={}
-            payload.update(common['rewriter'])
-            payload['tags']=['path_correction']
-            payload['instance_name']='ReWrite_'+config['name']
-            payload['config']['replace']['uri']=config['original_path']
-            payload['config']['replace']['headers']=[f'Host: {config["original_host"]}']
-            payload.update({'service': {'id': service_id}})
-            response = requests.post(f'http://127.0.0.1:{kong_admin_port}/plugins', json=payload, headers=header)
-        if('redirector' in config['meta']):
-            payload={}
-            payload.update(common['redirector'])
-            payload['tags']=['redirection']
-            payload['instance_name']='Redirect_'+config['name']
-            payload['config']['location']=config['original_host']
-            payload.update({'service': {'id': service_id}})
-            response = requests.post(f'http://127.0.0.1:{kong_admin_port}/plugins', json=payload, headers=header)
 ######################################################################################################################################
 # Populate routes
         for route in config['routes']:
             payload={}
+            plugins=False
             payload.update(common['routes'])
             payload.update(route)
             payload.update({'service': {'id': service_id}})
             if toggle_staging:
                 payload.update({'service': {'hosts': common['environment']}})
-            #payload.pop('original_path')
+            if "meta" in payload:
+                plugins=payload.pop("meta")
             response = requests.post(f'http://127.0.0.1:{kong_admin_port}/routes', json=payload, headers=header)
             route_id=response.json()['id']
+        if plugins:
+            for plugin in plugins:
+                process_nested_plugins(service_id,"route",plugin,header)
 ######################################################################################################################################
 # Populate ServiceMap
     deployment_logs.append("Gateway populated")

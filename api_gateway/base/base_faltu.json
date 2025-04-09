@@ -1,15 +1,14 @@
 {
-    "meta":["redirector"],
     "name":"faltu",
-    "original_host": "https://d1vz7wt1zd2jl3.cloudfront.net",
+    "service":{
+        "tags": ["Core","Critical","UserFacing","RateLimited"],
+        "meta": [{"redirector":{"config":{"location":  "https://d1vz7wt1zd2jl3.cloudfront.net"}}}]
+    },
     "routes":[{
         "name": "DEFAULT",
         "protocols": ["http","https"],
         "methods": ["GET","PUT","POST","PATCH","DELETE","OPTIONS","HEAD","TRACE"],
         "paths": ["~/300x300/(?<default>.*)"],
         "tags": ["Universal Acceptor"]
-    }],
-    "service":{
-        "tags": ["Core","Critical","UserFacing","RateLimited"]
-    }
+    }]
 }

@@ -1,8 +1,5 @@
 {
-    "meta":["rewriter"],
     "name":"talos",
-    "original_path": "/$(uri_captures['default'])",
-    "original_host": "talos.bykea.net",
     "upstream":{
         "tags": ["Core","Auth","RateLimited","UserFacing"]
     },
@@ -12,7 +9,8 @@
     ],
 
     "service":{
-        "tags": ["Core","Critical","UserFacing","RateLimited"]
+        "tags": ["Core","Critical","UserFacing","RateLimited"],
+        "meta": [{"rewriter":{"config":{"replace":{"headers":["Host: talos.bykea.net"],"uri":"/$(uri_captures['default'])"}}}}]
     },
     "routes":[{
         "name": "DEFAULT",
