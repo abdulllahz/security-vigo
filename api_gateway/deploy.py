@@ -364,7 +364,7 @@ try:
             route_id=response.json()['id']
         if plugins:
             for plugin in plugins:
-                process_nested_plugins(service_id,"route",plugin,header)
+                process_nested_plugins(route_id,"route",plugin,header)
 ######################################################################################################################################
 # Populate ServiceMap
     deployment_logs.append("Gateway populated")
