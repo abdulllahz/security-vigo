@@ -56,39 +56,23 @@ try:
   # Infra Eng Approval: Checkbox
 ######################################################################################################################################
 # Helpers
-    def process_nested_plugins(id,scope,config,header):
+    def process_nested_plugins(obj_id,scope,config,header):
         tag=next(iter(config))
-        #if('rewriter' in config['meta']):
-        #    payload={}
-        #    payload.update(common['rewriter'])
-        #    payload['tags']=['path_correction']
-        #    payload['instance_name']='ReWrite_'+config['name']
-        #    payload['config']['replace']['uri']=config['original_path']
-        #    payload['config']['replace']['headers']=[f'Host: {config["original_host"]}']
-        #    payload.update({'service': {'id': service_id}})
-        #    response = requests.post(f'http://127.0.0.1:{kong_admin_port}/plugins', json=payload, headers=header)
-        #if('redirector' in config['meta']):
-        #    payload={}
-        #    payload.update(common['redirector'])
-        #    payload['tags']=['redirection']
-        #    payload['instance_name']='Redirect_'+config['name']
-        #    payload['config']['location']=config['original_host']
-        #    payload.update({'service': {'id': service_id}})
-        #    response = requests.post(f'http://127.0.0.1:{kong_admin_port}/plugins', json=payload, headers=header)
-        #
         payload={}
         payload.update(common[tag])
-        payload['instance_name']=tag+'_'+id
+        payload['instance_name']=tag+'_'+obj_id
         payload.update(config[tag])
         if scope=="service":
-            payload.update({'service': {'id': service_id}})
+            payload.update({'service': {'id': obj_id}})
         elif scope=="route":
-            payload.update({'route': {'id': service_id}})
+            payload.update({'route': {'id': obj_id}})
         elif scope=="consumer":
-            payload.update({'consumer': {'id': service_id}})
+            payload.update({'consumer': {'id': obj_id}})
         else:
            raise Exception("Invalid scope")
-        return requests.post(f'http://127.0.0.1:{kong_admin_port}/plugins', json=payload, headers=header)
+        response=requests.post(f'http://127.0.0.1:{kong_admin_port}/plugins', json=payload, headers=header)
+        print(f'{response.content}')
+        return 0
     def push_string_to_container(container, file_name, content, target_dir):
         tar_stream = io.BytesIO()
         with tarfile.open(fileobj=tar_stream, mode='w') as tar:
@@ -362,9 +346,11 @@ try:
                 plugins=payload.pop("meta")
             response = requests.post(f'http://127.0.0.1:{kong_admin_port}/routes', json=payload, headers=header)
             route_id=response.json()['id']
-        if plugins:
-            for plugin in plugins:
-                process_nested_plugins(route_id,"route",plugin,header)
+            if plugins:
+                for plugin in plugins:
+                    print("==================")
+                    print(plugins)
+                    process_nested_plugins(route_id,"route",plugin,header)
 ######################################################################################################################################
 # Populate ServiceMap
     deployment_logs.append("Gateway populated")
