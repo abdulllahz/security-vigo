@@ -18,7 +18,7 @@
         "paths": ["~/jabajaba/(?<default>.*)"],
         "tags": ["Universal Acceptor"]
     },{
-        "name": "Test_Maps Authenticated",
+        "name": "Test_Authenticated",
         "meta": [{"ratelimit":{"config":{"header_name":"X-App-User-Id","minute":30}}}],
         "methods": ["GET","PUT","POST","PATCH","DELETE","OPTIONS","HEAD","TRACE"],
         "paths": ["~/test_jabajaba/(?<default>.*)"],
@@ -27,7 +27,7 @@
         "regex_priority": 50,
         "tags": ["Test Authenticated Acceptor"]
     },{
-        "name": "Test_Maps Unauthenticated",
+        "name": "Test_Unauthenticated",
         "methods": ["GET","PUT","POST","PATCH","DELETE","OPTIONS","HEAD","TRACE"],
         "paths": ["~/test_jabajaba/(?<default>.*)"],
         "protocols": ["http","https"],

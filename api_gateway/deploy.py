@@ -14,7 +14,7 @@ try:
 # Usage
   #   sudo python3 deploy.py
   #    flags: 
-  #     --db: self host DB
+  #     --aio: self host DB
   #     --log: turn on logging
   #     --staging: prepare for staging environments
   #     --migrate: run migrations or skip

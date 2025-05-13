@@ -18,7 +18,7 @@
         "paths": ["~/kronos/(?<default>.*)"],
         "tags": ["Universal Acceptor"]
     },{
-        "name": "Test_Kronos Authenticated",
+        "name": "Test_Authenticated",
         "meta": [{"ratelimit":{"config":{"header_name":"X-App-User-Id","minute":30}}}],
         "methods": ["GET","PUT","POST","PATCH","DELETE","OPTIONS","HEAD","TRACE"],
         "paths": ["~/test_kronos/(?<default>.*)"],
@@ -27,7 +27,7 @@
         "regex_priority": 50,
         "tags": ["Test Authenticated Acceptor"]
     },{
-        "name": "Test_Kronos Unauthenticated",
+        "name": "Test_Unauthenticated",
         "methods": ["GET","PUT","POST","PATCH","DELETE","OPTIONS","HEAD","TRACE"],
         "paths": ["~/test_kronos/(?<default>.*)"],
         "protocols": ["http","https"],

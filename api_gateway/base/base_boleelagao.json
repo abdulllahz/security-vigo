@@ -17,7 +17,7 @@
         "paths": ["~/bolee/(?<default>.*)"],
         "tags": ["Universal Acceptor"]
     },{
-        "name": "Test_bolee Authenticated",
+        "name": "Test_Authenticated",
         "meta": [{"ratelimit":{"config":{"header_name":"X-App-User-Id","minute":30}}}],
         "methods": ["GET","PUT","POST","PATCH","DELETE","OPTIONS","HEAD","TRACE"],
         "paths": ["~/test_bolee/(?<default>.*)"],
@@ -26,7 +26,7 @@
         "regex_priority": 50,
         "tags": ["Test Authenticated Acceptor"]
     },{
-        "name": "Test_bolee Unauthenticated",
+        "name": "Test_Unauthenticated",
         "methods": ["GET","PUT","POST","PATCH","DELETE","OPTIONS","HEAD","TRACE"],
         "paths": ["~/test_bolee/(?<default>.*)"],
         "protocols": ["http","https"],
