@@ -70,9 +70,7 @@ try:
             payload.update({'consumer': {'id': obj_id}})
         else:
            raise Exception("Invalid scope")
-        response=requests.post(f'http://127.0.0.1:{kong_admin_port}/plugins', json=payload, headers=header)
-        print(f'{response.content}')
-        return 0
+        return requests.post(f'http://127.0.0.1:{kong_admin_port}/plugins', json=payload, headers=header)
     def push_string_to_container(container, file_name, content, target_dir):
         tar_stream = io.BytesIO()
         with tarfile.open(fileobj=tar_stream, mode='w') as tar:
@@ -348,8 +346,6 @@ try:
             route_id=response.json()['id']
             if plugins:
                 for plugin in plugins:
-                    print("==================")
-                    print(plugins)
                     process_nested_plugins(route_id,"route",plugin,header)
 ######################################################################################################################################
 # Populate ServiceMap
