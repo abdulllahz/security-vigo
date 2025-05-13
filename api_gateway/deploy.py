@@ -83,9 +83,9 @@ try:
         if scope=="service":
             payload.update({'service': {'id': service_id}})
         elif scope=="route":
-            payload.update({'service': {'id': service_id}})
+            payload.update({'route': {'id': service_id}})
         elif scope=="consumer":
-            payload.update({'service': {'id': service_id}})
+            payload.update({'consumer': {'id': service_id}})
         else:
            raise Exception("Invalid scope")
         return requests.post(f'http://127.0.0.1:{kong_admin_port}/plugins', json=payload, headers=header)

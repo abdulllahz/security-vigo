@@ -7,6 +7,7 @@
         {"target":"aa0e34f216bbb4cac9eab91bfd8276f3-2019948665.eu-west-1.elb.amazonaws.com:443","weight":100,"tags":["AWS-ELB"]}
     ],
     "service":{
+        "enabled": false,
         "tags": ["Core","Critical","UserFacing","RateLimited"],
         "meta": [{"rewriter":{"config":{"replace":{"headers":["Host: belaz.bykea.net"],"uri":"/$(uri_captures['default'])"}}}}]
     },
@@ -16,5 +17,21 @@
         "methods": ["GET","PUT","POST","PATCH","DELETE","OPTIONS","HEAD","TRACE"],
         "paths": ["~/belaz/(?<default>.*)"],
         "tags": ["Universal Acceptor"]
+    },{
+        "name": "Test_belaz Authenticated",
+        "meta": [{"ratelimit":{"config":{"header_name":"X-App-User-Id","minute":30}}}],
+        "methods": ["GET","PUT","POST","PATCH","DELETE","OPTIONS","HEAD","TRACE"],
+        "paths": ["~/test_belaz/(?<default>.*)"],
+        "headers": {"X-App-User-Id":["~*"]},
+        "protocols": ["http","https"],
+        "regex_priority": 50,
+        "tags": ["Test Authenticated Acceptor"]
+    },{
+        "name": "Test_belaz Unauthenticated",
+        "methods": ["GET","PUT","POST","PATCH","DELETE","OPTIONS","HEAD","TRACE"],
+        "paths": ["~/test_belaz/(?<default>.*)"],
+        "protocols": ["http","https"],
+        "regex_priority": 1,
+        "tags": ["Test Unauthenticated Acceptor"]
     }]
 }

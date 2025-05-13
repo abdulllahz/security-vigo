@@ -58,13 +58,14 @@ ls = client.containers.run(
     detach=True,
     network=network_name,
     command='tail -f /dev/null',
-    ports={**{f"{port}/tcp": port for port in range(65000,65535)}},
-    volumes=[f"{base_dir}/pipelines:/usr/share/logstash/pipeline/"]
+    ports={**{f"{port}/udp": port for port in range(65000,65010)}},
+    volumes=[f"{base_dir}/pipelines:/usr/share/logstash/pipeline/"],
+    environment= {'LS_JAVA_OPTS': '-Xms1g -Xmx2g -XX:+UseG1GC -XX:MaxGCPauseMillis=50 -XX:InitiatingHeapOccupancyPercent=30 -Djdk.nio.maxCachedBufferSize=1048576'}
 )
 ls.exec_run(cmd='mkdir /usr/share/logstash/certificates')
 #push_string_to_container(ls,'http_ca.crt', certificate, '/usr/share/logstash/certificates')
-push_string_to_container(ls,'pipelines.yml', buffer, '/usr/share/logstash/pipeline')
-ls.exec_run(cmd='logstash --path.settings /usr/share/logstash/pipeline/pipelines.yml', detach=True)
+push_string_to_container(ls,'pipelines.yml', buffer, '/usr/share/logstash/pipeline/')
+#ls.exec_run(cmd='logstash --path.settings /usr/share/logstash/pipeline/', detach=True)
 #except Exception as e:
 #    print('Exception!')
 #    print(e)

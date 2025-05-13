@@ -16,12 +16,27 @@
         "methods": ["POST"],
         "paths": ["~/rully/(?<default>api/bykea-rule-engine)"],
         "tags": ["Universal Acceptor"]
-    },
-    {
+    },{
         "name": "RuleEngineAcknowledge",
         "protocols": ["http","https"],
         "methods": ["POST"],
         "paths": ["~/rully/(?<default>api/re/acknowledge)"],
         "tags": ["Universal Acceptor"]
+    },{
+        "name": "Test_Rully Authenticated",
+        "meta": [{"ratelimit":{"config":{"header_name":"X-App-User-Id","minute":30}}}],
+        "methods": ["GET","PUT","POST","PATCH","DELETE","OPTIONS","HEAD","TRACE"],
+        "paths": ["~/test_rully/(?<default>.*)"],
+        "headers": {"X-App-User-Id":["~*"]},
+        "protocols": ["http","https"],
+        "regex_priority": 50,
+        "tags": ["Test Authenticated Acceptor"]
+    },{
+        "name": "Test_Rully Unauthenticated",
+        "methods": ["GET","PUT","POST","PATCH","DELETE","OPTIONS","HEAD","TRACE"],
+        "paths": ["~/test_rully/(?<default>.*)"],
+        "protocols": ["http","https"],
+        "regex_priority": 1,
+        "tags": ["Test Unauthenticated Acceptor"]
     }]
 }
