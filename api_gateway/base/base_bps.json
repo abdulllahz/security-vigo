@@ -1,5 +1,5 @@
 {
-    "name":"bykea_payment_service",
+    "name":"paisa",
     "upstream":{
         "tags": ["Core","Auth","RateLimited","UserFacing"]
     },
@@ -9,19 +9,19 @@
     "service":{
         "enabled": false,
         "tags": ["Core","Critical","UserFacing","RateLimited"],
-        "meta": [{"rewriter":{"config":{"replace":{"headers":["Host: bps.bykea.net"],"uri":"/$(uri_captures['default'])"}}}}]
+        "meta": [{"rewriter":{"config":{"replace":{"headers":["Host: paisa.bykea.net"],"uri":"/$(uri_captures['default'])"}}}}]
     },
     "routes":[{
         "name": "DEFAULT",
         "protocols": ["http","https"],
         "methods": ["GET","PUT","POST","PATCH","DELETE","OPTIONS","HEAD","TRACE"],
-        "paths": ["~/bps/(?<default>.*)"],
+        "paths": ["~/paisa/(?<default>.*)"],
         "tags": ["Universal Acceptor"]
     },{
         "name": "Test_Authenticated",
         "meta": [{"ratelimit":{"config":{"header_name":"X-App-User-Id","minute":30}}}],
         "methods": ["GET","PUT","POST","PATCH","DELETE","OPTIONS","HEAD","TRACE"],
-        "paths": ["~/test_bps/(?<default>.*)"],
+        "paths": ["~/test_paisa/(?<default>.*)"],
         "headers": {"X-App-User-Id":["~*"]},
         "protocols": ["http","https"],
         "regex_priority": 50,
@@ -29,7 +29,7 @@
     },{
         "name": "Test_Unauthenticated",
         "methods": ["GET","PUT","POST","PATCH","DELETE","OPTIONS","HEAD","TRACE"],
-        "paths": ["~/test_bps/(?<default>.*)"],
+        "paths": ["~/test_paisa/(?<default>.*)"],
         "protocols": ["http","https"],
         "regex_priority": 1,
         "tags": ["Test Unauthenticated Acceptor"]
