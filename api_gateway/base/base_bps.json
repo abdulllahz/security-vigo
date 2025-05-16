@@ -1,5 +1,5 @@
 {
-    "name":"bps",
+    "name":"bykea_payment_service",
     "upstream":{
         "tags": ["Core","Auth","RateLimited","UserFacing"]
     },
