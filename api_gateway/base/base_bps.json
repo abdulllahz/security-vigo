@@ -1,0 +1,37 @@
+{
+    "name":"bps",
+    "upstream":{
+        "tags": ["Core","Auth","RateLimited","UserFacing"]
+    },
+    "targets":[
+        {"target":"aa0e34f216bbb4cac9eab91bfd8276f3-2019948665.eu-west-1.elb.amazonaws.com:443","weight":100,"tags":["AWS-ELB"]}
+    ],
+    "service":{
+        "enabled": false,
+        "tags": ["Core","Critical","UserFacing","RateLimited"],
+        "meta": [{"rewriter":{"config":{"replace":{"headers":["Host: bps.bykea.net"],"uri":"/$(uri_captures['default'])"}}}}]
+    },
+    "routes":[{
+        "name": "DEFAULT",
+        "protocols": ["http","https"],
+        "methods": ["GET","PUT","POST","PATCH","DELETE","OPTIONS","HEAD","TRACE"],
+        "paths": ["~/bps/(?<default>.*)"],
+        "tags": ["Universal Acceptor"]
+    },{
+        "name": "Test_Authenticated",
+        "meta": [{"ratelimit":{"config":{"header_name":"X-App-User-Id","minute":30}}}],
+        "methods": ["GET","PUT","POST","PATCH","DELETE","OPTIONS","HEAD","TRACE"],
+        "paths": ["~/test_bps/(?<default>.*)"],
+        "headers": {"X-App-User-Id":["~*"]},
+        "protocols": ["http","https"],
+        "regex_priority": 50,
+        "tags": ["Test Authenticated Acceptor"]
+    },{
+        "name": "Test_Unauthenticated",
+        "methods": ["GET","PUT","POST","PATCH","DELETE","OPTIONS","HEAD","TRACE"],
+        "paths": ["~/test_bps/(?<default>.*)"],
+        "protocols": ["http","https"],
+        "regex_priority": 1,
+        "tags": ["Test Unauthenticated Acceptor"]
+    }]
+}
