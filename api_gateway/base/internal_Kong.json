@@ -46,6 +46,7 @@
                     {"path_name":"bykea_rule_engine_acknowledge","path":"api/re/acknowledge"}
                 ]},
                 {"service_name":"talos","service_prefix":"talos/"},
+                {"service_name":"paisa","service_prefix":"paisa/"},
                 {"service_name":"raptor","service_prefix":"raptor/"},
                 {"service_name":"belaz","service_prefix":"belaz/"},
                 {"service_name":"bolee_lagao","service_prefix":"bolee/"},
