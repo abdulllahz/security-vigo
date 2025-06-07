@@ -11,13 +11,20 @@
         "tags": ["Core","Critical","UserFacing","RateLimited"],
         "meta": [{"rewriter":{"config":{"replace":{"headers":["Host: kronos-kn.bykea.net"],"uri":"/$(uri_captures['default'])"}}}}]
     },
-    "routes":[{
-        "name": "DEFAULT",
-        "protocols": ["http","https"],
-        "methods": ["GET","PUT","POST","PATCH","DELETE","OPTIONS","HEAD","TRACE"],
-        "paths": ["~/kronos/(?<default>.*)"],
-        "tags": ["Universal Acceptor"]
-    },{
+    "routes":[
+        {"methods": ["GET"] ,"paths": ["/kronos/health/heartbeat"],     "name":"DEFAULT","tags": ["InternalOnly","Utils","NonRegex"]},
+        {"methods": ["POST"],"paths": ["/kronos/bookings"],             "name":"DEFAULT","tags": ["Regex"]},
+        {"methods": ["GET"], "paths": ["/kronos/bookings"],             "name":"DEFAULT","tags": ["Regex"]},
+        {"methods": ["POST"],"paths": ["/kronos/bykea/cash"],           "name":"DEFAULT","tags": ["Regex","ProbablyDead"]},
+        {"methods": ["GET"], "paths": ["/kronos/partner/summary"],      "name":"DEFAULT","tags": ["Regex","PartnerApp","Core"]},
+        {"methods": ["GET"], "paths": ["/kronos/bookings/partner"],     "name":"DEFAULT","tags": ["Regex"]},
+        {"methods": ["GET"], "paths": ["/kronos/bookings/customer"],    "name":"DEFAULT","tags": ["Regex"]},
+        {"methods": ["GET"], "paths": ["~/kronos/bookings/:id"],        "name":"DEFAULT","tags": ["Regex"]},
+        {"methods": ["PUT"], "paths": ["~/kronos/bookings/:trip_id"],   "name":"DEFAULT","tags": ["Regex"]},
+        {"methods": ["GET"], "paths": ["~/kronos/batch/:id/invoice"],   "name":"DEFAULT","tags": ["Regex"]},
+        {"methods": ["GET"], "paths": ["~/kronos/bookings/:id/invoice"],"name":"DEFAULT","tags": ["Regex"]},
+        {"methods": ["GET"], "paths": ["~/kronos/bookings/zendesk/:id"],"name":"DEFAULT","tags": ["Regex","Dead"]},
+    {
         "name": "Test_Authenticated",
         "meta": [{"ratelimit":{"config":{"header_name":"X-App-User-Id","minute":30}}}],
         "methods": ["GET","PUT","POST","PATCH","DELETE","OPTIONS","HEAD","TRACE"],
