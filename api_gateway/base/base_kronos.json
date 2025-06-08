@@ -12,18 +12,18 @@
         "meta": [{"rewriter":{"config":{"replace":{"headers":["Host: kronos-kn.bykea.net"],"uri":"/$(uri_captures['suffix'])"}}}}]
     },
     "routes":[
-        {"meta": [{"ratelimit":{"config":{"header_name":"x-.*-user-token","minute":30}}}],"name":"DEFAULT","tags": ["Authenticated","Header","x-.*-user-token","Regex"],"methods": ["GET"], "paths": ["~/kronos/(?<suffix>batch/:id/invoice)"]    },
-        {"meta": [{"ratelimit":{"config":{"header_name":"x-.*-user-token","minute":30}}}],"name":"DEFAULT","tags": ["Authenticated","Header","x-.*-user-token","Regex"],"methods": ["GET"], "paths": ["~/kronos/(?<suffix>bookings/:id/invoice)"] },
+        {"meta": [{"ratelimit":{"config":{"header_name":"x-.*-user-token","minute":30}}}],"name":"DEFAULT","tags": ["Authenticated","Header","x-.*-user-token","Regex"],"methods": ["GET"], "paths": ["~/kronos/(?<suffix>batch/[0-9a-fA-F]{24}/invoice)"]    },
+        {"meta": [{"ratelimit":{"config":{"header_name":"x-.*-user-token","minute":30}}}],"name":"DEFAULT","tags": ["Authenticated","Header","x-.*-user-token","Regex"],"methods": ["GET"], "paths": ["~/kronos/(?<suffix>bookings/[0-9a-fA-F]{24}/invoice)"] },
         {"meta": [{"ratelimit":{"config":{"header_name":"x-.*-user-token","minute":30}}}],"name":"DEFAULT","tags": ["Authenticated","Header","x-.*-user-token","Regex"],"methods": ["GET"], "paths": ["~/kronos/(?<suffix>bookings/customer)"]    },
         {"meta": [{"ratelimit":{"config":{"header_name":"x-.*-user-token","minute":30}}}],"name":"DEFAULT","tags": ["Authenticated","Header","x-.*-user-token","Regex"],"methods": ["GET"], "paths": ["~/kronos/(?<suffix>bookings/partner)"]     },
-        {"meta": [{"ratelimit":{"config":{"header_name":"x-.*-user-token","minute":30}}}],"name":"DEFAULT","tags": ["Authenticated","Header","x-.*-user-token","Regex"],"methods": ["GET"], "paths": ["~/kronos/(?<suffix>bookings/:id)"]         },
-        {"name":"DEFAULT","tags": ["Dead"]                                            ,"methods": ["GET"], "paths": ["~/kronos/(?<suffix>bookings/zendesk/:id)"] },
+        {"meta": [{"ratelimit":{"config":{"header_name":"x-.*-user-token","minute":30}}}],"name":"DEFAULT","tags": ["Authenticated","Header","x-.*-user-token","Regex"],"methods": ["GET"], "paths": ["~/kronos/(?<suffix>bookings/[0-9a-fA-F]{24})"]         },
+        {"name":"DEFAULT","tags": ["Dead"]                                            ,"methods": ["GET"], "paths": ["~/kronos/(?<suffix>bookings/zendesk/[0-9a-fA-F]{24})"] },
         {"name":"DEFAULT","tags": ["Dead"]                                            ,"methods": ["POST"],"paths": ["~/kronos/(?<suffix>bykea/cash)"]           },
         {"name":"DEFAULT","tags": ["InternalOnly","Utils","NonRegex"]                 ,"methods": ["GET"] ,"paths": ["~/kronos/(?<suffix>health/heartbeat)"]     },
         {"name":"DEFAULT","tags": ["Uauthenticated","Regex","PartnerApp","Core"]      ,"methods": ["GET"], "paths": ["~/kronos/(?<suffix>partner/summary)"]      },
         {"name":"DEFAULT","tags": ["Uauthenticated","Regex"]                          ,"methods": ["GET"], "paths": ["~/kronos/(?<suffix>bookings)"]             },
         {"name":"DEFAULT","tags": ["Uauthenticated","Regex"]                          ,"methods": ["POST"],"paths": ["~/kronos/(?<suffix>bookings)"]             },
-        {"name":"DEFAULT","tags": ["Uauthenticated","Regex"]                          ,"methods": ["PUT"], "paths": ["~/kronos/(?<suffix>bookings/:trip_id)"]    },
+        {"name":"DEFAULT","tags": ["Uauthenticated","Regex"]                          ,"methods": ["PUT"], "paths": ["~/kronos/(?<suffix>bookings/[0-9a-fA-F]{24})"]    },
     {
         "name": "Test_Authenticated",
         "meta": [{"ratelimit":{"config":{"header_name":"X-App-User-Id","minute":30}}}],
