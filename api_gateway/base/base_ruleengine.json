@@ -10,19 +10,11 @@
         "tags": ["Core","Critical","UserFacing","RateLimited"],
         "meta": [{"rewriter":{"config":{"replace":{"headers":["Host: rule-engine.bykea.net"],"uri":"/$(uri_captures['default'])"}}}}]
     },
-    "routes":[{
-        "name": "RuleEngineCore",
-        "protocols": ["http","https"],
-        "methods": ["POST"],
-        "paths": ["~/rully/(?<default>api/bykea-rule-engine)"],
-        "tags": ["Universal Acceptor"]
-    },{
-        "name": "RuleEngineAcknowledge",
-        "protocols": ["http","https"],
-        "methods": ["POST"],
-        "paths": ["~/rully/(?<default>api/re/acknowledge)"],
-        "tags": ["Universal Acceptor"]
-    },{
+    "routes":[
+        {"meta": [{"ratelimit":{"config":{"header_name":"x-app-user-token","minute":30}}}],"name": "RuleEngineCore",       "tags": ["Authenticated","isAuthorized","Nonstandard","x-app-user-token & x-app-user-id","Both"],"methods": ["POST"],"paths": ["~/rully/(?<suffix>api/bykea-rule-engine)"]},
+        {"meta": [{"ratelimit":{"config":{"header_name":"x-app-user-token","minute":30}}}],"name": "RuleEngineAcknowledge","tags": ["Authenticated","isAuthorized","Nonstandard","x-app-user-token & x-app-user-id","Both"],"methods": ["POST"],"paths": ["~/rully/(?<suffix>api/re/acknowledge)"]},
+        {"meta": [{"ratelimit":{"config":{"header_name":"x-app-user-token","minute":30}}}],"name": "RuleEngineBulk",       "tags": ["Authenticated","isAuthorized","Nonstandard","x-app-user-token & x-app-user-id","Both"],"methods": ["POST"],"paths": ["~/rully/(?<suffix>api/bykea-rule-engine/bulk)"]},
+    {
         "name": "Test_Authenticated",
         "meta": [{"ratelimit":{"config":{"header_name":"X-App-User-Id","minute":30}}}],
         "methods": ["GET","PUT","POST","PATCH","DELETE","OPTIONS","HEAD","TRACE"],
