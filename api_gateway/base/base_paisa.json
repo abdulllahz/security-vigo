@@ -9,7 +9,7 @@
     "service":{
         "enabled": false,
         "tags": ["Core","Critical","UserFacing","RateLimited"],
-        "meta": [{"rewriter":{"config":{"replace":{"headers":["Host: paisa.bykea.net"],"uri":"/$(uri_captures['default'])"}}}}]
+        "meta": [{"rewriter":{"config":{"replace":{"headers":["Host: paisa.bykea.net"],"uri":"/$(uri_captures['suffix'])"}}}}]
     },
     "routes":[
     {"name": "","tags": ["Unauthenticated"],"methods": ["POST"],"paths": ["~/paisa/(?<suffix>raast/generate-qr-code)"]},

@@ -8,7 +8,7 @@
     ],
     "service":{
         "tags": ["Core","Critical","UserFacing","RateLimited"],
-        "meta": [{"rewriter":{"config":{"replace":{"headers":["Host: rule-engine.bykea.net"],"uri":"/$(uri_captures['default'])"}}}}]
+        "meta": [{"rewriter":{"config":{"replace":{"headers":["Host: rule-engine.bykea.net"],"uri":"/$(uri_captures['suffix'])"}}}}]
     },
     "routes":[
         {"meta": [{"ratelimit":{"config":{"header_name":"x-app-user-token","minute":30}}}],"name": "RuleEngineCore",       "tags": ["Authenticated","isAuthorized","Nonstandard","x-app-user-token & x-app-user-id","Both"],"methods": ["POST"],"paths": ["~/rully/(?<suffix>api/bykea-rule-engine)"]},

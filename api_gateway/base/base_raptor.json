@@ -9,7 +9,7 @@
     ],
     "service":{
         "tags": ["Core","Critical","UserFacing","RateLimited"],
-        "meta": [{"rewriter":{"config":{"replace":{"headers":["Host: raptor.bykea.net"],"uri":"/$(uri_captures['default'])"}}}}]
+        "meta": [{"rewriter":{"config":{"replace":{"headers":["Host: raptor.bykea.net"],"uri":"/$(uri_captures['suffix'])"}}}}]
     },
     "routes":[
         {"meta": [{"ratelimit":{"config":{"header_name":"rp-bkd-key","minute":30}}}],                                   "name": "TODO","tags": ["Authenticated","Headers","rp-bkd-key","secret","regex route"],"method":"GET",  "paths":"~/raptor/(?<suffix>reset/cache/[0-9a-fA-F]{24})"},

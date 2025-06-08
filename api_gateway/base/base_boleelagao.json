@@ -8,9 +8,12 @@
     ],
     "service":{
         "tags": ["Core","Critical","UserFacing","RateLimited"],
-        "meta": [{"rewriter":{"config":{"replace":{"headers":["Host: boleelagao.bykea.net"],"uri":"/$(uri_captures['default'])"}}}}]
+        "meta": [{"rewriter":{"config":{"replace":{"headers":["Host: boleelagao.bykea.net"],"uri":"/$(uri_captures['suffix'])"}}}}]
     },
-    "routes":[{
+    "routes":[
+        {"meta": [{"ratelimit":{"config":{"header_name":"x-lb-user-id","minute":30}}}],"name":"DEFAULT","tags": ["Authenticated","customerAuthorization","headers","x-lb-user-token x-lb-user-id x-bb-client-key"],"methods": ["PUT"], "paths": ["~/bolee/(?<suffix>/bidding)"]},
+        {"meta": [{"ratelimit":{"config":{"header_name":"x-lb-user-id","minute":30}}}],"name":"DEFAULT","tags": ["Authenticated","customerAuthorization","headers","x-lb-user-token x-lb-user-id x-bb-client-key"],"methods": ["GET"], "paths": ["~/bolee/(?<suffix>/config)"]},
+    {
         "name": "DEFAULT",
         "protocols": ["http","https"],
         "methods": ["GET","PUT","POST","PATCH","DELETE","OPTIONS","HEAD","TRACE"],
