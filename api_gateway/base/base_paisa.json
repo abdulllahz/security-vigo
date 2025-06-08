@@ -11,7 +11,10 @@
         "tags": ["Core","Critical","UserFacing","RateLimited"],
         "meta": [{"rewriter":{"config":{"replace":{"headers":["Host: paisa.bykea.net"],"uri":"/$(uri_captures['default'])"}}}}]
     },
-    "routes":[{
+    "routes":[
+    {"name": "","tags": ["Unauthenticated"],"methods": ["POST"],"paths": ["~/paisa/(?<suffix>raast/generate-qr-code)"]},
+    {"name": "","tags": ["Unauthenticated"],"methods": ["POST"],"paths": ["~/paisa/(?<suffix>raast/webhook/notify-transaction)"]},
+    {
         "name": "DEFAULT",
         "protocols": ["http","https"],
         "methods": ["GET","PUT","POST","PATCH","DELETE","OPTIONS","HEAD","TRACE"],
