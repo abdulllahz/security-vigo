@@ -1,0 +1,51 @@
+{
+    "name":"loadboard",
+    "upstream":{
+        "tags": ["Core","Auth","RateLimited","UserFacing"]
+    },
+    "targets":[
+        {"target":"loadboard-bykea-prod-237775886.eu-west-1.elb.amazonaws.com:443","weight":100,"tags":["AWS-ELB"]}
+    ],
+    "service":{
+        "tags": ["Core","Critical","UserFacing","RateLimited"],
+        "meta": [{"rewriter":{"config":{"replace":{"headers":["Host: loadboard.bykea.net"],"uri":"/$(uri_captures['suffix'])"}}}}]
+    },
+    "routes":[
+    {"meta": [{"ratelimit":{"config":{"header_name":"X-BB-Client-Key","minute":30}}}],"name":"TODO1","tags":["Authenticated","headers","X-BB-Client-Key"]                                                       ,"methods":["POST"],"paths":["~/load/(?<suffix>authenticate/client)"]},
+    {"meta": [{"ratelimit":{"config":{"header_name":"X-BB-Client-Key","minute":30}}}],"name":"TODO2","tags":["Authenticated","headers","X-BB-Client-Token","X-BB-Resource-Path"]                                ,"methods":["GET"], "paths":["~/load/(?<suffix>authorize/client)"]},
+    {"meta": [{"ratelimit":{"config":{"header_name":"X-BB-Client-Key","minute":30}}}],"name":"TODO3","tags":["Authenticated","headers","X-BB-Client-Token"]                                                     ,"methods":["POST"],"paths":["~/load/(?<suffix>authenticate/user)"]},
+    {"meta": [{"ratelimit":{"config":{"header_name":"x-bb-user-token","minute":30}}}],"name":"TODO4","tags":["Authenticated","headers","x-bb-user-token","adminAuthorization"]                                  ,"methods":["GET"], "paths":["~/load/(?<suffix>admin/assign/booking)"]},
+    {"meta": [{"ratelimit":{"config":{"header_name":"x-bb-user-token","minute":30}}}],"name":"TODO5","tags":["Authenticated","headers","x-bb-user-token","adminAuthorization"]                                  ,"methods":["GET"], "paths":["~/load/(?<suffix>admin/bookings)"]},
+    {"meta": [{"ratelimit":{"config":{"header_name":"X-BB-User-Token","minute":30}}}],"name":"TODO6","tags":["Authenticated","headers","X-BB-User-Token","X-BB-Resource-Path"]                                  ,"methods":["GET"], "paths":["~/load/(?<suffix>authorize/user)"]},
+    {"meta": [{"ratelimit":{"config":{"header_name":"x-lb-user-id","minute":30}}}],   "name":"TODO7","tags":["Authenticated","headers","x-lb-user-id","x-lb-user-token","x-bb-client-key","driverAuthorization"],"methods":["GET"], "paths":["~/load/(?<suffix>bookings)"]},
+    {"meta": [{"ratelimit":{"config":{"header_name":"x-lb-user-id","minute":30}}}],   "name":"TODO8","tags":["Authenticated","headers","x-lb-user-id","x-lb-user-token","x-bb-client-key","driverAuthorization"],"methods":["GET"], "paths":["~/load/(?<suffix>bookings/[0-9a-fA-F]{24})"]},
+    {"meta": [{"ratelimit":{"config":{"header_name":"x-lb-user-id","minute":30}}}],   "name":"TODO9","tags":["Authenticated","headers","x-lb-user-id","x-lb-user-token","x-bb-client-key","driverAuthorization"],"methods":["POST"],"paths":["~/load/(?<suffix>bookings/[0-9a-fA-F]{24}/assign)"]},
+    {"meta": [{"ratelimit":{"config":{"header_name":"x-lb-user-id","minute":30}}}],   "name":"TODO10","tags":["Authenticated","headers","x-lb-user-id","x-lb-user-token"]                                        ,"methods":["POST"],"paths":["~/load/(?<suffix>bookings/[0-9a-fA-F]{24}/complete)"]},
+    {"meta": [{"ratelimit":{"config":{"header_name":"x-lb-user-id","minute":30}}}],   "name":"TODO11","tags":["Authenticated","headers","x-lb-user-id","x-lb-user-token"]                                        ,"methods":["POST"],"paths":["~/load/(?<suffix>bookings/[0-9a-fA-F]{24}/drivercancel)"]},
+    {"meta": [{"ratelimit":{"config":{"header_name":"x-lb-user-id","minute":30}}}],   "name":"TODO12","tags":["Authenticated","headers","x-lb-user-id","x-lb-user-token"]                                        ,"methods":["POST"],"paths":["~/load/(?<suffix>bookings/[0-9a-fA-F]{24}/passengercancel)"]},
+    {"name":"TODO13","tags":["Unauthenticated"],"methods":["GET"], "paths":["~/load/(?<suffix>health/heartbeat)"]},
+    {"name":"TODO14","tags":["Unauthenticated"],"methods":["POST"],"paths":["~/load/(?<suffix>bookings)"]}, 
+    {
+        "name": "DEFAULT",
+        "protocols": ["http","https"],
+        "methods": ["GET","PUT","POST","PATCH","DELETE","OPTIONS","HEAD","TRACE"],
+        "paths": ["~/load/(?<default>.*)"],
+        "tags": ["Universal Acceptor"]
+    },{
+        "name": "Test_Authenticated",
+        "meta": [{"ratelimit":{"config":{"header_name":"X-App-User-Id","minute":30}}}],
+        "methods": ["GET","PUT","POST","PATCH","DELETE","OPTIONS","HEAD","TRACE"],
+        "paths": ["~/test_load/(?<default>.*)"],
+        "headers": {"X-App-User-Id":["~*"]},
+        "protocols": ["http","https"],
+        "regex_priority": 50,
+        "tags": ["Test Authenticated Acceptor"]
+    },{
+        "name": "Test_Unauthenticated",
+        "methods": ["GET","PUT","POST","PATCH","DELETE","OPTIONS","HEAD","TRACE"],
+        "paths": ["~/test_load/(?<default>.*)"],
+        "protocols": ["http","https"],
+        "regex_priority": 1,
+        "tags": ["Test Unauthenticated Acceptor"]
+    }]
+}

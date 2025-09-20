@@ -1,0 +1,39 @@
+{
+    "name":"boleelagao",
+    "upstream":{
+        "tags": ["Core","Auth","RateLimited","UserFacing"]
+    },
+    "targets":[
+        {"target":"stage10-boleelagao.bykea.dev:443","weight":100,"tags":["CF-DNS"]}
+    ],
+    "service":{
+        "tags": ["Core","Critical","UserFacing","RateLimited"],
+        "meta": [{"rewriter":{"config":{"replace":{"headers":["Host: stage10-boleelagao.bykea.dev"],"uri":"/$(uri_captures['suffix'])"}}}}]
+    },
+    "routes":[
+        {"meta": [{"ratelimit":{"config":{"header_name":"x-lb-user-id","minute":30}}}],"name":"SendBid","tags": ["Authenticated","customerAuthorization","headers","x-lb-user-token x-lb-user-id x-bb-client-key"],"methods": ["PUT"], "paths": ["~/bolee/(?<suffix>/bidding)"]},
+        {"meta": [{"ratelimit":{"config":{"header_name":"x-lb-user-id","minute":30}}}],"name":"Configuration","tags": ["Authenticated","customerAuthorization","headers","x-lb-user-token x-lb-user-id x-bb-client-key"],"methods": ["GET"], "paths": ["~/bolee/(?<suffix>/config)"]},
+    {
+        "name": "DEFAULT",
+        "protocols": ["https"],
+        "methods": ["GET","PUT","POST","PATCH","DELETE","OPTIONS","HEAD","TRACE"],
+        "paths": ["~/bolee/(?<default>.*)"],
+        "tags": ["Universal Acceptor"]
+    },{
+        "name": "Test_Authenticated",
+        "meta": [{"ratelimit":{"config":{"header_name":"X-App-User-Id","minute":30}}}],
+        "methods": ["GET","PUT","POST","PATCH","DELETE","OPTIONS","HEAD","TRACE"],
+        "paths": ["~/test_bolee/(?<default>.*)"],
+        "headers": {"X-App-User-Id":["~*"]},
+        "protocols": ["https"],
+        "regex_priority": 50,
+        "tags": ["Test Authenticated Acceptor"]
+    },{
+        "name": "Test_Unauthenticated",
+        "methods": ["GET","PUT","POST","PATCH","DELETE","OPTIONS","HEAD","TRACE"],
+        "paths": ["~/test_bolee/(?<default>.*)"],
+        "protocols": ["https"],
+        "regex_priority": 1,
+        "tags": ["Test Unauthenticated Acceptor"]
+    }]
+}

@@ -1,0 +1,14 @@
+{
+    "name":"store",
+    "routes":[{
+        "name": "DEFAULT",
+        "protocols": ["http","https"],
+        "methods": ["GET","PUT","POST","PATCH","DELETE","OPTIONS","HEAD","TRACE"],
+        "paths": ["~/goto_store/(?<default>.*)"],
+        "tags": ["Universal Acceptor"]
+    }],
+    "service":{
+        "tags": ["Core","Critical","UserFacing","RateLimited"],
+        "meta": [{"redirector":{"config":{"location": "https://bykea.store"}}}]
+    }
+}

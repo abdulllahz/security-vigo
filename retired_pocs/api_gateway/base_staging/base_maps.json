@@ -1,0 +1,36 @@
+{
+    "name":"maps",
+    "upstream":{
+        "tags": ["Core","Auth","RateLimited","UserFacing"]
+    },
+    "targets":[
+        {"target":"maps.bykea.net:443","weight":100,"tags":["CF-DNS"]}
+    ],
+    "service":{
+        "tags": ["Core","Critical","UserFacing","RateLimited"],
+        "meta": [{"rewriter":{"config":{"replace":{"headers":["Host: maps.bykea.net"],"uri":"/$(uri_captures['default'])"}}}}]
+    },
+    "routes":[{
+        "name": "DEFAULT",
+        "protocols": ["http","https"],
+        "methods": ["GET","PUT","POST","PATCH","DELETE","OPTIONS","HEAD","TRACE"],
+        "paths": ["~/jabajaba/(?<default>.*)"],
+        "tags": ["Universal Acceptor"]
+    },{
+        "name": "Test_Authenticated",
+        "meta": [{"ratelimit":{"config":{"header_name":"X-App-User-Id","minute":30}}}],
+        "methods": ["GET","PUT","POST","PATCH","DELETE","OPTIONS","HEAD","TRACE"],
+        "paths": ["~/test_jabajaba/(?<default>.*)"],
+        "headers": {"X-App-User-Id":["~*"]},
+        "protocols": ["http","https"],
+        "regex_priority": 50,
+        "tags": ["Test Authenticated Acceptor"]
+    },{
+        "name": "Test_Unauthenticated",
+        "methods": ["GET","PUT","POST","PATCH","DELETE","OPTIONS","HEAD","TRACE"],
+        "paths": ["~/test_jabajaba/(?<default>.*)"],
+        "protocols": ["http","https"],
+        "regex_priority": 1,
+        "tags": ["Test Unauthenticated Acceptor"]
+    }]
+}

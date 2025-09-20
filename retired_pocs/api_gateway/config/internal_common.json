@@ -1,0 +1,75 @@
+{
+    "upstream":{
+        "slots":10000,
+        "algorithm":"round-robin",
+        "hash_on":"none",
+        "hash_fallback":"none",
+        "healthchecks":{"threshold":0}
+    },
+    "targets":{},
+    "service":{
+        "retries": 5,
+        "protocol": "https",
+        "port": 443,
+        "path": null,
+        "connect_timeout": 60000,
+        "write_timeout": 60000,
+        "read_timeout": 60000,
+        "client_certificate": null,
+        "tls_verify": null,
+        "tls_verify_depth": null,
+        "ca_certificates": null,
+        "enabled": true
+    },
+    "routes":{
+        "hosts": null,
+        "headers": null,
+        "snis": null,
+        "sources": null,
+        "destinations": null,
+        "https_redirect_status_code": 426,
+        "regex_priority": 0,
+        "strip_path": false,
+        "path_handling": "v0",
+        "preserve_host": false,
+        "request_buffering": true,
+        "response_buffering": true,
+        "protocols": ["https"]
+    },
+    "rewriter":{
+        "name": "request-transformer",
+        "enabled": true,
+        "consumer": null,
+        "protocols": ["https"],
+        "config": {
+            "http_method": null,
+            "add": {"body": [],"headers": [],"querystring": []},
+            "append": {"body": [],"headers": [],"querystring": []},
+            "remove": {"body": [],"headers": [],"querystring": []},
+            "rename": {"body": [],"headers": [],"querystring": []},
+            "replace": {"body": [],"headers": [],"querystring": [],"uri": "/2277"}
+        }
+    },
+    "redirector": {
+        "name": "redirect",
+        "config": {
+            "status_code": 301,
+            "keep_incoming_path": false
+        }
+    },
+    "ratelimit": {
+        "name":"rate-limiting",
+        "enabled":false,
+        "protocols":["https"],
+        "config":{
+            "error_code":429,
+            "error_message":"API rate limit exceeded",
+            "fault_tolerant":true,
+            "hide_client_headers":false,
+            "limit_by":"header",
+            "policy":"redis",
+            "redis":{"database":0,"host":"api-gateway-redis.int9da.ng.0001.euw1.cache.amazonaws.com","port":6379,"ssl":false,"ssl_verify":false,"timeout":2000},
+            "sync_rate":-1
+        }
+    }
+}

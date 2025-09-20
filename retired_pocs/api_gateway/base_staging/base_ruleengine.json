@@ -1,0 +1,34 @@
+{
+    "name":"rully",
+    "upstream":{
+        "tags": ["Core","Auth","RateLimited","UserFacing"]
+    },
+    "targets":[
+        {"target":"stage10-rule-engine.bykea.dev:443","weight":100,"tags":["CF-DNS"]}
+    ],
+    "service":{
+        "tags": ["Core","Critical","UserFacing","RateLimited"],
+        "meta": [{"rewriter":{"config":{"replace":{"headers":["Host: stage10-rule-engine.bykea.dev"],"uri":"/$(uri_captures['suffix'])"}}}}]
+    },
+    "routes":[
+        {"meta": [{"ratelimit":{"config":{"header_name":"x-app-user-token","minute":30}}}],"name": "RuleEngineCore",       "tags": ["Authenticated","isAuthorized","Nonstandard","x-app-user-token & x-app-user-id","Both"],"methods": ["POST"],"paths": ["~/rully/(?<suffix>api/bykea-rule-engine)"]},
+        {"meta": [{"ratelimit":{"config":{"header_name":"x-app-user-token","minute":30}}}],"name": "RuleEngineAcknowledge","tags": ["Authenticated","isAuthorized","Nonstandard","x-app-user-token & x-app-user-id","Both"],"methods": ["POST"],"paths": ["~/rully/(?<suffix>api/re/acknowledge)"]},
+        {"meta": [{"ratelimit":{"config":{"header_name":"x-app-user-token","minute":30}}}],"name": "RuleEngineBulk",       "tags": ["Authenticated","isAuthorized","Nonstandard","x-app-user-token & x-app-user-id","Both"],"methods": ["POST"],"paths": ["~/rully/(?<suffix>api/bykea-rule-engine/bulk)"]},
+    {
+        "name": "Test_Authenticated",
+        "meta": [{"ratelimit":{"config":{"header_name":"X-App-User-Id","minute":30}}}],
+        "methods": ["GET","PUT","POST","PATCH","DELETE","OPTIONS","HEAD","TRACE"],
+        "paths": ["~/test_rully/(?<default>.*)"],
+        "headers": {"X-App-User-Id":["~*"]},
+        "protocols": ["http","https"],
+        "regex_priority": 50,
+        "tags": ["Test Authenticated Acceptor"]
+    },{
+        "name": "Test_Unauthenticated",
+        "methods": ["GET","PUT","POST","PATCH","DELETE","OPTIONS","HEAD","TRACE"],
+        "paths": ["~/test_rully/(?<default>.*)"],
+        "protocols": ["http","https"],
+        "regex_priority": 1,
+        "tags": ["Test Unauthenticated Acceptor"]
+    }]
+}
