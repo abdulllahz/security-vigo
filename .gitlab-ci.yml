@@ -48,9 +48,7 @@ trufflehog-scan:
     when: always
   rules:
     - if: $CI_PIPELINE_SOURCE == "push"
-  tags:
-    - docker
-
+  
 semgrep-scan:
   stage: security-scan
   image: 
@@ -82,9 +80,7 @@ semgrep-scan:
   rules:
     - if: $CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH == "master"
     - if: $CI_MERGE_REQUEST_ID
-  tags:
-    - docker
-
+  
 sonarqube-scan:
   stage: quality
   image: 
@@ -105,9 +101,7 @@ sonarqube-scan:
   rules:
     - if: $CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH == "master"
     - if: $CI_MERGE_REQUEST_ID
-  tags:
-    - docker
-
+  
 python-self-test:
   stage: test
   image: python:3.11-slim
@@ -117,5 +111,3 @@ python-self-test:
     - python3 selftest.py
   rules:
     - if: $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^feature\//i
-  tags:
-    - docker
