@@ -1,0 +1,31 @@
+f"""
+[sources.KongMetrics_injest]
+  type = "http_client"
+  endpoint = "{data["forwarder"]["kong_metrics"]["url"]}"
+  method = "GET"
+  scrape_interval_secs = 1
+  scrape_timeout_secs = 5
+[transforms.KongMetrics_parse]
+  inputs = ["KongMetrics_injest"]
+  type = "remap"
+  source = '''
+    . = parse_json!(string!(.message))
+    time = now()
+    .logstamp = format_timestamp!(time, "%Y-%m-%dT%H:%M:%S%.3f")
+  '''
+[sinks.KongMetrics_index]
+  inputs = ["KongMetrics_parse"]
+  type = "clickhouse"
+  endpoint = "http://{data["indexer"]["host"]}:{data["indexer"]["http-port"]}"
+  database = "default"
+  table = "kong_metrics"
+  skip_unknown_fields = true
+  compression = "gzip"
+  auth.strategy = "basic"
+  auth.user = "default"
+  auth.password = "{data["indexer"]["password"]}"
+#[sinks.KongMetrics_debug]
+#  inputs = ["KongMetrics_parse"]
+#  type = "console"
+#  encoding.codec = "json"
+"""

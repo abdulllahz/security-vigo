@@ -1,0 +1,32 @@
+f"""
+[sources.metrics_injest]
+  type = "socket"
+  mode = "udp"
+  address = "0.0.0.0:{data["forwarder"]["NodeMetrics"]["port"]}"
+  max_length = 10485760
+[transforms.metrics_parse]
+  inputs = ["metrics_injest"]
+  type = "remap"
+  source = '''
+    time=now()
+    . = parse_json!(string!(.message))
+    .timestamp = parse_timestamp!(.timestamp, "%Y-%m-%dT%H:%M:%S.%fZ")
+    .timestamp = format_timestamp!(.timestamp, "%Y-%m-%dT%H:%M:%S%.3f")
+    .logstamp = format_timestamp!(time, "%Y-%m-%dT%H:%M:%S%.3f")
+  '''
+[sinks.metrics_index]
+  inputs = ["metrics_parse"]
+  type = "clickhouse"
+  endpoint = "http://{data["indexer"]["host"]}:{data["indexer"]["http-port"]}"
+  database = "default"
+  table = "node_metrics"
+  skip_unknown_fields = false
+  compression = "gzip"
+  auth.strategy = "basic"
+  auth.user = "default"
+  auth.password = "{data["indexer"]["password"]}"
+#[sinks.metrics_debug]
+#  inputs = ["metrics_parse"]
+#  type = "console"
+#  encoding.codec = "json"
+"""

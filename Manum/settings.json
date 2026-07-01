@@ -1,0 +1,60 @@
+{
+    "name":"MANUM",
+    "indexer":{
+        "host":"10.100.4.223",
+        "http-port":8123,
+        "db-port":9000,
+        "password":"MissileBase_559",
+        "image": "clickhouse:25.7.1.3997-jammy",
+        "storage":"/mnt/data/"
+    },
+    "forwarder":{
+        "host": "10.100.7.65",
+        "image":"timberio/vector:nightly-debian",
+        "cert_directory":"/Certs",
+        "log_directory":"/logs",
+        "crt": "cert.pem",
+        "key": "key.pem",
+        "kong_metrics":{
+            "url": "http://10.100.7.181:8001/status"
+        },
+        "FE_profiling":{
+            "host": "0.0.0.0",
+            "type": "tcp",
+            "port": "443",
+            "path":"metrics"
+        },
+        "KongKubeHTTP":{
+            "type": "udp",
+            "port":"65004"
+        },
+        "KongAgentHTTP":{
+            "type": "tcp",
+            "port":"65004"
+        },
+        "NodeMetrics":{
+            "type": "udp",
+            "port":"65001"
+        },
+        "genericlog":{
+            "type": "udp",
+            "port":"65002"
+        },
+        "RedisGateway":{
+            "host":"api-gateway-redis.int9da.ng.0001.euw1.cache.amazonaws.com",
+            "port":"6379"
+        }
+    },
+    "dashboard":{
+        "host":"10.100.4.223",
+        "http-port":"80",
+        "image":"grafana/grafana:12.2.0-16791878397",
+        "password":"PurplePanda.447"
+    },
+    "agent":{
+        "KongHTTP":{
+            "type": "udp",
+            "port":"65003"
+        }
+    }
+}

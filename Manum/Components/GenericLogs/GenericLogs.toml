@@ -1,0 +1,32 @@
+f"""
+[sources.genericlog_injest]
+  type = "socket"
+  mode = "udp"
+  address = "0.0.0.0:{data["forwarder"]["genericlog"]["port"]}"
+  max_length = 10485760
+[transforms.genericlog_parse]
+  inputs = ["genericlog_injest"]
+  type = "remap"
+  source = '''
+    time=now()
+    . = parse_json!(string!(.message))
+    .timestamp = parse_timestamp!(.timestamp, "%Y-%m-%dT%H:%M:%S.%fZ")
+    .timestamp = format_timestamp!(.timestamp, "%Y-%m-%dT%H:%M:%S%.3f")
+    .logstamp = format_timestamp!(time, "%Y-%m-%dT%H:%M:%S%.3f")
+  '''
+[sinks.genericlog_index]
+  inputs = ["genericlog_parse"]
+  type = "clickhouse"
+  endpoint = "http://{data["indexer"]["host"]}:{data["indexer"]["http-port"]}"
+  database = "default"
+  table = "genericlog"
+  skip_unknown_fields = false
+  compression = "gzip"
+  auth.strategy = "basic"
+  auth.user = "default"
+  auth.password = "{data["indexer"]["password"]}"
+#[sinks.genericlog_debug]
+#  inputs = ["genericlog_parse"]
+#  type = "console"
+#  encoding.codec = "json"
+"""

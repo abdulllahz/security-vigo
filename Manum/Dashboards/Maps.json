@@ -1,0 +1,526 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 1,
+  "links": [],
+  "panels": [
+    {
+      "datasource": {
+        "type": "grafana-clickhouse-datasource",
+        "uid": "bf8nr6iutmpkwb"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "id": 4,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.2.0-16791878397",
+      "targets": [
+        {
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "4.11.4",
+          "queryType": "table",
+          "rawSql": "SELECT \n    COUNT(DISTINCT JSONExtractString(request.headers, 'x-app-user-id')) as distinct_user_count,\n    toStartOfInterval(timestamp, INTERVAL 1 hour) as time_bucket\nFROM kong\nWHERE \n    request.path LIKE '%create%' \n    AND response.body LIKE '%our bid is too low please increase the bid%' \n    AND $__timeFilter(timestamp)\nGROUP BY time_bucket\nORDER BY time_bucket",
+          "refId": "A"
+        }
+      ],
+      "title": "New panel",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "grafana-clickhouse-datasource",
+        "uid": "bf8nr6iutmpkwb"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 8
+      },
+      "id": 3,
+      "options": {
+        "basemap": {
+          "config": {},
+          "name": "Layer 0",
+          "noRepeat": false,
+          "type": "default"
+        },
+        "controls": {
+          "mouseWheelZoom": true,
+          "showAttribution": true,
+          "showDebug": false,
+          "showMeasure": false,
+          "showScale": false,
+          "showZoom": true
+        },
+        "layers": [
+          {
+            "config": {
+              "rules": [],
+              "src": "public/maps/countries.geojson",
+              "style": {
+                "color": {
+                  "fixed": "dark-green"
+                },
+                "opacity": 0.4,
+                "rotation": {
+                  "fixed": 0,
+                  "max": 360,
+                  "min": -360,
+                  "mode": "mod"
+                },
+                "size": {
+                  "fixed": 5,
+                  "max": 15,
+                  "min": 2
+                },
+                "symbol": {
+                  "fixed": "img/icons/marker/circle.svg",
+                  "mode": "fixed"
+                },
+                "symbolAlign": {
+                  "horizontal": "center",
+                  "vertical": "center"
+                },
+                "textConfig": {
+                  "fontSize": 12,
+                  "offsetX": 0,
+                  "offsetY": 0,
+                  "textAlign": "center",
+                  "textBaseline": "middle"
+                }
+              }
+            },
+            "location": {
+              "mode": "auto"
+            },
+            "name": "Layer 1",
+            "tooltip": true,
+            "type": "geojson"
+          }
+        ],
+        "tooltip": {
+          "mode": "details"
+        },
+        "view": {
+          "allLayers": true,
+          "id": "zero",
+          "lat": 0,
+          "lon": 0,
+          "noRepeat": false,
+          "zoom": 1
+        }
+      },
+      "pluginVersion": "12.2.0-16791878397",
+      "targets": [
+        {
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "4.11.4",
+          "queryType": "table",
+          "rawSql": "WITH ride_starts AS (\n    SELECT\n        timestamp as start_time,\n        JSONExtractString(request.headers, 'x-app-user-id') as pool_user,\n        SUBSTRING(request.uri, 21, 24) as trip_id,\n        toFloat64OrZero(JSONExtractString(request.headers, 'x-loc-latitude')) as start_lat,\n        toFloat64OrZero(JSONExtractString(request.headers, 'x-loc-longitude')) as start_lon\n    FROM kong\n    WHERE request.path = '~/talos(?<suffix>/api/v1/trips/[0-9a-fA-F]{24}/arrived)' \n      AND $__timeFilter(timestamp)\n    ORDER BY timestamp DESC\n), ride_ends AS (\n    SELECT\n        timestamp as end_time,\n        JSONExtractString(request.headers, 'x-app-user-id') as pool_user,\n        SUBSTRING(request.uri, 21, 24) as trip_id,\n        toFloat64OrZero(JSONExtractString(request.headers, 'x-loc-latitude')) as end_lat,\n        toFloat64OrZero(JSONExtractString(request.headers, 'x-loc-longitude')) as end_lon\n    FROM kong\n    WHERE request.path = '~/talos(?<suffix>/api/v1/trips/[0-9a-fA-F]{24}/finish)' \n      AND $__timeFilter(timestamp)\n    ORDER BY timestamp DESC\n), ride_details AS (\n    SELECT\n        ride_ends.pool_user as pool_user,\n        ride_starts.trip_id as trip_id,\n        start_lat,\n        start_lon,\n        start_time,\n        end_lat,\n        end_lon,\n        end_time\n    FROM\n        ride_ends,ride_starts\n    WHERE\n        ride_ends.trip_id = ride_starts.trip_id\n), ride_tracking AS (\n    SELECT\n        JSONExtractString(request.headers, 'x-app-user-id') AS pool_user,\n        ride_details.trip_id,\n        start_time,\n        array(start_lon,start_lat) AS start_coords,\n        timestamp AS curr_time,\n        array(toFloat64OrZero(JSONExtractString(request.headers, 'x-loc-longitude')),toFloat64OrZero(JSONExtractString(request.headers, 'x-loc-latitude'))) AS curr_coords,\n        end_time,\n        array(end_lon,start_lat) AS end_coords\n    FROM\n        kong,ride_details\n    WHERE\n        ride_details.pool_user = JSONExtractString(kong.request.headers, 'x-app-user-id') AND\n        kong.timestamp > ride_details.start_time AND\n        kong.timestamp < ride_details.end_time\n    ORDER BY\n        timestamp DESC\n)\n\nSELECT\n    '{\"type\":\"Feature\",\"geometry\":{\"type\":\"LineString\",\"coordinates\":\"'\n    ||groupArray(ride_tracking.curr_coords)||'\"},\"properties\":{\"trip_id\":\"'\n    ||trip_id||'\",\"user_id\":\"'||last_value(ride_tracking.pool_user)||'\"}}'\n    --toJSONString(\n    --    map(\n    --        'type', 'Feature',\n    --        'geometry', map(\n    --            'type', 'LineString',\n    --            'coordinates', groupArray(ride_tracking.curr_coords)\n    --        ),\n    --        'properties', map(\n    --            'trip_id', trip_id,\n    --            'user_id', last_value(ride_tracking.pool_user)\n    --        )\n    --    )\n    --) AS geojson\n    --trip_id,\n    --last_value(ride_tracking.pool_user),\n    --last_value(ride_tracking.start_coords),\n    --last_value(ride_tracking.end_coords),\nFROM\n    ride_tracking\nWHERE\n    1=1\nGROUP BY\n    trip_id\nLIMIT 40",
+          "refId": "A"
+        }
+      ],
+      "title": "New panel",
+      "type": "geomap"
+    },
+    {
+      "datasource": {
+        "type": "grafana-clickhouse-datasource",
+        "uid": "bf8nr6iutmpkwb"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "continuous-RdYlGr"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 16
+      },
+      "id": 2,
+      "options": {
+        "basemap": {
+          "config": {},
+          "name": "Layer 0",
+          "noRepeat": false,
+          "type": "default"
+        },
+        "controls": {
+          "mouseWheelZoom": true,
+          "showAttribution": true,
+          "showDebug": false,
+          "showMeasure": false,
+          "showScale": false,
+          "showZoom": true
+        },
+        "layers": [
+          {
+            "config": {
+              "showLegend": true,
+              "style": {
+                "color": {
+                  "field": "color_id",
+                  "fixed": "dark-green"
+                },
+                "opacity": 1,
+                "rotation": {
+                  "fixed": 0,
+                  "max": 360,
+                  "min": -360,
+                  "mode": "mod"
+                },
+                "size": {
+                  "field": "num_32bit",
+                  "fixed": 5,
+                  "max": 15,
+                  "min": 2
+                },
+                "symbol": {
+                  "fixed": "img/icons/unicons/hunting.svg",
+                  "mode": "fixed"
+                },
+                "symbolAlign": {
+                  "horizontal": "center",
+                  "vertical": "center"
+                },
+                "textConfig": {
+                  "fontSize": 12,
+                  "offsetX": 0,
+                  "offsetY": 0,
+                  "textAlign": "center",
+                  "textBaseline": "middle"
+                }
+              }
+            },
+            "filterData": {
+              "id": "byRefId",
+              "options": "B"
+            },
+            "location": {
+              "latitude": "lat",
+              "longitude": "lon",
+              "mode": "coords"
+            },
+            "name": "Layer 1",
+            "tooltip": true,
+            "type": "markers"
+          },
+          {
+            "config": {
+              "showLegend": true,
+              "style": {
+                "color": {
+                  "fixed": "dark-green"
+                },
+                "opacity": 0.4,
+                "rotation": {
+                  "fixed": 0,
+                  "max": 360,
+                  "min": -360,
+                  "mode": "mod"
+                },
+                "size": {
+                  "fixed": 5,
+                  "max": 15,
+                  "min": 2
+                },
+                "symbol": {
+                  "fixed": "img/icons/marker/circle.svg",
+                  "mode": "fixed"
+                },
+                "symbolAlign": {
+                  "horizontal": "center",
+                  "vertical": "center"
+                },
+                "textConfig": {
+                  "fontSize": 12,
+                  "offsetX": 0,
+                  "offsetY": 0,
+                  "textAlign": "center",
+                  "textBaseline": "middle"
+                }
+              }
+            },
+            "location": {
+              "latitude": "A start_lat",
+              "longitude": "A start_lon",
+              "mode": "coords"
+            },
+            "name": "Layer 2",
+            "tooltip": true,
+            "type": "markers"
+          }
+        ],
+        "tooltip": {
+          "mode": "details"
+        },
+        "view": {
+          "allLayers": true,
+          "id": "zero",
+          "lat": 0,
+          "lon": 0,
+          "noRepeat": false,
+          "zoom": 1
+        }
+      },
+      "pluginVersion": "12.2.0-16791878397",
+      "targets": [
+        {
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "4.11.4",
+          "queryType": "table",
+          "rawSql": "WITH ride_starts AS (\n    SELECT\n        timestamp as start_time,\n        JSONExtractString(request.headers, 'x-app-user-id') as pool_user,\n        toFloat64OrZero(JSONExtractString(request.headers, 'x-loc-latitude')) as start_lat,\n        toFloat64OrZero(JSONExtractString(request.headers, 'x-loc-longitude')) as start_lon\n    FROM kong\n    WHERE request.path = '~/talos(?<suffix>/api/v1/trips/[0-9a-fA-F]{24}/arrived)' \n      AND $__timeFilter(timestamp)\n),\nride_ends AS (\n    SELECT\n        timestamp as end_time,\n        JSONExtractString(request.headers, 'x-app-user-id') as pool_user,\n        toFloat64OrZero(JSONExtractString(request.headers, 'x-loc-latitude')) as end_lat,\n        toFloat64OrZero(JSONExtractString(request.headers, 'x-loc-longitude')) as end_lon\n    FROM kong\n    WHERE request.path = '~/talos(?<suffix>/api/v1/trips/[0-9a-fA-F]{24}/finish)' \n      AND $__timeFilter(timestamp)\n),\nmatched_rides AS (\n    SELECT\n        s.pool_user,\n        s.start_time,\n        e.end_time,\n        s.start_lat,\n        s.start_lon,\n        e.end_lat,\n        e.end_lon,\n        ROW_NUMBER() OVER (PARTITION BY s.pool_user, s.start_time \n                          ORDER BY e.end_time) as rn\n    FROM ride_starts s\n    JOIN ride_ends e ON s.pool_user = e.pool_user \n                     AND s.start_time < e.end_time\n                     AND greatCircleDistance(s.start_lat, s.start_lon, e.end_lat, e.end_lon) < 500\n),\nride_windows AS (\n    SELECT\n        pool_user,\n        groupArray(start_time) as start_times,\n        groupArray(end_time) as end_times,\n        groupArray(start_lat) as start_lats,\n        groupArray(start_lon) as start_lons,\n        groupArray(end_lat) as end_lats,\n        groupArray(end_lon) as end_lons\n    FROM matched_rides\n    WHERE rn = 1\n    GROUP BY pool_user\n)\n\nSELECT\n    JSONExtractString(k.request.headers, 'x-app-user-id') as pool_user,\n    toFloat64OrZero(JSONExtractString(k.request.headers, 'x-loc-latitude')) as lat,\n    toFloat64OrZero(JSONExtractString(k.request.headers, 'x-loc-longitude')) as lon,\n    xxHash64(pool_user)/1000 as color_id,\n    k.timestamp,\n    arrayFirst(start_time -> \n        k.timestamp BETWEEN start_time AND \n        rw.end_times[indexOf(rw.start_times, start_time)], \n        rw.start_times\n    ) as ride_start_time,\n    arrayFirst(end_time -> \n        k.timestamp BETWEEN \n        rw.start_times[indexOf(rw.end_times, end_time)] AND end_time, \n        rw.end_times\n    ) as ride_end_time\nFROM kong k\nJOIN ride_windows rw ON JSONExtractString(k.request.headers, 'x-app-user-id') = rw.pool_user\nWHERE arrayExists(i -> k.timestamp BETWEEN rw.start_times[i] AND rw.end_times[i], \n                  arrayEnumerate(start_times))\n  AND $__timeFilter(k.timestamp)\nORDER BY k.timestamp",
+          "refId": "A"
+        }
+      ],
+      "title": "New panel",
+      "type": "geomap"
+    },
+    {
+      "datasource": {
+        "type": "grafana-clickhouse-datasource",
+        "uid": "bf8nr6iutmpkwb"
+      },
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 24
+      },
+      "id": 1,
+      "options": {
+        "spanFilters": {
+          "criticalPathOnly": false,
+          "matchesOnly": false,
+          "serviceNameOperator": "=",
+          "spanNameOperator": "=",
+          "tags": [
+            {
+              "id": "86b34d11-55b",
+              "operator": "="
+            }
+          ]
+        }
+      },
+      "pluginVersion": "12.2.0-16791878397",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-clickhouse-datasource",
+            "uid": "bf8nr6iutmpkwb"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "4.11.4",
+          "queryType": "table",
+          "rawSql": "SELECT\n  '1' as traceID,\n  FName as spanID,\n  '' as parentSpanID,\n  'FE' as serviceName,\n  'Function Call' as operationName,\n  timestamp as startTime,\n  delta as duration\nFROM FE_logs",
+          "refId": "A"
+        }
+      ],
+      "title": "New panel",
+      "type": "traces"
+    }
+  ],
+  "preload": false,
+  "schemaVersion": 41,
+  "tags": [],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now/fy",
+    "to": "now/fy"
+  },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "Maps",
+  "uid": "07a546b1-8603-470e-a849-58d0fa21d923",
+  "version": 8
+}

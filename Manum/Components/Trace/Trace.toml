@@ -1,0 +1,34 @@
+f"""
+[sources.trace_injest]
+  type = "http_server"
+  address = "{data["forwarder"]["FE_profiling"]["host"]}:{data["forwarder"]["FE_profiling"]["port"]}"
+  decoding.codec = "json"
+  method = "POST"
+  path = "/{data["forwarder"]["FE_profiling"]["path"]}"
+  response_code = 204
+  tls.enabled =  true
+  tls.crt_file =  "/home{data["forwarder"]["cert_directory"]}/{data["forwarder"]["crt"]}"
+  tls.key_file = "/home{data["forwarder"]["cert_directory"]}/{data["forwarder"]["key"]}"
+[transforms.trace_parse]
+  inputs = ["trace_injest"]
+  type = "remap"
+  source = '''
+    time = now()
+    .logstamp = format_timestamp!(time, "%Y-%m-%dT%H:%M:%S%.3f")
+  '''
+[sinks.trace_index]
+  inputs = ["trace_parse"]
+  type = "clickhouse"
+  endpoint = "http://{data["indexer"]["host"]}:{data["indexer"]["http-port"]}"
+  database = "default"
+  table = "trace"
+  skip_unknown_fields = true
+  compression = "gzip"
+  auth.strategy = "basic"
+  auth.user = "default"
+  auth.password = "{data["indexer"]["password"]}"
+#[sinks.trace_debug]
+#  inputs = ["FrontEnd_parse"]
+#  type = "console"
+#  encoding.codec = "json"
+"""

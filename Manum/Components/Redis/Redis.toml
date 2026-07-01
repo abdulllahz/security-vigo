@@ -1,0 +1,52 @@
+f"""
+[sources.GatewayRedis_injest]
+  type = "exec"
+  command = ["bash","-c","redis-cli -h api-gateway-redis.int9da.ng.0001.euw1.cache.amazonaws.com -p 6379 INFO | paste -sd '|' -"]
+  decoding.codec = "bytes"
+  mode = "scheduled"
+  scheduled.exec_interval_secs = 1
+[transforms.GatewayRedis_decorate]
+  inputs = ["GatewayRedis_injest"]
+  type = "remap"
+  source = '''.source = "{data["forwarder"]["RedisGateway"]["host"]}:{data["forwarder"]["RedisGateway"]["port"]}"'''
+[transforms.Redis_parse]
+  inputs = ["GatewayRedis_decorate"]
+  type = "remap"
+  source = '''
+    save_source = .source
+    save_timestamp = .timestamp
+    parsed = parse_regex_all!(
+      .message,
+      r'(?<keys>[A-z0-9]+):(?<values>[A-z0-9.\\-=,*:/ %]*)'
+      # r'([A-z0-9]+):([A-z0-9.\\-=,*:/ %]*)'
+    )
+    intermediate={{}}
+    for_each(parsed)-> |_index, value| {{
+      key=get!(value,["keys"])
+      value=get!(value,["values"])
+      intermediate=set!(intermediate,[key],value)
+    }}
+    . = intermediate
+    .timestamp = save_timestamp
+    .source = save_source
+    time = now()
+    .timestamp = parse_timestamp!(.timestamp, "%Y-%m-%dT%H:%M:%S.%fZ")
+    .timestamp = format_timestamp!(.timestamp, "%Y-%m-%dT%H:%M:%S%.3f")
+    .logstamp = format_timestamp!(time, "%Y-%m-%dT%H:%M:%S%.3f")
+  '''
+[sinks.Redis_index]
+  inputs = ["Redis_parse"]
+  type = "clickhouse"
+  endpoint = "http://{data["indexer"]["host"]}:{data["indexer"]["http-port"]}"
+  database = "default"
+  table = "redis"
+  skip_unknown_fields = true
+  compression = "gzip"
+  auth.strategy = "basic"
+  auth.user = "default"
+  auth.password = "{data["indexer"]["password"]}"
+#[sinks.Redis_debug]
+#  inputs = ["Redis_parse"]
+#  type = "console"
+#  encoding.codec = "json"
+"""

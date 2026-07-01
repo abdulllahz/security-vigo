@@ -1,0 +1,2652 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 3,
+  "links": [],
+  "panels": [
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 5,
+      "panels": [],
+      "title": "TALOS EC2s",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "grafana-clickhouse-datasource",
+        "uid": "ffblwz6r1hedce"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": true,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": -1,
+            "barWidthFactor": 1,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineStyle": {
+              "fill": "solid"
+            },
+            "lineWidth": 1,
+            "pointSize": 6,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "cpu_percent_1"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "cpu_percent_2"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "heap_used_1"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "orange",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "heap_used_2"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "orange",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "memory_rss_1"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "yellow",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "memory_rss_2"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "yellow",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "array_buffers_1"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "array_buffers_2"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "external_memory_1"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "purple",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "external_memory_2"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "purple",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "value7"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "value1"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "value9"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "yellow",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "value10"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "yellow",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 20,
+        "x": 0,
+        "y": 1
+      },
+      "id": 16,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.2.0-16791878397",
+      "targets": [
+        {
+          "editorType": "sql",
+          "format": 0,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "4.11.4",
+          "queryType": "timeseries",
+          "rawSql": "SELECT \n    toStartOfInterval(timestamp, INTERVAL ${interval} ${bucket}) as time_bucket,\n    STDDEV_POP(cpu_percent)    as cpu_percent_1,\n    -1*STDDEV_POP(cpu_percent) as cpu_percent_2,\n    STDDEV_POP(heap_used_mb)    as heap_used_1,\n    -1*STDDEV_POP(heap_used_mb) as heap_used_2,\n    STDDEV_POP(memory_rss_mb)    as memory_rss_1,\n    -1*STDDEV_POP(memory_rss_mb) as memory_rss_2,\n    STDDEV_POP(array_buffers_mb)    as array_buffers_1,\n    -1*STDDEV_POP(array_buffers_mb) as array_buffers_2,\n    STDDEV_POP(external_mb)    as external_memory_1,\n    -1*STDDEV_POP(external_mb) as external_memory_2\nFROM node_metrics\nWHERE $__timeFilter(timestamp) ${query0}\nGROUP BY time_bucket\nORDER BY time_bucket DESC;",
+          "refId": "A"
+        }
+      ],
+      "title": "Data Variance",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "grafana-clickhouse-datasource",
+        "uid": "ffblwz6r1hedce"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 4,
+        "x": 20,
+        "y": 1
+      },
+      "id": 2,
+      "options": {
+        "minVizHeight": 75,
+        "minVizWidth": 75,
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "sizing": "auto"
+      },
+      "pluginVersion": "12.2.0-16791878397",
+      "targets": [
+        {
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "4.11.2",
+          "queryType": "table",
+          "rawSql": "SELECT\n  CASE\n    WHEN 1 > 0 \n    THEN COUNT(DISTINCT host_name)\n    ELSE 0\n  END as `machines running`,\n  CASE\n    WHEN 1 > 0 \n    THEN COUNT(DISTINCT CONCAT(host_name,instance_id))\n    ELSE 0\n  END as `processes running`,\n  CASE\n    WHEN 1 > 0 \n    THEN MAX(logstamp-timestamp)\n    ELSE 0\n  END as `Max log drift`,\n  CASE\n    WHEN 2 > 0 \n    THEN AVG(logstamp-timestamp)\n    ELSE 0\n  END as `Average log drift`\nFROM node_metrics\nWHERE $__timeFilter(logstamp)",
+          "refId": "A"
+        }
+      ],
+      "title": "General Metrics",
+      "type": "gauge"
+    },
+    {
+      "datasource": {
+        "type": "grafana-clickhouse-datasource",
+        "uid": "ffblwz6r1hedce"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 0,
+        "y": 9
+      },
+      "id": 6,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.2.0-16791878397",
+      "targets": [
+        {
+          "editorType": "sql",
+          "format": 0,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "4.11.4",
+          "queryType": "timeseries",
+          "rawSql": "WITH ranked_values AS (\n  SELECT\n    host_name as possible_values\n  FROM node_metrics\n  WHERE $__timeFilter(timestamp) ${query0}\n  GROUP BY host_name\n  ORDER BY COUNT(*) DESC\n  LIMIT 20\n),\ntime_series_data AS (\n  SELECT \n    toStartOfInterval(timestamp, INTERVAL ${interval} ${bucket}) as time_bucket,\n    host_name as host_name,\n    AVG(cpu_percent) as value\n  FROM node_metrics\n  WHERE $__timeFilter(timestamp) ${query0}\n  GROUP BY time_bucket, host_name\n  ORDER BY value ASC\n)\nSELECT \n  time_bucket,\n  value as \" \",\n  CASE \n    WHEN host_name IN (SELECT possible_values FROM ranked_values) \n    THEN host_name \n    ELSE 'OTHER' \n  END as possible_values\nFROM time_series_data\nORDER BY time_bucket ASC, value ASC",
+          "refId": "A"
+        }
+      ],
+      "title": "CPU",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "grafana-clickhouse-datasource",
+        "uid": "ffblwz6r1hedce"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineStyle": {
+              "fill": "solid"
+            },
+            "lineWidth": 1,
+            "pointSize": 4,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "always",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 12,
+        "y": 9
+      },
+      "id": 12,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.2.0-16791878397",
+      "targets": [
+        {
+          "editorType": "sql",
+          "format": 0,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "4.11.4",
+          "queryType": "timeseries",
+          "rawSql": "WITH required_data AS (\n  SELECT\n    timestamp,\n    CONCAT(host_name,' ',instance_id) AS possible_values,\n    memory_rss_mb AS value\n  FROM node_metrics\n  WHERE $__timeFilter(timestamp) ${query0}\n),\n\nranked_values AS (\n  SELECT possible_values\n  FROM required_data\n  GROUP BY possible_values\n  ORDER BY COUNT(*) DESC\n),\n\ntime_series_data AS (\n  SELECT \n    toStartOfInterval(timestamp, INTERVAL ${interval} ${bucket}) as time_bucket,\n    possible_values,\n    AVG(value) as value\n  FROM required_data\n  GROUP BY time_bucket, possible_values\n  ORDER BY value ASC\n)\nSELECT \n  time_bucket,\n  value as \" \",\n  CASE \n    WHEN possible_values IN (SELECT possible_values FROM ranked_values) \n    THEN possible_values \n    ELSE 'OTHER' \n  END as possible_values\nFROM time_series_data\nORDER BY time_bucket ASC, value ASC",
+          "refId": "A"
+        }
+      ],
+      "title": "Memory ( TOTAL PROCESS MEMORY)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "grafana-clickhouse-datasource",
+        "uid": "ffblwz6r1hedce"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 19
+      },
+      "id": 15,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.2.0-16791878397",
+      "targets": [
+        {
+          "editorType": "sql",
+          "format": 0,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "4.11.4",
+          "queryType": "timeseries",
+          "rawSql": "WITH required_data AS (\n  SELECT\n    timestamp,\n    CONCAT(host_name,' ',instance_id) AS possible_values,\n    heap_used_mb AS value\n  FROM node_metrics\n  WHERE $__timeFilter(timestamp) ${query0}\n),\n\nranked_values AS (\n  SELECT possible_values\n  FROM required_data\n  GROUP BY possible_values\n  ORDER BY COUNT(*) DESC\n),\n\ntime_series_data AS (\n  SELECT \n    toStartOfInterval(timestamp, INTERVAL ${interval} ${bucket}) as time_bucket,\n    possible_values,\n    AVG(value) as value\n  FROM required_data\n  GROUP BY time_bucket, possible_values\n  ORDER BY value ASC\n)\nSELECT \n  time_bucket,\n  value as \" \",\n  CASE \n    WHEN possible_values IN (SELECT possible_values FROM ranked_values) \n    THEN possible_values \n    ELSE 'OTHER' \n  END as possible_values\nFROM time_series_data\nORDER BY time_bucket ASC, value ASC",
+          "refId": "A"
+        }
+      ],
+      "title": "Heap USED ( TOTAL ALLOCATED HEAP)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "grafana-clickhouse-datasource",
+        "uid": "ffblwz6r1hedce"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 12,
+        "y": 19
+      },
+      "id": 14,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.2.0-16791878397",
+      "targets": [
+        {
+          "editorType": "sql",
+          "format": 0,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "4.11.4",
+          "queryType": "timeseries",
+          "rawSql": "WITH required_data AS (\n  SELECT\n    timestamp,\n    CONCAT(host_name,' ',instance_id) AS possible_values,\n    array_buffers_mb AS value\n  FROM node_metrics\n  WHERE $__timeFilter(timestamp) ${query0}\n),\n\nranked_values AS (\n  SELECT possible_values\n  FROM required_data\n  GROUP BY possible_values\n  ORDER BY COUNT(*) DESC\n),\n\ntime_series_data AS (\n  SELECT \n    toStartOfInterval(timestamp, INTERVAL ${interval} ${bucket}) as time_bucket,\n    possible_values,\n    AVG(value) as value\n  FROM required_data\n  GROUP BY time_bucket, possible_values\n  ORDER BY value ASC\n)\nSELECT \n  time_bucket,\n  value as \" \",\n  CASE \n    WHEN possible_values IN (SELECT possible_values FROM ranked_values) \n    THEN possible_values \n    ELSE 'OTHER' \n  END as possible_values\nFROM time_series_data\nORDER BY time_bucket ASC, value ASC",
+          "refId": "A"
+        }
+      ],
+      "title": "Array usage (Array_buffers , EXTERNAL MEMORY)a",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "grafana-clickhouse-datasource",
+        "uid": "ffblwz6r1hedce"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 28
+      },
+      "id": 17,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.2.0-16791878397",
+      "targets": [
+        {
+          "editorType": "sql",
+          "format": 0,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "4.11.4",
+          "queryType": "timeseries",
+          "rawSql": "WITH required_data AS (\n  SELECT\n    timestamp,\n    CONCAT(host_name,' ',instance_id) AS possible_values,\n    old_space_used_mb AS value\n  FROM node_metrics\n  WHERE $__timeFilter(timestamp) ${query0}\n),\n\nranked_values AS (\n  SELECT possible_values\n  FROM required_data\n  GROUP BY possible_values\n  ORDER BY COUNT(*) DESC\n),\n\ntime_series_data AS (\n  SELECT \n    toStartOfInterval(timestamp, INTERVAL ${interval} ${bucket}) as time_bucket,\n    possible_values,\n    AVG(value) as value\n  FROM required_data\n  GROUP BY time_bucket, possible_values\n  ORDER BY value ASC\n)\nSELECT \n  time_bucket,\n  value as \" \",\n  CASE \n    WHEN possible_values IN (SELECT possible_values FROM ranked_values) \n    THEN possible_values \n    ELSE 'OTHER' \n  END as possible_values\nFROM time_series_data\nORDER BY time_bucket ASC, value ASC",
+          "refId": "A"
+        }
+      ],
+      "title": "old_space_used_mb",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "grafana-clickhouse-datasource",
+        "uid": "ffblwz6r1hedce"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 12,
+        "y": 28
+      },
+      "id": 9,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.2.0-16791878397",
+      "targets": [
+        {
+          "editorType": "sql",
+          "format": 0,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "4.11.4",
+          "queryType": "timeseries",
+          "rawSql": "WITH required_data AS (\n  SELECT\n    timestamp,\n    CONCAT(host_name,' ',instance_id) AS possible_values,\n    event_loop_utilization AS value\n  FROM node_metrics\n  WHERE $__timeFilter(timestamp) ${query0}\n),\n\nranked_values AS (\n  SELECT possible_values\n  FROM required_data\n  GROUP BY possible_values\n  ORDER BY COUNT(*) DESC\n),\n\ntime_series_data AS (\n  SELECT \n    toStartOfInterval(timestamp, INTERVAL ${interval} ${bucket}) as time_bucket,\n    possible_values,\n    AVG(value) as value\n  FROM required_data\n  GROUP BY time_bucket, possible_values\n  ORDER BY value ASC\n)\nSELECT \n  time_bucket,\n  value as \" \",\n  CASE \n    WHEN possible_values IN (SELECT possible_values FROM ranked_values) \n    THEN possible_values \n    ELSE 'OTHER' \n  END as possible_values\nFROM time_series_data\nORDER BY time_bucket ASC, value ASC",
+          "refId": "A"
+        }
+      ],
+      "title": "Event Loop Utilization",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "grafana-clickhouse-datasource",
+        "uid": "ffblwz6r1hedce"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 37
+      },
+      "id": 13,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.2.0-16791878397",
+      "targets": [
+        {
+          "editorType": "sql",
+          "format": 0,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "4.11.4",
+          "queryType": "timeseries",
+          "rawSql": "WITH required_data AS (\n  SELECT\n    timestamp,\n    CONCAT(host_name,' ',instance_id) AS possible_values,\n    external_mb AS value\n  FROM node_metrics\n  WHERE $__timeFilter(timestamp) ${query0}\n),\n\nranked_values AS (\n  SELECT possible_values\n  FROM required_data\n  GROUP BY possible_values\n  ORDER BY COUNT(*) DESC\n),\n\ntime_series_data AS (\n  SELECT \n    toStartOfInterval(timestamp, INTERVAL ${interval} ${bucket}) as time_bucket,\n    possible_values,\n    AVG(value) as value\n  FROM required_data\n  GROUP BY time_bucket, possible_values\n  ORDER BY value ASC\n)\nSELECT \n  time_bucket,\n  value as \" \",\n  CASE \n    WHEN possible_values IN (SELECT possible_values FROM ranked_values) \n    THEN possible_values \n    ELSE 'OTHER' \n  END as possible_values\nFROM time_series_data\nORDER BY time_bucket ASC, value ASC",
+          "refId": "A"
+        }
+      ],
+      "title": "External memory ( BUFFERS)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "grafana-clickhouse-datasource",
+        "uid": "ffblwz6r1hedce"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 12,
+        "y": 37
+      },
+      "id": 10,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.2.0-16791878397",
+      "targets": [
+        {
+          "editorType": "sql",
+          "format": 0,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "4.11.4",
+          "queryType": "timeseries",
+          "rawSql": "WITH required_data AS (\n  SELECT\n    timestamp,\n    CONCAT(host_name,' ',instance_id) AS possible_values,\n    request_duration_ms AS value\n  FROM node_metrics\n  WHERE $__timeFilter(timestamp) ${query0}\n),\n\nranked_values AS (\n  SELECT possible_values\n  FROM required_data\n  GROUP BY possible_values\n  ORDER BY COUNT(*) DESC\n),\n\ntime_series_data AS (\n  SELECT \n    toStartOfInterval(timestamp, INTERVAL ${interval} ${bucket}) as time_bucket,\n    possible_values,\n    AVG(value) as value\n  FROM required_data\n  GROUP BY time_bucket, possible_values\n  ORDER BY value ASC\n)\nSELECT \n  time_bucket,\n  value as \" \",\n  CASE \n    WHEN possible_values IN (SELECT possible_values FROM ranked_values) \n    THEN possible_values \n    ELSE 'OTHER' \n  END as possible_values\nFROM time_series_data\nORDER BY time_bucket ASC, value ASC",
+          "refId": "A"
+        }
+      ],
+      "title": "Request duration",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "grafana-clickhouse-datasource",
+        "uid": "ffblwz6r1hedce"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 46
+      },
+      "id": 8,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.2.0-16791878397",
+      "targets": [
+        {
+          "editorType": "sql",
+          "format": 0,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "4.11.4",
+          "queryType": "timeseries",
+          "rawSql": "WITH required_data AS (\n  SELECT\n    timestamp,\n    CONCAT(host_name,' ',instance_id) AS possible_values,\n    event_loop_lag_max_ms AS value\n  FROM node_metrics\n  WHERE $__timeFilter(timestamp) ${query0}\n),\n\nranked_values AS (\n  SELECT possible_values\n  FROM required_data\n  GROUP BY possible_values\n  ORDER BY COUNT(*) DESC\n),\n\ntime_series_data AS (\n  SELECT \n    toStartOfInterval(timestamp, INTERVAL ${interval} ${bucket}) as time_bucket,\n    possible_values,\n    AVG(value) as value\n  FROM required_data\n  GROUP BY time_bucket, possible_values\n  ORDER BY value ASC\n)\nSELECT \n  time_bucket,\n  value as \" \",\n  CASE \n    WHEN possible_values IN (SELECT possible_values FROM ranked_values) \n    THEN possible_values \n    ELSE 'OTHER' \n  END as possible_values\nFROM time_series_data\nORDER BY time_bucket ASC, value ASC",
+          "refId": "A"
+        }
+      ],
+      "title": "Max Event Loop Lag",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "grafana-clickhouse-datasource",
+        "uid": "ffblwz6r1hedce"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 12,
+        "y": 46
+      },
+      "id": 19,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.2.0-16791878397",
+      "targets": [
+        {
+          "editorType": "sql",
+          "format": 0,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "4.11.4",
+          "queryType": "timeseries",
+          "rawSql": "WITH required_data AS (\n  SELECT\n    timestamp,\n    CONCAT(host_name,' ',instance_id) AS possible_values,\n    event_loop_lag_ms AS value\n  FROM node_metrics\n  WHERE $__timeFilter(timestamp) ${query0}\n),\n\nranked_values AS (\n  SELECT possible_values\n  FROM required_data\n  GROUP BY possible_values\n  ORDER BY COUNT(*) DESC\n),\n\ntime_series_data AS (\n  SELECT \n    toStartOfInterval(timestamp, INTERVAL ${interval} ${bucket}) as time_bucket,\n    possible_values,\n    AVG(value) as value\n  FROM required_data\n  GROUP BY time_bucket, possible_values\n  ORDER BY value ASC\n)\nSELECT \n  time_bucket,\n  value as \" \",\n  CASE \n    WHEN possible_values IN (SELECT possible_values FROM ranked_values) \n    THEN possible_values \n    ELSE 'OTHER' \n  END as possible_values\nFROM time_series_data\nORDER BY time_bucket ASC, value ASC",
+          "refId": "A"
+        }
+      ],
+      "title": " Event Loop Lag ( Avg Event Loop Lag)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "grafana-clickhouse-datasource",
+        "uid": "ffblwz6r1hedce"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 55
+      },
+      "id": 18,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.2.0-16791878397",
+      "targets": [
+        {
+          "editorType": "sql",
+          "format": 0,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "4.11.4",
+          "queryType": "timeseries",
+          "rawSql": "WITH required_data AS (\n  SELECT\n    timestamp,\n    CONCAT(host_name,' ',instance_id) AS possible_values,\n    uptime_sec AS value\n  FROM node_metrics\n  WHERE $__timeFilter(timestamp)\n),\n\nranked_values AS (\n  SELECT possible_values\n  FROM required_data\n  GROUP BY possible_values\n  ORDER BY COUNT(*) DESC\n),\n\ntime_series_data AS (\n  SELECT \n    date_trunc('minute', timestamp) as time,\n    possible_values,\n    AVG(value) as value\n  FROM required_data\n  GROUP BY time, possible_values\n  ORDER BY value ASC\n)\nSELECT \n  time,\n  value as \" \",\n  CASE \n    WHEN possible_values IN (SELECT possible_values FROM ranked_values) \n    THEN possible_values \n    ELSE 'OTHER' \n  END as possible_values\nFROM time_series_data\nORDER BY time ASC, value ASC",
+          "refId": "A"
+        }
+      ],
+      "title": "DELETELATER UP TIME (SEC's)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "grafana-clickhouse-datasource",
+        "uid": "ffblwz6r1hedce"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "__systemRef": "hideSeriesFrom",
+            "matcher": {
+              "id": "byNames",
+              "options": {
+                "mode": "exclude",
+                "names": [
+                  "  GET /api/v3/users/estimation/fare"
+                ],
+                "prefix": "All except:",
+                "readOnly": true
+              }
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": true
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 64
+      },
+      "id": 20,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.2.0-16791878397",
+      "targets": [
+        {
+          "editorType": "sql",
+          "format": 0,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "4.13.0",
+          "queryType": "timeseries",
+          "rawSql": "WITH required_data AS (\n  SELECT\n    timestamp,\n    CONCAT(method, ' ', path) AS route,\n    event_loop_utilization AS elu,\n    request_duration_ms / 1000.0 AS duration_s\n  FROM node_metrics\n  WHERE $__timeFilter(timestamp)\n    ${query0}\n),\n\nranked_routes AS (\n  SELECT route\n  FROM required_data\n  GROUP BY route\n  ORDER BY SUM(duration_s * elu) DESC\n  LIMIT 10\n),\n\ntime_series_data AS (\n  SELECT\n    toStartOfInterval(timestamp, INTERVAL ${interval} ${bucket}) AS time_bucket,\n    route,\n    SUM(duration_s * elu) AS impact\n  FROM required_data\n  GROUP BY time_bucket, route\n)\n\nSELECT\n  time_bucket,\n  impact AS \" \",\n  CASE\n    WHEN route IN (SELECT route FROM ranked_routes)\n    THEN route\n    ELSE 'OTHER'\n  END AS route\nFROM time_series_data\nORDER BY time_bucket ASC, impact ASC\n",
+          "refId": "A"
+        }
+      ],
+      "title": "TEST",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "grafana-clickhouse-datasource",
+        "uid": "ffblwz6r1hedce"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "__systemRef": "hideSeriesFrom",
+            "matcher": {
+              "id": "byNames",
+              "options": {
+                "mode": "exclude",
+                "names": [
+                  "  GET /api/v3/users/estimation/fare"
+                ],
+                "prefix": "All except:",
+                "readOnly": true
+              }
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": true
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 73
+      },
+      "id": 21,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.2.0-16791878397",
+      "targets": [
+        {
+          "editorType": "sql",
+          "format": 0,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "4.13.0",
+          "queryType": "timeseries",
+          "rawSql": "WITH ordered_calls AS (\n    SELECT\n        toStartOfInterval(timestamp, INTERVAL 1 MINUTE)    AS time_bucket,\n        CONCAT(method, ' ', path)                           AS route,\n        old_space_used_mb,\n        heap_limit_mb,\n\n        lagInFrame(old_space_used_mb) OVER (\n            PARTITION BY CONCAT(method, ' ', path)\n            ORDER BY timestamp\n            ROWS BETWEEN 1 PRECEDING AND 1 PRECEDING\n        ) AS prev_memory_same_route,\n\n        lagInFrame(old_space_used_mb) OVER (\n            ORDER BY timestamp\n            ROWS BETWEEN 1 PRECEDING AND 1 PRECEDING\n        ) AS prev_memory_global\n\n    FROM node_metrics\n    WHERE $__timeFilter(timestamp)\n),\n\nwith_delta AS (\n    SELECT\n        time_bucket,\n        route,\n        old_space_used_mb,\n        heap_limit_mb,\n        (old_space_used_mb - prev_memory_same_route)  AS delta_mb,\n        prev_memory_global                             AS baseline_before_call,\n        (heap_limit_mb - prev_memory_global)           AS free_before_call\n    FROM ordered_calls\n    WHERE\n        prev_memory_same_route IS NOT NULL\n        AND prev_memory_global IS NOT NULL\n        AND (old_space_used_mb - prev_memory_same_route) > 0\n)\n\nSELECT\n    time_bucket,\n    route,\n    round(avg(delta_mb), 2)                                          AS avg_delta_mb,\n    round(max(delta_mb), 2)                                          AS max_delta_mb,\n    count()                                                          AS request_count,\n    round(avg(baseline_before_call), 1)                              AS avg_baseline_mb,\n    round(max(old_space_used_mb), 1)                                 AS peak_after_call,\n    round(avg(heap_limit_mb), 0)                                     AS heap_limit_mb,\n    round(avg(delta_mb) / nullIf(avg(free_before_call), 0) * 100, 1) AS pct_headroom_consumed,\n    countIf(delta_mb > 30)                                           AS spike_events\n\nFROM with_delta\nGROUP BY time_bucket, route\nORDER BY time_bucket ASC, pct_headroom_consumed DESC",
+          "refId": "A"
+        }
+      ],
+      "title": "Memory Usage Over Time by Route",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "grafana-clickhouse-datasource",
+        "uid": "ffblwz6r1hedce"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "__systemRef": "hideSeriesFrom",
+            "matcher": {
+              "id": "byNames",
+              "options": {
+                "mode": "exclude",
+                "names": [
+                  "  GET /api/v3/users/estimation/fare"
+                ],
+                "prefix": "All except:",
+                "readOnly": true
+              }
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": true
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 82
+      },
+      "id": 22,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.2.0-16791878397",
+      "targets": [
+        {
+          "editorType": "sql",
+          "format": 0,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "4.13.0",
+          "queryType": "timeseries",
+          "rawSql": "WITH route_memory AS (\n    SELECT\n        toStartOfInterval(timestamp, INTERVAL ${interval} ${bucket}) AS time_bucket,\n        CONCAT(method, ' ', path) AS route,\n        max(old_space_used_mb) AS max_old_space_mb\n    FROM node_metrics\n    WHERE $__timeFilter(timestamp)\n    GROUP BY time_bucket, route\n)\nSELECT\n    time_bucket,\n    route,\n    max_old_space_mb,\n    CASE WHEN max_old_space_mb > 0.8 * (SELECT max(heap_limit_mb) FROM node_metrics LIMIT 1)\n         THEN 1 ELSE 0 END AS memory_alert\nFROM route_memory\nORDER BY time_bucket ASC\n",
+          "refId": "A"
+        }
+      ],
+      "title": "Routes Causing Memory Pressure",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "grafana-clickhouse-datasource",
+        "uid": "ffblwz6r1hedce"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "__systemRef": "hideSeriesFrom",
+            "matcher": {
+              "id": "byNames",
+              "options": {
+                "mode": "exclude",
+                "names": [
+                  "  GET /api/v3/users/estimation/fare"
+                ],
+                "prefix": "All except:",
+                "readOnly": true
+              }
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": true
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 91
+      },
+      "id": 23,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.2.0-16791878397",
+      "targets": [
+        {
+          "editorType": "sql",
+          "format": 0,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "4.13.0",
+          "queryType": "timeseries",
+          "rawSql": "WITH route_metrics AS (\n    SELECT\n        toStartOfInterval(timestamp, INTERVAL ${interval} ${bucket}) AS time_bucket,\n        CONCAT(method, ' ', path) AS route,\n        SUM((request_duration_ms / 1000.0) * event_loop_utilization) AS elu_impact,\n        quantileExact(0.95)(request_duration_ms) AS p95_latency_ms\n    FROM node_metrics\n    WHERE $__timeFilter(timestamp)\n        ${query0}\n    GROUP BY time_bucket, route\n)\nSELECT\n    time_bucket,\n    route,\n    elu_impact,\n    p95_latency_ms,\n    CASE\n        WHEN elu_impact > 0.3 AND p95_latency_ms > 200 THEN 1\n        ELSE 0\n    END AS alert\nFROM route_metrics\nORDER BY time_bucket ASC\n",
+          "refId": "A"
+        }
+      ],
+      "title": "Grafana / ClickHouse Query for ELU + p95 spike",
+      "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 100
+      },
+      "id": 4,
+      "panels": [],
+      "title": "Kong",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "grafana-clickhouse-datasource",
+        "uid": "ffblwz6r1hedce"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 101
+      },
+      "id": 11,
+      "options": {
+        "minVizHeight": 75,
+        "minVizWidth": 75,
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "sizing": "auto"
+      },
+      "pluginVersion": "12.2.0-16791878397",
+      "targets": [
+        {
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "4.11.4",
+          "queryType": "table",
+          "rawSql": "SELECT\n  CASE \n    WHEN server.connections_accepted > 0 \n    THEN ROUND((server.connections_accepted - server.connections_handled) * 100.0 / server.connections_accepted, 2)\n    ELSE 0 \n  END as `DROP RATE %`,\n  CASE \n    WHEN server.connections_active > 0 \n    THEN ROUND(server.connections_writing * 100.0 / server.connections_active, 2)\n    ELSE 0 \n  END as `CONN READ UTILIZATION %`,\n  CASE \n    WHEN server.connections_active > 0 \n    THEN ROUND(server.connections_writing * 100.0 / server.connections_active, 2)\n    ELSE 0 \n  END as `CONN WRITE UTILIZATION %`,\n  CASE \n    WHEN server.connections_active > 0 \n    THEN ROUND(server.connections_waiting * 100.0 / server.connections_active, 2) \n    ELSE 0 \n  END as `CONN WAITING UTILIZATION %`\nFROM kong_metrics\nWHERE $__timeFilter(logstamp) ${query0}",
+          "refId": "A"
+        }
+      ],
+      "title": "General Metrics",
+      "type": "gauge"
+    },
+    {
+      "datasource": {
+        "type": "grafana-clickhouse-datasource",
+        "uid": "ffblwz6r1hedce"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 25,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "stepAfter",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "log": 2,
+              "type": "symlog"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "SUCCESSFUL RETURN FROM ACCEPT()"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "CONNECTIONS DROPPED"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "REACHED SYSCALL ACCEPT()"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 109
+      },
+      "id": 1,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.2.0-16791878397",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-clickhouse-datasource",
+            "uid": "ff3isj8vqus5cd"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "4.11.4",
+          "queryType": "table",
+          "rawSql": "SELECT\n  toStartOfInterval(logstamp, INTERVAL ${interval} ${bucket}) as time_bucket,\n  server.connections_accepted as `REACHED SYSCALL ACCEPT()`,\n  server.connections_handled as `SUCCESSFUL RETURN FROM ACCEPT()`,\n  server.connections_accepted - server.connections_handled as `CONNECTIONS DROPPED`\nFROM kong_metrics \nWHERE $__timeFilter(logstamp) ${query0}\nORDER BY time_bucket DESC",
+          "refId": "A"
+        }
+      ],
+      "title": "TCP Throughput",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "grafana-clickhouse-datasource",
+        "uid": "ffblwz6r1hedce"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 25,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "stepAfter",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "log": 2,
+              "type": "symlog"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "SUCCESSFUL RETURN FROM ACCEPT()"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "CONNECTIONS DROPPED"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "REACHED SYSCALL ACCEPT()"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "transparent",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "IDLE (WAITING)"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "KONG -> CLIENT (SENDING)"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "CLIENT -> KONG (RECEIVING)"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "CONCURRENT TCP CONNECTIONS"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-purple",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 109
+      },
+      "id": 3,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.2.0-16791878397",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-clickhouse-datasource",
+            "uid": "ff3isj8vqus5cd"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "4.11.4",
+          "queryType": "table",
+          "rawSql": "SELECT\n  toStartOfInterval(logstamp, INTERVAL ${interval} ${bucket}) as time_bucket,\n  server.connections_active as  `CONCURRENT TCP CONNECTIONS`,\n  server.connections_reading as `CLIENT -> KONG (RECEIVING)`,\n  server.connections_writing as `KONG -> CLIENT (SENDING)`, \n  server.connections_waiting as `IDLE (WAITING)`\nFROM kong_metrics \nWHERE $__timeFilter(logstamp) ${query0}\nORDER BY time_bucket DESC",
+          "refId": "A"
+        }
+      ],
+      "title": "Connection State",
+      "type": "timeseries"
+    }
+  ],
+  "preload": false,
+  "refresh": "30s",
+  "schemaVersion": 41,
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "text": "1",
+          "value": "1"
+        },
+        "name": "interval",
+        "options": [
+          {
+            "selected": true,
+            "text": "1",
+            "value": "1"
+          },
+          {
+            "selected": false,
+            "text": "5",
+            "value": "5"
+          },
+          {
+            "selected": false,
+            "text": "15",
+            "value": "15"
+          },
+          {
+            "selected": false,
+            "text": "30",
+            "value": "30"
+          },
+          {
+            "selected": false,
+            "text": "45",
+            "value": "45"
+          },
+          {
+            "selected": false,
+            "text": "60",
+            "value": "60"
+          }
+        ],
+        "query": "1,5,15,30,45,60",
+        "type": "custom"
+      },
+      {
+        "auto": false,
+        "auto_count": 30,
+        "auto_min": "10s",
+        "current": {
+          "text": "SECOND",
+          "value": "SECOND"
+        },
+        "name": "bucket",
+        "options": [
+          {
+            "selected": true,
+            "text": "SECOND",
+            "value": "SECOND"
+          },
+          {
+            "selected": false,
+            "text": "MINUTE",
+            "value": "MINUTE"
+          },
+          {
+            "selected": false,
+            "text": "HOUR",
+            "value": "HOUR"
+          }
+        ],
+        "query": "SECOND,MINUTE,HOUR",
+        "refresh": 2,
+        "type": "interval"
+      },
+      {
+        "current": {
+          "text": "",
+          "value": ""
+        },
+        "name": "query0",
+        "options": [
+          {
+            "selected": true,
+            "text": "",
+            "value": ""
+          }
+        ],
+        "query": "",
+        "type": "textbox"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-15m",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "utc",
+  "title": "Metrics",
+  "uid": "755db629-c4c3-478b-b833-c28dd687bfcb",
+  "version": 14
+}

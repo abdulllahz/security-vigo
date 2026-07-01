@@ -1,0 +1,77 @@
+{
+    //"headers": {
+    //    "x-request-id": "\"befef9e0c1067101\"",
+    //    "x-app-language": "\"en\"",
+    //    "x-customer-api-token": "\"ueo3gr7blt7fodqzt8otxtlktmv53odm\"",
+    //    "Host": "\"tomoe.bykea.net\"",
+    //    "x-customer-api-id": "\"6267b132dc1d664091bac91e\"",
+    //    "x-app-user-type": "\"passenger\"",
+    //    "x-user-agent": "\"TECNO KJ7 UP1A-231005-007,Android,14\"",
+    //    "x-app-user-token": "\"ueo3gr\"",
+    //    "x-app-version": "\"7.63\""
+    //},
+    //"method": "POST",
+    "network_speed": [
+        {
+            "download": 5471,
+            "upload": 5471
+        }
+    ],
+    "network_type": [
+        "MOBILE"
+    ],
+    //"request": {
+    //    "body": "{\"_id\":\"6267b132dc1d664091bac91e\",\"advertisement_id\":\"6080b046-6274-4268-9af4-663804aa85cc\",\"customer_location\":{\"lat\":\"24.8667637\",\"lng\":\"67.0808062\"},\"dropoff_info\":{\"address\":\"Near F 1  Jinnah Housing Society P.E.C.H.S. Karachi\",\"lat\":\"24.8667766042\",\"lng\":\"67.0807760953\"},\"pickup_info\":{\"address\":\"Near F 1  Jinnah Housing Society P.E.C.H.S. Karachi\",\"lat\":\"24.866786946757284\",\"lng\":\"67.08079721778631\"},\"token_id\":\"ueo3gr7blt7fodqzt8otxtlktmv53odm\",\"trip\":{\"resp_est_fare\":96,\"bid_wheel\":[145,140,125,110,96,90],\"creator\":\"ANDROID\",\"customer_bid\":96,\"lat\":\"24.8667637\",\"lng\":\"67.0808062\",\"lower_bid_factor\":0.1,\"service_code\":23,\"stops\":[]}}"
+    //},
+    //"response": "{\"message\":\"Not Found\"}",
+    "response_time": 494,
+    "exception": ""
+    //"status_code": "404",
+    //"url": "/talos/api/v1/trips/creat",
+    //"user_type": "p"
+},
+{
+    "Tname": "",
+    "Fname": "",
+    "Args": "",
+    "Delta": "",
+    "Output": "",
+    "Mb": "",
+    "Ma": ""
+}
+
+
+{
+    "name":"MANUM",
+    "indexer":{
+        //"host":"10.10.32.167",
+        "host":"127.0.0.1",
+        "http-port":8123,
+        "db-port":9000,
+        "password":"FragBox7t2",
+        "image": "clickhouse:25.7.1.3997-jammy",
+        "storage":"/tmp/data/"
+    },
+    "forwarder":{
+        //"host":"10.10.32.167",
+        "host": "127.0.0.1",
+        "image":"timberio/vector:nightly-debian",
+        "portrange":[65000,65001,65010],
+        "main_mongo": {
+            "host": "10.100.2.56",
+            "port": "27017",
+            "user": "admin",
+            "pass": "ApLkptermmdfds@12"
+        }
+        "kong_metrics":{
+            "url": "http://10.100.7.12:8001/status"
+        }
+    },
+    "dashboard":{
+        //"host":"10.10.32.167",
+        "host":"127.0.0.1",
+        "http-port":"80",
+        "image":"grafana/grafana:12.2.0-16791878397",
+        "password":"admin"
+    }
+}

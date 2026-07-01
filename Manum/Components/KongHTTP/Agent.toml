@@ -1,0 +1,12 @@
+f"""
+[sources.kong_collect]
+  type = "socket"
+  mode = "udp"
+  address = "0.0.0.0:{data["agent"]["KongHTTP"]["port"]}"
+  max_length = 10485760
+[sinks.kong_forward]
+  type = "vector"
+  inputs = ["kong_collect"]
+  address = "{data["forwarder"]["host"]}:{data["forwarder"]["KongAgentHTTP"]["port"]}"
+  compression = true
+"""
