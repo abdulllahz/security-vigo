@@ -11,18 +11,23 @@
     "forwarder":{
         "host": "10.100.7.65",
         "image":"timberio/vector:nightly-debian",
-        "cert_directory":"/Certs",
-        "log_directory":"/logs",
-        "crt": "cert.pem",
-        "key": "key.pem",
         "kong_metrics":{
             "url": "http://10.100.7.181:8001/status"
+        },
+        "BasicMetrics":{
+            "type": "tcp",
+            "port":"65005"
+        },
+        "ELB":{
+            "dir": "elb/*.log.gz"
         },
         "FE_profiling":{
             "host": "0.0.0.0",
             "type": "tcp",
             "port": "443",
-            "path":"metrics"
+            "path":"metrics",
+            "skey": "key.pem",
+            "cert": "cert.pem"
         },
         "KongKubeHTTP":{
             "type": "udp",
@@ -52,6 +57,9 @@
         "password":"PurplePanda.447"
     },
     "agent":{
+        "BasicMetrics":{
+            "unix": "basic_metrics.sock"
+        },
         "KongHTTP":{
             "type": "udp",
             "port":"65003"

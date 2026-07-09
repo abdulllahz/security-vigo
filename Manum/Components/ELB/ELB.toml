@@ -2,7 +2,7 @@ f"""
 [sources.loadbalancer_injest]
   type = "file"
   glob_minimum_cooldown_ms = 1000
-  include = [ "/tmp/logs/*.log.gz","/tmp/logs/*.log" ]
+  include = [ "/tmp/logs/{data["forwarder"]["ELB"]["dir"]}" ]
   line_delimiter = "\\n"
   read_from = "beginning"
 [transforms.loadbalancer_parse]

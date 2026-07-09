@@ -37,6 +37,24 @@ def get_ports(data,behalf):
       else:
         continue
     return open_ports
+def get_volumes(data,base_dir,behalf):
+    shared_volumes=[]
+    for source in data[behalf]:
+      v=''
+      if('unix' in data[behalf][source]):
+        v=f"{base_dir}/unix_sockets/{data[behalf][source]["unix"]}:/tmp/unix_sockets/{data[behalf][source]["unix"]}"
+      if('file' in data[behalf][source]):
+        v=f"{base_dir}/log/{data[behalf][source]["file"]}:/tmp/log/{data[behalf][source]["file"]}"
+      if('dir' in data[behalf][source]):
+        v=f"{base_dir}/logs/{data[behalf][source]["dir"]}:/tmp/logs/{data[behalf][source]["dir"]}"
+      if('skey' in data[behalf][source]):
+        v=f"{base_dir}/cert/{data[behalf][source]["skey"]}:/tmp/cert/{data[behalf][source]["skey"]}"
+      if('cert' in data[behalf][source]):
+        v=f"{base_dir}/cert/{data[behalf][source]["cert"]}:/tmp/cert/{data[behalf][source]["cert"]}"
+      if v!='':
+        shared_volumes.append(v)
+    return shared_volumes
+
 try:
 ######################################################################################################################################
 # Init
@@ -88,6 +106,7 @@ try:
         "environment":{'CLICKHOUSE_PASSWORD':data["indexer"]["password"]},
         "volumes":volumes
     }
+    print(get_volumes(data,base_dir,"forwarder"))
     forwarder_config={
         "name":data["name"]+'_Vector',
         "image":data["forwarder"]["image"],
@@ -96,11 +115,9 @@ try:
         "entrypoint":'/bin/tail',
         "command":'-f /dev/null',
         "ports":get_ports(data,"forwarder"),
-        "volumes":[
-          base_dir+data["forwarder"]["cert_directory"]+":/home"+data["forwarder"]["cert_directory"],
-          base_dir+data["forwarder"]["log_directory"]+":/tmp"+data["forwarder"]["log_directory"]
-        ]
+        "volumes":get_volumes(data,base_dir,"forwarder")
     }
+    print(get_volumes(data,base_dir,"agent"))
     agent_config={
         "name":data["name"]+'_Agent',
         "image":data["forwarder"]["image"],
@@ -108,7 +125,8 @@ try:
         "network":network_name,
         "entrypoint":'/bin/tail',
         "command":'-f /dev/null',
-        "ports":get_ports(data,"agent")
+        "ports":get_ports(data,"agent"),
+        "volumes":get_volumes(data,base_dir,"agent")
     }
     dashboard_config={
         "name":data["name"]+'_Grafana',

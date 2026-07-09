@@ -1,0 +1,51 @@
+f"""
+#[sources.kong_injest]
+#  type = "vector"
+#  version = "2"
+#  address = "0.0.0.0:{data["forwarder"]["KongAgentHTTP"]["port"]}"
+#[sources.kubekong_injest]
+#  type = "socket"
+#  mode = "udp"
+#  address = "0.0.0.0:{data["forwarder"]["KongKubeHTTP"]["port"]}"
+#  max_length = 10485760
+#[transforms.kong_parse]
+#  inputs = ["kong_injest","kubekong_injest"]
+#  type = "remap"
+#  source = '''
+#    time=now()
+#    . = parse_json!(string!(.message))
+#    .request.path = .route.paths[0]
+#    del(.route)
+#    del(.service)
+#    del(.workspace)
+#    del(.workspace_name)
+#    del(.tries)
+#    .response.upstream = .upstream_status
+#    del(.upstream_status)
+#    .logstamp = format_timestamp!(time, "%Y-%m-%dT%H:%M:%S%.3f")
+#    .timestamp = format_timestamp!(from_unix_timestamp!(.started_at, unit: "milliseconds"), "%Y-%m-%dT%H:%M:%S%.3f")
+#    .diffstamp , err1 = to_unix_timestamp(time, unit: "milliseconds") - .started_at
+#    .err1 = err1
+#    temp , err2 = to_string(.request.headers."x-app-user-token")
+#    .err2 = err2
+#    .request.headers."x-app-user-token" = redact(temp, filters: [r'[a-z0-9]+'], redactor: {{"type": "text", "replacement": "*[REDACTED]*"}})
+#    .request.uri, err3 = replace(.request.uri, r'\\?.*', "")
+#    .upstream_uri, err3 = replace(.upstream_uri, r'\\?.*', "")
+#    .err3 = err3
+#  '''
+#[sinks.kong_index]
+#  inputs = ["kong_parse"]
+#  type = "clickhouse"
+#  endpoint = "http://{data["indexer"]["host"]}:{data["indexer"]["http-port"]}"
+#  database = "default"
+#  table = "kong"
+#  skip_unknown_fields = false
+#  compression = "gzip"
+#  auth.strategy = "basic"
+#  auth.user = "default"
+#  auth.password = "{data["indexer"]["password"]}"
+#[sinks.kong_debug]
+#  inputs = ["kong_parse"]
+#  type = "console"
+#  encoding.codec = "json"
+"""
